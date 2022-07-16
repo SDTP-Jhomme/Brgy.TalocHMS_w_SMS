@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Health Management | Login</title>
+        <!-- Bootstrap CDN -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <!-- Bootstrap Icons -->
@@ -21,7 +22,7 @@
                                     <div class="card-body p-md-5 mx-md-4">
 
                                         <div class="text-center">
-                                            <img src="./images/Logo.png"
+                                            <img src="./images/logo-new.png"
                                                 style="width: 185px;" alt="logo">
                                             <h4 class="mt-1 mb-5 pb-1">BHW Login</h4>
                                         </div>
@@ -29,17 +30,17 @@
                                         <form>
 
                                             <label class="form-label" for="form2Example11">Username</label>
-                                            
+
                                             <div class="form-outline mb-4">
                                                 <input type="email" id="form2Example11" class="form-control"
-                                                placeholder="Please input username" />
+                                                placeholder="Please input username" required/>
                                             </div>
 
                                             <label class="form-label" for="form2Example22">Password</label>
 
                                             <div class="form-outline mb-4 input-group">
                                                 <input type="password" id="form2Example22" class="form-control" 
-                                                placeholder="Please input password" />
+                                                placeholder="Please input password" required/>
                                                 <span class="input-group-text">
                                                     <i class="far fa-eye custom" id="togglePassword" 
                                                 style="cursor: pointer"></i>

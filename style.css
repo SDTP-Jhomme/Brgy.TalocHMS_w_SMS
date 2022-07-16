@@ -44,3 +44,27 @@
     color: #FFFFFF;
     margin: 0;
 }
+
+/* Admin Login */
+.rounded-t-5 {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+@media (min-width: 992px) {
+    .rounded-tr-lg-0 {
+    border-top-right-radius: 0;
+    }
+
+    .rounded-bl-lg-5 {
+      border-bottom-left-radius: 0.5rem;
+    }
+}
+
+.admin-section{
+    height: 100vh;
+}
+
+.admin-section .admin-login{
+    box-shadow: -10px 10px 20px #BBBBBB;
+}
