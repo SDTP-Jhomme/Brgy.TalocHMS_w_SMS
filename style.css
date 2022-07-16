@@ -1,1 +1,46 @@
+/* All */
+*{
+    margin: 0;
+    padding: 0;
+}
 /* Index */
+.index-page{
+    background-image: url(./images/Health-Center.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.index-page .links{
+    background-color: rgb(0 40 255 / 58%);
+    height: 45px;
+}
+.index-page .links a,
+.index-page .links p{
+    line-height: 40px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #FFFFFF;
+    margin: 0;
+}
+.index-page .links a:hover{
+    color: #e6e6e6;
+}
+.index-page .footer a:hover{
+    text-decoration: underline;
+}
+.index-page .footer{
+    background-color: #030066;
+    height: 35px;
+}
+.index-page .footer a,
+.index-page .footer p{
+    line-height: 35px;
+    text-decoration: none;
+    font-size: 12px;
+    color: #FFFFFF;
+    margin: 0;
+}
