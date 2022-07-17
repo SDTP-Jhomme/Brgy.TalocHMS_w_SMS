@@ -19,7 +19,7 @@ if (isset($_SESSION["id"])) {
 
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST["login"])) {
 
     if (empty($_POST["username"])) {
         $usernameErr = "Username is required!";
@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="card">
                         <div class="row g-0 d-flex align-items-center">
                             <div class="col-lg-4 d-none d-lg-flex">
-                                <img src="../images/admin-login.jpg" alt="Trendy Pants and Shoes"
+                                <img src="../images/admin-login.jpg" alt="Barangay Taloc Health Center Logo"
                                 class="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
                             </div>
                             <div class="col-lg-8">
@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                         <!-- Submit button -->
                                         <div class="form-outline mb-4">
-                                            <input id="submitBtn" type="submit" class="btn btn-primary btn-block mt-4" value="Login"/>
+                                            <input id="submitBtn" name="login" type="submit" class="btn btn-primary btn-block mt-4" value="Login"/>
                                         </div>
 
                                     </form>

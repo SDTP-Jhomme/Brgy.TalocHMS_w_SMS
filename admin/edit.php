@@ -113,7 +113,90 @@ if (isset($_SESSION["id"])) {
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        
+                        <section class="gradient-custom">
+                            <div class="container py-5 h-100">
+                                <div class="row justify-content-center align-items-center h-100">
+                                    <div class="col-12 col-lg-9 col-xl-7">
+                                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                                            <div class="card-body p-4 p-md-5">
+                                                <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">BHW Registration</h3>
+
+                                                <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>" >
+                                                    <div class="row">
+                                                        <div class="mb-4">
+                                                            <label class="form-label">BHW Identification Number</label>
+                                                            <div class="form-outline input-group">
+                                                                <input type="text" class="form-control form-control-lg" name="identification" value="<?php echo $identification; ?>" />
+                                                                <span class="text-danger ps-2">*</span>
+                                                            </div>
+                                                            <span class="text-danger"><?php if(isset($errors['identification'])) echo $errors['identification'] ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-4">
+                                                            <label class="form-label" for="firstName">First Name</label>
+                                                            <div class="form-outline input-group">
+                                                                <input type="text" id="firstName" class="form-control form-control-lg" name="first_name" value="<?php echo $first_name; ?>" />
+                                                                <span class="text-danger ps-2">*</span>
+                                                            </div>
+                                                            <span class="text-danger"><?php if(isset($errors['first_name'])) echo $errors['first_name'] ?></span>
+                                                        </div>
+
+                                                        <div class="col-md-6 mb-4">
+                                                            <label class="form-label" for="lastName">Last Name</label>
+                                                            <div class="form-outline input-group">
+                                                                <input type="text" id="lastName" class="form-control form-control-lg" name="last_name" value="<?php echo $last_name; ?>" />
+                                                                <span class="text-danger ps-2">*</span>
+                                                            </div>
+                                                            <span class="text-danger"><?php if(isset($errors['last_name'])) echo $errors['last_name'] ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-4">
+                                                            <label for="birthdayDate" class="form-label">Birthday</label>
+                                                            <div class="form-outline datepicker w-100 input-group">
+                                                                <input type="date" class="form-control form-control-lg" id="birthdayDate" name="birthdate" value="<?php echo $birthdate; ?>" min="1960-01-01" />
+                                                                <span class="text-danger ps-2">*</span>
+                                                            </div>
+                                                            <span class="text-danger"><?php if(isset($errors['birthdate'])) echo $errors['birthdate'] ?></span>
+                                                        </div>
+
+                                                        <div class="col-md-6 mb-4">
+                                                            <div class="input-group justify-content-between">
+                                                                <h6 class="mb-2 pb-1">Gender: </h6>
+                                                                <span class="text-danger ps-2">*</span>
+                                                            </div>
+
+                                                            <div class="form-check form-check-inline mb-4">
+                                                                <input class="form-check-input" type="radio" name="gender" id="femaleGender"
+                                                                value="Female" <?php if ($gender == 'Female') { echo 'checked'; } ?> />
+                                                                <label class="form-check-label" for="femaleGender">Female</label>
+                                                            </div>
+
+                                                            <div class="form-check form-check-inline mb-4">
+                                                                <input class="form-check-input" type="radio" name="gender" id="maleGender"
+                                                                value="Male" <?php if ($gender == 'Male') { echo 'checked'; } ?> />
+                                                                <label class="form-check-label" for="maleGender">Male</label>
+                                                            </div>
+                                                            <div class>
+                                                                <span class="text-danger"><?php if(isset($errors['gender'])) echo $errors['gender'] ?></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mt-4 pt-2">
+                                                        <input id="submitBtn" name="register" class="btn btn-primary btn-lg" type="submit" value="Submit" />
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
