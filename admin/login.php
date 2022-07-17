@@ -1,3 +1,100 @@
+<?php
+
+include("../database.php");
+
+date_default_timezone_set("Asia/Manila");
+$date_now = date("m/d/Y");
+$time_now = date("h:i A");
+$date_time = $date_now." ".$time_now;
+$end_time = date("h:i A", strtotime("+5 minutes", strtotime($time_now)));
+
+$notify = $attempt = $log_time = $error_attempt = $error_log_time = "";
+$username = $password = "";
+$usernameErr = $passwordErr = "";
+
+if (isset($_SESSION["id"])) {
+
+    header("Location: ./");
+    die();
+
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (empty($_POST["username"])) {
+        $usernameErr = "Username is required!";
+    } else {
+        $username = $_POST["username"];
+    }
+    if (empty($_POST["password"])) {
+        $passwordErr = "Password is required!";
+    } else {
+        $password = $_POST["password"];
+    }
+
+    if ($username && $password) {
+
+        $check_admin = mysqli_query($db, "SELECT * FROM admin WHERE username='$username'");
+    
+        $check_admin_row = mysqli_num_rows($check_admin);
+    
+        if ($check_admin_row) {
+    
+            $admin_row = mysqli_fetch_assoc($check_admin);
+
+            $db_id = $admin_row["id"];
+            $db_password = $admin_row["password"];
+            $db_attempt = $admin_row["attempt"];
+            $db_log_time = $admin_row["log_time"];
+
+            $new_log_time = strtotime($db_log_time);
+
+            if ($db_log_time <= $time_now) {
+
+                if (password_verify($password, $db_password)) {
+
+                    session_start();
+    
+                    $_SESSION["id"] = $db_id;
+
+                    mysqli_query($db, "UPDATE admin SET last_login='$date_time', attempt=0 WHERE id='$db_id'");
+    
+                    header("Location: ./");
+                    die();
+    
+                } else {
+
+                    $passwordErr = "Password is incorrect!";
+    
+                    $attempt = $db_attempt + 1;
+                    
+                    if ($attempt == 5) {
+    
+                        $error_attempt = 1;
+                        mysqli_query($db, "UPDATE admin SET attempt=0, log_time='$end_time' WHERE id='$db_id'");
+    
+                    } else {
+                        mysqli_query($db, "UPDATE admin SET attempt='$attempt' WHERE id='$db_id'");
+                    }
+                }
+
+            } else {
+
+                $error_log_time = 1;
+
+            }
+    
+        } else {
+            $usernameErr = "Admin ".$username." is not registered!";
+        }
+    
+    }
+
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -26,30 +123,50 @@
                             <div class="col-lg-8">
                                 <div class="card-body py-5 px-md-5">
 
-                                    <form>
+                                    <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>">
 
                                         <!-- Label -->
                                         <div class="mb-4">
                                             <p class="fs-4 text-center">Admin Login</p>
                                         </div>
+                                        <!-- Login error notif -->
+                                        <div class="alert alert-danger d-flex align-items-center" 
+                                            <?php if ($error_attempt) {echo "style='display: block'"; } else {echo "style='display: none!important'"; } ?>
+                                        role="alert">
+                                            <div>
+                                                You already reach the maximum attempt. Please try again after <?php echo $end_time; ?>.
+                                            </div>
+                                        </div>
+                                        <!-- Login logtime error -->
+                                        <div class="alert alert-danger d-flex align-items-center" 
+                                            <?php if ($error_log_time) {echo "style='display: block'"; } else {echo "style='display: none!important'"; } ?>
+                                        role="alert">
+                                            <div>
+                                                Sorry. You still have to wait <?php echo $db_log_time; ?> before login.
+                                            </div>
+                                        </div>
                                         <!-- Admin input -->
                                         <label class="form-label" for="form2Example1">Username</label>
                                         <div class="form-outline mb-3">
-                                            <input type="email" id="form2Example1" class="form-control" />
+                                            <input type="text" id="form2Example1" class="form-control" name="username" value="<?php echo $username; ?>"/>
+                                            <span class="text-danger"><?php echo $usernameErr; ?></span>
                                         </div>
 
                                         <!-- Password input -->
                                         <label class="form-label" for="form2Example2">Password</label>
-                                        <div class="form-outline mb-4 input-group">
-                                            <input type="password" id="form2Example2" class="form-control" />
+                                        <div class="form-outline input-group">
+                                            <input type="password" id="form2Example2" class="form-control" name="password" value="<?php echo $password; ?>"/>
                                             <span class="input-group-text">
                                                 <i class="far fa-eye custom" id="togglePassword" 
                                                 style="cursor: pointer"></i>
                                             </span>
                                         </div>
+                                        <span class="text-danger"><?php echo $passwordErr; ?></span>
 
                                         <!-- Submit button -->
-                                        <button id="submitBtn" type="button" class="btn btn-primary btn-block mb-4">Login</button>
+                                        <div class="form-outline mb-4">
+                                            <input id="submitBtn" type="submit" class="btn btn-primary btn-block mt-4" value="Login"/>
+                                        </div>
 
                                     </form>
 
