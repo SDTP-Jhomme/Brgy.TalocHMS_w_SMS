@@ -69,7 +69,7 @@ if (isset($_POST["register"])) {
         $current_age = date_diff(date_create($currentDate), date_create($birthdate));
         $age = $current_age->format('%y');
 
-        if ($age < 18) {
+        if ($age <= 18) {
             $errors["birthdate"] = "Age must be 18 and above!";
         }
     }
