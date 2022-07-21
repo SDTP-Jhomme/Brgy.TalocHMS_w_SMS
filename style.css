@@ -71,10 +71,22 @@
 
 /* Admin User Index */
 .action-sort .dataTable-sorter::before,
-.action-sort .dataTable-sorter::after{
+.action-sort .dataTable-sorter::after {
     display: none!important;
 }
 
-.action-sort a{
+.action-sort a {
     cursor: default;
+}
+
+nav.sb-topnav.navbar.navbar-expand.navbar-dark.bg-dark {
+    background-color: #0080ff!important;
+}
+
+nav#sidenavAccordion {
+    background-color: #001b44!important;
+}
+
+.sb-sidenav-dark .sb-sidenav-footer {
+    background-color: #00112b!important;
 }

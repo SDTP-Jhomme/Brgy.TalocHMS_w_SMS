@@ -81,7 +81,6 @@ if (isset($_POST["register"])) {
                         $('#passModal').modal('show');
                     });
                 </script>";
-
     }
 }
 
@@ -148,14 +147,16 @@ if (isset($_POST["register"])) {
                                     <div class="form-check form-check-inline mb-4">
                                         <input class="form-check-input" type="radio" name="gender" id="femaleGender" value="Female" <?php if ($gender == 'Female') {
                                                                                                                                         echo 'checked';
-                                                                                                                                    } if (isset($errors['gender'])) echo "style='border-color:#dc3545;'" ?> />
+                                                                                                                                    }
+                                                                                                                                    if (isset($errors['gender'])) echo "style='border-color:#dc3545;'" ?> />
                                         <label class="form-check-label" for="femaleGender">Female</label>
                                     </div>
 
                                     <div class="form-check form-check-inline mb-4">
                                         <input class="form-check-input" type="radio" name="gender" id="maleGender" value="Male" <?php if ($gender == 'Male') {
                                                                                                                                     echo 'checked';
-                                                                                                                                } if (isset($errors['gender'])) echo "style='border-color:#dc3545;'" ?> />
+                                                                                                                                }
+                                                                                                                                if (isset($errors['gender'])) echo "style='border-color:#dc3545;'" ?> />
                                         <label class="form-check-label" for="maleGender">Male</label>
                                     </div>
                                     <div class>

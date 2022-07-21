@@ -49,18 +49,20 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
                     $last_name = $users_row["last_name"];
                     $bhw_id = $users_row["bhw_id"];
                     $birthdate = $users_row["birthday"];
+                    $birthday = date("F d, Y", strtotime($birthdate));
                     $gender = $users_row["gender"];
 
                     echo    "<tr>
-                                    <td>$username</td>
+                                    <td style='display: none' class='bhw-id'>$user_id</td>
+                                    <td class='bhw-username'>$username</td>
                                     <td>$bhw_id</td>
                                     <td>$first_name</td>
                                     <td>$last_name</td>
-                                    <td>$birthdate</td>
+                                    <td>$birthday</td>
                                     <td>$gender</td>
                                     <td>
                                         <a class='btn btn-primary btn-sm' href='?editBHW=$editBHW && id=$user_id' title='Edit'><i class='fas fa-edit'></i></a>
-                                        <a class='btn btn-danger btn-sm' href='' title='Edit'><i class='fas fa-trash'></i></a>
+                                        <a class='btn btn-danger btn-sm' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>
                                     </td>
                             </tr>";
                 }
@@ -69,3 +71,42 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="delete.php">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-circle-exclamation" style="color: #ffc107"></i> Warning</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input id="delete-id" name="id" type="hidden" />
+                    This will permanently delete user <span class="bhw-modal-username"></span>.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="delete" class="btn btn-primary" data-bs-dismiss="modal">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.btn-danger').click(function(e) {
+            e.preventDefault();
+
+            var bhwID = $(this).closest('tr').find('.bhw-id').text();
+            var bhwUsername = $(this).closest('tr').find('.bhw-username').text();
+            console.log(bhwUsername)
+
+            $('.bhw-modal-username').html(bhwUsername);
+            $('#delete-id').val(bhwID);
+            $('#deleteModal').modal('show')
+
+        });
+    });
+</script>
