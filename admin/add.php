@@ -84,6 +84,10 @@ if (isset($_POST["register"])) {
     }
 }
 
+if (isset($_POST["closeBtn"])) {
+    echo "<script>window.location.href='?viewBHW=$viewBHW'</script>";
+}
+
 ?>
 
 
@@ -181,23 +185,25 @@ if (isset($_POST["register"])) {
 <div class="modal fade" id="passModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">BHW Credentials</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <label class="">Username</label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" value="<?php echo $username; ?>" disabled>
+            <form method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">BHW Credentials</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <label class="">Password</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" value="<?php echo $password; ?>" disabled>
+                <div class="modal-body">
+                    <label class="">Username</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="<?php echo $username; ?>" disabled>
+                    </div>
+                    <label class="">Password</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="<?php echo $password; ?>" disabled>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" name="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

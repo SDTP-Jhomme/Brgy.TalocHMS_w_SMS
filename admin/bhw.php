@@ -1,6 +1,7 @@
 <?php
 
 $retrieve_users = mysqli_query($db, "SELECT * FROM users");
+$rowcount = mysqli_num_rows($retrieve_users);
 
 ?>
 
@@ -18,6 +19,7 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
         <table id="datatablesSimple">
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>Username</th>
                     <th>Identification No.</th>
                     <th>First Name</th>
@@ -29,6 +31,7 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
             </thead>
             <tfoot>
                 <tr>
+                    <th>No.</th>
                     <th>Username</th>
                     <th>Identification No.</th>
                     <th>First Name</th>
@@ -41,7 +44,9 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
             <tbody>
                 <?php
 
-                while ($users_row = mysqli_fetch_assoc($retrieve_users)) {
+                $i = 0;
+
+                while (($users_row = mysqli_fetch_assoc($retrieve_users)) && ($i <= $rowcount)) {
 
                     $user_id = $users_row["id"];
                     $username = $users_row["username"];
@@ -51,9 +56,12 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
                     $birthdate = $users_row["birthday"];
                     $birthday = date("F d, Y", strtotime($birthdate));
                     $gender = $users_row["gender"];
+                    $i++;
+
 
                     echo    "<tr>
                                     <td style='display: none' class='bhw-id'>$user_id</td>
+                                    <td>$i</td>
                                     <td class='bhw-username'>$username</td>
                                     <td>$bhw_id</td>
                                     <td>$first_name</td>
@@ -83,11 +91,11 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
                 </div>
                 <div class="modal-body">
                     <input id="delete-id" name="id" type="hidden" />
-                    This will permanently delete user <span class="bhw-modal-username"></span>.
+                    This will permanently delete user <span class="bhw-modal-username"></span>. Continue?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" name="delete" class="btn btn-primary" data-bs-dismiss="modal">Delete</button>
+                    <button type="submit" name="delete" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
                 </div>
             </form>
         </div>
@@ -96,12 +104,11 @@ $retrieve_users = mysqli_query($db, "SELECT * FROM users");
 
 <script>
     $(document).ready(function() {
-        $('.btn-danger').click(function(e) {
+        $('.btn.btn-danger.btn-sm').click(function(e) {
             e.preventDefault();
 
             var bhwID = $(this).closest('tr').find('.bhw-id').text();
             var bhwUsername = $(this).closest('tr').find('.bhw-username').text();
-            console.log(bhwUsername)
 
             $('.bhw-modal-username').html(bhwUsername);
             $('#delete-id').val(bhwID);
