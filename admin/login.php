@@ -57,7 +57,7 @@ if (isset($_POST["login"])) {
     
                     $_SESSION["id"] = $db_id;
 
-                    mysqli_query($db, "UPDATE admin SET last_login='$date_time', attempt=0 WHERE id='$db_id'");
+                    mysqli_query($db, "UPDATE admin SET last_login='$date_time', attempt=0, log_time='' WHERE id='$db_id'");
     
                     header("Location: ./");
                     die();
@@ -148,14 +148,14 @@ if (isset($_POST["login"])) {
                                         <!-- Admin input -->
                                         <label class="form-label" for="form2Example1">Username</label>
                                         <div class="form-outline mb-3">
-                                            <input type="text" id="form2Example1" class="form-control" name="username" value="<?php echo $username; ?>"/>
+                                            <input type="text" id="form2Example1" class="form-control" name="username" value="<?php echo $username; ?>" <?php if ($usernameErr) echo "style='border-color:#dc3545;'" ?> />
                                             <span class="text-danger"><?php echo $usernameErr; ?></span>
                                         </div>
 
                                         <!-- Password input -->
                                         <label class="form-label" for="form2Example2">Password</label>
                                         <div class="form-outline input-group">
-                                            <input type="password" id="form2Example2" class="form-control" name="password" value="<?php echo $password; ?>"/>
+                                            <input type="password" id="form2Example2" class="form-control" name="password" value="<?php echo $password; ?>" <?php if ($passwordErr) echo "style='border-color:#dc3545;'" ?> />
                                             <span class="input-group-text">
                                                 <i class="far fa-eye custom" id="togglePassword" 
                                                 style="cursor: pointer"></i>

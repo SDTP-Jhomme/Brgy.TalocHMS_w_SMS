@@ -22,6 +22,13 @@ if (isset($_SESSION["id"])) {
 
 }
 
+$identification =  $first_name = $last_name = $birthdate = $gender = $password = "";
+$errors = array();
+
+$viewBHW = md5(rand(1, 9));
+$addBHW = md5(rand(1, 9));
+$editBHW = md5(rand(1, 9));
+
 ?>
 
 
@@ -37,6 +44,7 @@ if (isset($_SESSION["id"])) {
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="../css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -74,7 +82,7 @@ if (isset($_SESSION["id"])) {
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="./bhw">Informations</a>
+                                    <a class="nav-link" href="<?php echo "?viewBHW=$viewBHW"; ?>">Informations</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -112,9 +120,21 @@ if (isset($_SESSION["id"])) {
             </div>
             <div id="layoutSidenav_content">
                 <main>
-                    <div class="container-fluid px-4">
-                        
-                    </div>
+                    <?php if (isset($_GET['viewBHW'])) { ?>
+                        <div class="container-fluid px-4">
+                            <?php include("bhw.php"); ?>
+                        </div>
+                    <?php } ?>
+                    <?php if (isset($_GET['addBHW'])) { ?>
+                        <div class="container-fluid px-4">
+                            <?php include("add.php"); ?>
+                        </div>
+                    <?php } ?>
+                    <?php if (isset($_GET['editBHW'])) { ?>
+                        <div class="container-fluid px-4">
+                            <?php include("edit.php"); ?>
+                        </div>
+                    <?php } ?>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
@@ -127,9 +147,9 @@ if (isset($_SESSION["id"])) {
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="../js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="../assets/demo/chart-area-demo.js"></script>
-        <script src="../assets/demo/chart-bar-demo.js"></script>
+        <script src="../assets/demo/chart-bar-demo.js"></script> -->
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="../js/datatables-simple-demo.js"></script>
     </body>
