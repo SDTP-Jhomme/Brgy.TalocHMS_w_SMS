@@ -8,7 +8,7 @@ if (isset($_POST["delete"])) {
 
     mysqli_query($db, "DELETE FROM users WHERE id=$user_id");
 
-    echo "<script>window.location.href='?viewBHW=$viewBHW'</script>";
+    echo "<script>window.location.href='?viewBHW=$viewBHW && alertDelete=$alert'</script>";
 
 }
 
