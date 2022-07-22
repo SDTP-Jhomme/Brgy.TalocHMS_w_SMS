@@ -57,7 +57,7 @@ if (isset($_POST["update"])) {
         $current_age = date_diff(date_create($currentDate), date_create($new_birthdate));
         $age = $current_age->format('%y');
 
-        if ($age <= 18) {
+        if ($age < 18) {
             $errors["birthdate"] = "Age must be 18 and above!";
         }
     }
@@ -74,7 +74,7 @@ if (isset($_POST["update"])) {
         mysqli_query($db, "UPDATE users SET first_name='$new_first_name',last_name='$new_last_name',birthday='$new_birthdate',
         gender='$new_gender',username='$username',bhw_id='$new_identification' WHERE id='$user_id'");
 
-        echo "<script>window.location.href='?viewBHW=$viewBHW'</script>";
+        echo "<script>window.location.href='?viewBHW=$viewBHW && alertUpdate=$alert'</script>";
     }
 }
 
@@ -105,17 +105,20 @@ if (isset($_POST["resetNow"])) {
 <section class="gradient-custom">
     <div class="container py-5 h-100">
         <div class="row justify-content-center align-items-center h-100">
-            <div class="col-12 col-lg-9 col-xl-7">
+            <div class="col-12 col-lg-9 col-xl-6">
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body p-4 p-md-5">
-                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Edit <?php echo $username; ?></h3>
+                        <div class="d-flex align-items-center justify-content-between mb-4 pb-2 pb-md-0 mb-md-5">
+                            <h4 class="mb-0">Edit <?php echo $username; ?></h4>
+                            <a class="text-decoration-none" href="#" onclick="history.back()"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
+                        </div>
 
                         <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>">
                             <div class="row">
                                 <div class="mb-4">
                                     <label class="form-label">BHW Identification Number</label>
                                     <div class="form-outline input-group">
-                                        <input type="text" class="form-control form-control-lg" name="identification" value="<?php if (isset($new_identification)) {
+                                        <input type="text" class="form-control form-control" name="identification" value="<?php if (isset($new_identification)) {
                                                                                                                                     echo $new_identification;
                                                                                                                                 } else {
                                                                                                                                     echo $identification;
@@ -130,7 +133,7 @@ if (isset($_POST["resetNow"])) {
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label" for="firstName">First Name</label>
                                     <div class="form-outline input-group">
-                                        <input type="text" id="firstName" class="form-control form-control-lg" name="first_name" value="<?php if (isset($new_first_name)) {
+                                        <input type="text" id="firstName" class="form-control form-control" name="first_name" value="<?php if (isset($new_first_name)) {
                                                                                                                                             echo $new_first_name;
                                                                                                                                         } else {
                                                                                                                                             echo $first_name;
@@ -143,7 +146,7 @@ if (isset($_POST["resetNow"])) {
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label" for="lastName">Last Name</label>
                                     <div class="form-outline input-group">
-                                        <input type="text" id="lastName" class="form-control form-control-lg" name="last_name" value="<?php if (isset($new_last_name)) {
+                                        <input type="text" id="lastName" class="form-control form-control" name="last_name" value="<?php if (isset($new_last_name)) {
                                                                                                                                             echo $new_last_name;
                                                                                                                                         } else {
                                                                                                                                             echo $last_name;
@@ -158,11 +161,11 @@ if (isset($_POST["resetNow"])) {
                                 <div class="col-md-6 mb-4">
                                     <label for="birthdayDate" class="form-label">Birthday</label>
                                     <div class="form-outline datepicker w-100 input-group">
-                                        <input type="date" class="form-control form-control-lg" id="birthdayDate" name="birthdate" value="<?php if (isset($new_birthdate)) {
+                                        <input type="date" class="form-control form-control" id="birthdayDate" name="birthdate" value="<?php if (isset($new_birthdate)) {
                                                                                                                                                 echo $new_birthdate;
                                                                                                                                             } else {
                                                                                                                                                 echo $birthdate;
-                                                                                                                                            } ?>" min="1960-01-01" <?php if (isset($errors['birthdate'])) echo "style='border-color:#dc3545;'" ?> />
+                                                                                                                                            } ?>" min="1960-01-01" max="<?php echo $date_before_eighteen; ?>" <?php if (isset($errors['birthdate'])) echo "style='border-color:#dc3545;'" ?> />
                                         <span class="text-danger ps-2">*</span>
                                     </div>
                                     <span class="text-danger"><?php if (isset($errors['birthdate'])) echo $errors['birthdate'] ?></span>
@@ -208,8 +211,8 @@ if (isset($_POST["resetNow"])) {
                             </div>
 
                             <div class="mt-4 pt-2">
-                                <input id="submitBtn" name="update" class="btn btn-primary btn-lg" type="submit" value="Update" />
-                                <button type="button" class="btn btn-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#resetModal">
+                                <input id="submitBtn" name="update" class="btn btn-primary btn" type="submit" value="Update" />
+                                <button type="button" class="btn btn-secondary btn" data-bs-toggle="modal" data-bs-target="#resetModal">
                                     Reset Password
                                 </button>
                             </div>

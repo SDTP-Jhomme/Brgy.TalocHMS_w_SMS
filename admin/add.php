@@ -1,10 +1,5 @@
 <?php
 
-$date_now = date("Y-m-d");
-$month_day = date("m-d");
-$date_interval = intval("$date_now") - 18;
-$date_before_eighteen = "$date_interval-$month_day";
-
 if (isset($_POST["register"])) {
 
     if (empty($_POST["identification"])) {
@@ -74,6 +69,7 @@ if (isset($_POST["register"])) {
         mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id)
         VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification')");
 
+
         echo    "<script>
                     $(document).ready(function(){
                         $('#passModal').modal('show');
@@ -83,7 +79,7 @@ if (isset($_POST["register"])) {
 }
 
 if (isset($_POST["closeBtn"])) {
-    echo "<script>window.location.href='?viewBHW=$viewBHW'</script>";
+    echo "<script>window.location.href='?viewBHW=$viewBHW && alertAdd=$alert'</script>";
 }
 
 ?>
@@ -93,17 +89,20 @@ if (isset($_POST["closeBtn"])) {
 <section class="gradient-custom">
     <div class="container py-5 h-100">
         <div class="row justify-content-center align-items-center h-100">
-            <div class="col-12 col-lg-9 col-xl-7">
+            <div class="col-12 col-lg-9 col-xl-6">
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body p-4 p-md-5">
-                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">BHW Registration</h3>
+                        <div class="d-flex align-items-center justify-content-between mb-4 pb-2 pb-md-0 mb-md-5">
+                            <h4 class="mb-0">BHW Registration</h4>
+                            <a class="text-decoration-none" href="#" onclick="history.back()"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
+                        </div>
 
                         <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>">
                             <div class="row">
                                 <div class="mb-4">
                                     <label class="form-label">BHW Identification Number</label>
                                     <div class="form-outline input-group">
-                                        <input type="text" class="form-control form-control-lg" name="identification" value="<?php echo $identification; ?>" <?php if (isset($errors['identification'])) echo "style='border-color:#dc3545;'" ?> />
+                                        <input type="text" class="form-control form-control" name="identification" value="<?php echo $identification; ?>" <?php if (isset($errors['identification'])) echo "style='border-color:#dc3545;'" ?> />
                                         <span class="text-danger ps-2">*</span>
                                     </div>
                                     <span class="text-danger"><?php if (isset($errors['identification'])) echo $errors['identification'] ?></span>
@@ -114,7 +113,7 @@ if (isset($_POST["closeBtn"])) {
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label" for="firstName">First Name</label>
                                     <div class="form-outline input-group">
-                                        <input type="text" id="firstName" class="form-control form-control-lg" name="first_name" value="<?php echo $first_name; ?>" <?php if (isset($errors['first_name'])) echo "style='border-color:#dc3545;'" ?> />
+                                        <input type="text" id="firstName" class="form-control form-control" name="first_name" value="<?php echo $first_name; ?>" <?php if (isset($errors['first_name'])) echo "style='border-color:#dc3545;'" ?> />
                                         <span class="text-danger ps-2">*</span>
                                     </div>
                                     <span class="text-danger"><?php if (isset($errors['first_name'])) echo $errors['first_name'] ?></span>
@@ -123,7 +122,7 @@ if (isset($_POST["closeBtn"])) {
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label" for="lastName">Last Name</label>
                                     <div class="form-outline input-group">
-                                        <input type="text" id="lastName" class="form-control form-control-lg" name="last_name" value="<?php echo $last_name; ?>" <?php if (isset($errors['last_name'])) echo "style='border-color:#dc3545;'" ?> />
+                                        <input type="text" id="lastName" class="form-control form-control" name="last_name" value="<?php echo $last_name; ?>" <?php if (isset($errors['last_name'])) echo "style='border-color:#dc3545;'" ?> />
                                         <span class="text-danger ps-2">*</span>
                                     </div>
                                     <span class="text-danger"><?php if (isset($errors['last_name'])) echo $errors['last_name'] ?></span>
@@ -134,7 +133,7 @@ if (isset($_POST["closeBtn"])) {
                                 <div class="col-md-6 mb-4">
                                     <label for="birthdayDate" class="form-label">Birthday</label>
                                     <div class="form-outline datepicker w-100 input-group">
-                                        <input type="date" class="form-control form-control-lg" id="birthdayDate" name="birthdate" value="<?php echo $birthdate; ?>" min="1960-01-01" max="<?php echo $date_before_eighteen; ?>" <?php if (isset($errors['birthdate'])) echo "style='border-color:#dc3545;'" ?> />
+                                        <input type="date" class="form-control form-control" id="birthdayDate" name="birthdate" value="<?php echo $birthdate; ?>" min="1960-01-01" max="<?php echo $date_before_eighteen; ?>" <?php if (isset($errors['birthdate'])) echo "style='border-color:#dc3545;'" ?> />
                                         <span class="text-danger ps-2">*</span>
                                     </div>
                                     <span class="text-danger"><?php if (isset($errors['birthdate'])) echo $errors['birthdate'] ?></span>
@@ -168,7 +167,7 @@ if (isset($_POST["closeBtn"])) {
                             </div>
 
                             <div class="mt-4 pt-2">
-                                <input id="submitBtn" name="register" class="btn btn-primary btn-lg" type="submit" value="Submit" />
+                                <input id="submitBtn" name="register" class="btn btn-primary btn" type="submit" value="Submit" />
                             </div>
 
                         </form>

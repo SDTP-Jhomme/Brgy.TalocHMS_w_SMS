@@ -10,6 +10,36 @@ $rowcount = mysqli_num_rows($retrieve_users);
 <div class="lg-start mt-4">
     <a href="<?php echo "?addBHW=$addBHW"; ?>" class="btn btn-primary btn-sm">Add New BHW</a>
 </div>
+<div class="alert alert-success alert-dismissible fade <?php if (isset($_GET['alertAdd'])) {
+                                                            echo "show d-block";
+                                                        } else {
+                                                            echo "hide d-none";
+                                                        } ?> mt-4" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-circle-check pe-2 h3 mb-0"></i><strong class="pe-1">Success! </strong> New BHW has been added successfully.
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<div class="alert alert-success alert-dismissible fade <?php if (isset($_GET['alertUpdate'])) {
+                                                            echo "show d-block";
+                                                        } else {
+                                                            echo "hide d-none";
+                                                        } ?> mt-4" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-circle-check pe-2 h3 mb-0"></i><strong class="pe-1">Success! </strong> BHW has been updated successfully.
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<div class="alert alert-success alert-dismissible fade <?php if (isset($_GET['alertDelete'])) {
+                                                            echo "show d-block";
+                                                        } else {
+                                                            echo "hide d-none";
+                                                        } ?> mt-4" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="fas fa-circle-check pe-2 h3 mb-0"></i><strong class="pe-1">Success! </strong> BHW has been deleted successfully.
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <div class="card mb-4 mt-4">
     <div class="card-header">
         <i class="fas fa-table me-1"></i>
