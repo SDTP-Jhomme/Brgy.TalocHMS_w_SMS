@@ -1,5 +1,10 @@
 <?php
 
+$date_now = date("Y-m-d");
+$month_day = date("m-d");
+$date_interval = intval("$date_now") - 18;
+$date_before_eighteen = "$date_interval-$month_day";
+
 if (isset($_POST["register"])) {
 
     if (empty($_POST["identification"])) {
@@ -44,13 +49,6 @@ if (isset($_POST["register"])) {
         $errors["birthdate"] = "Birthday is required!";
     } else {
         $birthdate = $_POST["birthdate"];
-        $currentDate = date("Y-m-d");
-        $current_age = date_diff(date_create($currentDate), date_create($birthdate));
-        $age = $current_age->format('%y');
-
-        if ($age <= 18) {
-            $errors["birthdate"] = "Age must be 18 and above!";
-        }
     }
 
     if (empty($_POST["gender"])) {
@@ -136,7 +134,7 @@ if (isset($_POST["closeBtn"])) {
                                 <div class="col-md-6 mb-4">
                                     <label for="birthdayDate" class="form-label">Birthday</label>
                                     <div class="form-outline datepicker w-100 input-group">
-                                        <input type="date" class="form-control form-control-lg" id="birthdayDate" name="birthdate" value="<?php echo $birthdate; ?>" min="1960-01-01" <?php if (isset($errors['birthdate'])) echo "style='border-color:#dc3545;'" ?> />
+                                        <input type="date" class="form-control form-control-lg" id="birthdayDate" name="birthdate" value="<?php echo $birthdate; ?>" min="1960-01-01" max="<?php echo $date_before_eighteen; ?>" <?php if (isset($errors['birthdate'])) echo "style='border-color:#dc3545;'" ?> />
                                         <span class="text-danger ps-2">*</span>
                                     </div>
                                     <span class="text-danger"><?php if (isset($errors['birthdate'])) echo $errors['birthdate'] ?></span>

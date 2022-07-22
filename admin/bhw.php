@@ -70,7 +70,7 @@ $rowcount = mysqli_num_rows($retrieve_users);
                                     <td>$gender</td>
                                     <td>
                                         <a class='btn btn-primary btn-sm' href='?editBHW=$editBHW && id=$user_id' title='Edit'><i class='fas fa-edit'></i></a>
-                                        <a class='btn btn-danger btn-sm' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>
+                                        <a class='btn btn-danger btn-sm btn-delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>
                                     </td>
                             </tr>";
                 }
@@ -104,7 +104,7 @@ $rowcount = mysqli_num_rows($retrieve_users);
 
 <script>
     $(document).ready(function() {
-        $('.btn.btn-danger.btn-sm').click(function(e) {
+        $('.btn-delete').click(function(e) {
             e.preventDefault();
 
             var bhwID = $(this).closest('tr').find('.bhw-id').text();
