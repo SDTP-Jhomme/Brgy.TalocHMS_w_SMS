@@ -225,8 +225,12 @@ $rowcount = mysqli_num_rows($retrieve_users);
 
 <script>
     $(document).ready(function() {
+        $(".alert").delay(4000).slideUp(200, function() {
+            $(this).alert('close');
+        });
+        
         $('.btn-close-alert').click(function() {
-            $(location).prop('href','index?viewBHW=<?php echo $viewBHW; ?>')
+            $(location).prop('href', 'index?viewBHW=<?php echo $viewBHW; ?>')
         });
 
         $('.btn-bulk-delete').click(function(e) {
@@ -250,7 +254,7 @@ $rowcount = mysqli_num_rows($retrieve_users);
                     'confirmDelete': 1
                 },
                 success: function(msg) {
-                    $(location).prop('href','index?viewBHW=<?php echo "$viewBHW && alertBulkDelete=$alert"; ?>')
+                    $(location).prop('href', 'index?viewBHW=<?php echo "$viewBHW && alertBulkDelete=$alert"; ?>')
                 }
             });
         });
