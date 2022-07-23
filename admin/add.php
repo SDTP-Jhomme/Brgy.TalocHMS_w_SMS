@@ -8,7 +8,7 @@ if (isset($_POST["register"])) {
         $identification = $_POST["identification"];
         $check_identification = mysqli_query($db, "SELECT * FROM users WHERE bhw_id='$identification'");
         if (mysqli_num_rows($check_identification) > 0) {
-            $errors["identification"] = "Identification number is already taken!";
+            $errors["identification"] = "Identification number already exists!";
         }
     }
 
@@ -79,7 +79,7 @@ if (isset($_POST["register"])) {
 }
 
 if (isset($_POST["closeBtn"])) {
-    echo "<script>window.location.href='?viewBHW=$viewBHW && alertAdd=$alert'</script>";
+    echo "<script>window.location.href='index?viewBHW=$viewBHW && alertAdd=$alert'</script>";
 }
 
 ?>
@@ -94,7 +94,7 @@ if (isset($_POST["closeBtn"])) {
                     <div class="card-body p-4 p-md-5">
                         <div class="d-flex align-items-center justify-content-between mb-4 pb-2 pb-md-0 mb-md-5">
                             <h4 class="mb-0">BHW Registration</h4>
-                            <a class="text-decoration-none" href="#" onclick="history.back()"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
+                            <a class="text-decoration-none" href="<?php echo "index?viewBHW=$viewBHW"; ?>"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
                         </div>
 
                         <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>">

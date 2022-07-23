@@ -74,7 +74,7 @@ if (isset($_POST["update"])) {
         mysqli_query($db, "UPDATE users SET first_name='$new_first_name',last_name='$new_last_name',birthday='$new_birthdate',
         gender='$new_gender',username='$username',bhw_id='$new_identification' WHERE id='$user_id'");
 
-        echo "<script>window.location.href='?viewBHW=$viewBHW && alertUpdate=$alert'</script>";
+        echo "<script>window.location.href='index?viewBHW=$viewBHW && alertUpdate=$alert'</script>";
     }
 }
 
@@ -110,7 +110,7 @@ if (isset($_POST["resetNow"])) {
                     <div class="card-body p-4 p-md-5">
                         <div class="d-flex align-items-center justify-content-between mb-4 pb-2 pb-md-0 mb-md-5">
                             <h4 class="mb-0">Edit <?php echo $username; ?></h4>
-                            <a class="text-decoration-none" href="#" onclick="history.back()"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
+                            <a class="text-decoration-none" href="<?php echo "index?viewBHW=$viewBHW"; ?>"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
                         </div>
 
                         <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>">
