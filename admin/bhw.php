@@ -14,16 +14,7 @@ $rowcount = mysqli_num_rows($retrieve_users);
     </div>
 </div>
 
-<div class="alert alert-success alert-dismissible fade <?php if (isset($_GET['alertAdd'])) {
-                                                            echo "show d-block";
-                                                        } else {
-                                                            echo "hide d-none";
-                                                        } ?> mt-4" role="alert">
-    <div class="d-flex align-items-center">
-        <i class="fas fa-circle-check pe-2 h3 mb-0"></i><strong class="pe-1">Success! </strong> New BHW has been added successfully.
-    </div>
-    <button id="alertAdd" type="button" class="btn-close btn-close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+
 <div class="alert alert-success alert-dismissible fade <?php if (isset($_GET['alertUpdate'])) {
                                                             echo "show d-block";
                                                         } else {
@@ -225,6 +216,7 @@ $rowcount = mysqli_num_rows($retrieve_users);
 
 <script>
     $(document).ready(function() {
+        $("#alert").hide();
         $(".alert").delay(4000).slideUp(200, function() {
             $(this).alert('close');
         });

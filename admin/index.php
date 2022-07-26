@@ -28,8 +28,6 @@ $errors = array();
 $viewBHW = md5(rand(1, 9));
 $addBHW = md5(rand(1, 9));
 $editBHW = md5(rand(1, 9));
-$deleteBHW = md5(rand(1, 9));
-$alert = md5(rand(1, 9));
 
 $date_now = date("Y-m-d");
 $month_day = date("m-d");

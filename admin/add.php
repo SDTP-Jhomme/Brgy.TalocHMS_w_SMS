@@ -79,7 +79,11 @@ if (isset($_POST["register"])) {
 }
 
 if (isset($_POST["closeBtn"])) {
-    echo "<script>window.location.href='index?viewBHW=$viewBHW && alertAdd=$alert'</script>";
+    echo    "<script>
+                $('#alert').fadeTo(2000, 500).slideUp(500, function() {
+                    $('#alert').slideUp(500);
+                });
+            </script>";
 }
 
 ?>
@@ -95,6 +99,12 @@ if (isset($_POST["closeBtn"])) {
                         <div class="d-flex align-items-center justify-content-between mb-4 pb-2 pb-md-0 mb-md-5">
                             <h4 class="mb-0">BHW Registration</h4>
                             <a class="text-decoration-none" href="<?php echo "index?viewBHW=$viewBHW"; ?>"><i class="fas fa-long-arrow-left pe-2 mb-0"></i>Back</a>
+                        </div>
+                        <div id="alert" class="alert alert-success fade alert-dismissible mt-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-circle-check pe-2 h3 mb-0"></i><strong class="pe-1">Success! </strong> New BHW has been added successfully.
+                            </div>
+                            <button id="alertAdd" type="button" class="btn-close btn-close-alert" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
 
                         <form method="POST" action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>">
@@ -213,5 +223,9 @@ if (isset($_POST["closeBtn"])) {
             event.preventDefault();
             document.getElementById("submitBtn").click();
         }
+    });
+
+    $(document).ready(function() {
+        $("#alert").hide();
     });
 </script>
