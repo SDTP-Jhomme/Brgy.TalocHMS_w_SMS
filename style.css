@@ -1,10 +1,11 @@
 /* All */
-*{
+* {
     margin: 0;
     padding: 0;
 }
+
 /* Index */
-.index-page{
+.index-page {
     background-image: url(./images/Health-Center.jpg);
     background-position: center;
     background-repeat: no-repeat;
@@ -14,30 +15,36 @@
     flex-direction: column;
     justify-content: space-between;
 }
-.index-page .links{
+
+.index-page .links {
     background-color: rgb(0 40 255 / 58%);
     height: 45px;
 }
+
 .index-page .links a,
-.index-page .links p{
+.index-page .links p {
     line-height: 40px;
     text-decoration: none;
     font-size: 18px;
     color: #FFFFFF;
     margin: 0;
 }
-.index-page .links a:hover{
+
+.index-page .links a:hover {
     color: #e6e6e6;
 }
-.index-page .footer a:hover{
+
+.index-page .footer a:hover {
     text-decoration: underline;
 }
-.index-page .footer{
+
+.index-page .footer {
     background-color: #030066;
     height: 35px;
 }
+
 .index-page .footer a,
-.index-page .footer p{
+.index-page .footer p {
     line-height: 35px;
     text-decoration: none;
     font-size: 12px;
@@ -53,26 +60,26 @@
 
 @media (min-width: 992px) {
     .rounded-tr-lg-0 {
-    border-top-right-radius: 0;
+        border-top-right-radius: 0;
     }
 
     .rounded-bl-lg-5 {
-      border-bottom-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
     }
 }
 
-.admin-section{
+.admin-section {
     height: 100vh;
 }
 
-.admin-section .admin-login{
+.admin-section .admin-login {
     box-shadow: -10px 10px 20px #BBBBBB;
 }
 
 /* Admin User Index */
 .action-sort .dataTable-sorter::before,
 .action-sort .dataTable-sorter::after {
-    display: none!important;
+    display: none !important;
 }
 
 .action-sort a {
@@ -80,13 +87,18 @@
 }
 
 nav.sb-topnav.navbar.navbar-expand.navbar-dark.bg-dark {
-    background-color: #0080ff!important;
+    background-color: #0080ff !important;
 }
 
 nav#sidenavAccordion {
-    background-color: #001b44!important;
+    background-color: #001b44 !important;
 }
 
 .sb-sidenav-dark .sb-sidenav-footer {
-    background-color: #00112b!important;
+    background-color: #00112b !important;
+}
+
+.check-all {
+    padding: 6px;
+    border: 2px solid #bebebe;
 }
