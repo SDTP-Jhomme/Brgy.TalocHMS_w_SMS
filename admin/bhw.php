@@ -42,23 +42,54 @@ $date_before_eighteen = "$date_interval-$month_day";
             <?php include("../import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
-                    <el-table :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
-                        <el-table-column type="index" width="50">
-                        </el-table-column>
-                        <el-table-column label="Date" prop="date">
-                        </el-table-column>
-                        <el-table-column label="Name" prop="name">
-                        </el-table-column>
-                        <el-table-column align="right">
-                            <template slot="header" slot-scope="scope">
-                                <el-input v-model="search" size="mini" placeholder="Type to search" />
-                            </template>
-                            <template slot-scope="scope">
-                                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-                                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <el-container>
+                        <el-header class="mt-4" height="40">
+                            <el-row :gutter="20">
+                                <el-col :span="6">
+                                    <el-button type="success" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
+                                    <el-button type="danger" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
+                                </el-col>
+                            </el-row>
+                        </el-header>
+                        <el-main>
+                            <div class="container border rounded p-4">
+                                <el-row :gutter="20" class="mb-2">
+                                    <el-col :span="6">
+                                        <p class="mb-0">BHW Information Table</p>
+                                    </el-col>
+                                    <el-col :offset="6" :span="6">
+                                        <el-input v-model="searchName" size="mini" placeholder="Search name..." />
+                                    </el-col>
+                                    <el-col :span="6">
+                                        <el-input v-model="searchID" size="mini" placeholder="Search ID no..." />
+                                    </el-col>
+                                </el-row>
+                                <el-table :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" max-height="450">
+                                    <el-table-column type="selection" width="55">
+                                    </el-table-column>
+                                    <el-table-column label="No." type="index" width="50">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Identification No." prop="identification">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Username" prop="username">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Name" prop="name">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Birthday" prop="birthdate">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Gender" prop="gender" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                    </el-table-column>
+                                    <el-table-column label="Actions" width="200" fixed="right">
+                                        <template slot-scope="scope">
+                                            <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)"></el-button>
+                                            <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
+                                            <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"></el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </el-main>
+                    </el-container>
                 </main>
                 <?php include("../import/footer.php"); ?>
             </div>
@@ -66,13 +97,27 @@ $date_before_eighteen = "$date_interval-$month_day";
     </div>
     <?php include("../import/body.php"); ?>
     <script>
+        ELEMENT.locale(ELEMENT.lang.en)
         new Vue({
             el: "#app",
             data() {
                 return {
-                    search: "",
+                    multipleSelection: [],
+                    searchName: "",
+                    searchID: "",
                     fullscreenLoading: true,
                     tableData: []
+                }
+            },
+            computed: {
+                usersTable() {
+                    return this.tableData
+                        .filter((data) => {
+                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.identification.toLowerCase().includes(this.searchID.toLowerCase());
+                        })
                 }
             },
             created() {
@@ -84,6 +129,7 @@ $date_before_eighteen = "$date_interval-$month_day";
                 }, 2000)
             },
             methods: {
+                // Logout ****************
                 logout() {
                     this.fullscreenLoading = true
                     axios.post("auth.php?action=logout")
@@ -99,6 +145,14 @@ $date_before_eighteen = "$date_interval-$month_day";
                                 }, 1000)
                             }
                         })
+                },
+                // *************************
+                handleSelectionChange(val) {
+                    this.multipleSelection = val;
+                },
+                filterHandler(value, row, column) {
+                    const property = column['property'];
+                    return row[property] === value;
                 },
                 getData() {
                     axios.post("action.php?action=fetch")

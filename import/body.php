@@ -4,6 +4,8 @@
 <script src="../assets/js/vue.js"></script>
 <!-- import Element.js -->
 <script src="../assets/js/element.js"></script>
+<!-- import Element-English.js -->
+<script src="../assets/js/element-en.js"></script>
 <!-- import Bootstrap.js -->
 <script src="../assets/js/bootstrap.min.js" ></script>
 <!-- import Axios.js -->
