@@ -1,13 +1,3 @@
-<?php
-
-$date_now = date("Y-m-d");
-$month_day = date("m-d");
-$date_interval = intval("$date_now") - 18;
-$date_before_eighteen = "$date_interval-$month_day";
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
