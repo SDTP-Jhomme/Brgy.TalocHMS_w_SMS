@@ -12848,7 +12848,7 @@ body {
   border-radius: 0.25rem !important;
 }
 
-/* Custom */
+/********************************************** Custom CSS ************************************************/
 
 /* User Login Page */
 .gradient-custom-2 {
@@ -12859,5 +12859,18 @@ body {
 
 .btn.gradient-custom-2:hover {
   opacity: 0.85;
+}
+
+/* Navigation */
+nav.sb-topnav.navbar.navbar-expand.navbar-dark.bg-dark {
+  
+}
+
+/* Sidebar Nav */
+nav#sidenavAccordion {
+  
+}
+
+.sb-sidenav-dark .sb-sidenav-footer {
   
 }
