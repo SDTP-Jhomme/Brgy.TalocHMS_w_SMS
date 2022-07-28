@@ -46,7 +46,7 @@ $date_before_eighteen = "$date_interval-$month_day";
                         <el-header class="mt-4" height="40">
                             <el-row :gutter="20">
                                 <el-col :span="6">
-                                    <el-button type="success" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
+                                    <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
                                     <el-button type="danger" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
                                 </el-col>
                             </el-row>
@@ -89,6 +89,37 @@ $date_before_eighteen = "$date_interval-$month_day";
                                 </el-table>
                             </div>
                         </el-main>
+                        <!----------------------------------------------------------------------------------- Modals/Drawers ----------------------------------------------------------------------------------->
+                        <el-drawer title="Add New BHW" :visible.sync="openAddDrawer" size="40%">
+                            <div class="container p-4 d-flex flex-column">
+                                <el-form :label-position="labelPosition" :model="addBhw" :rules="rules" ref="addBhw">
+                                    <el-form-item label="Identification Number" prop="identification">
+                                        <el-input v-model="addBhw.identification" clearable></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="First Name" prop="firstName">
+                                        <el-input v-model="addBhw.firstName" clearable></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Last Name" prop="lastName">
+                                        <el-input v-model="addBhw.lastName" clearable></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Birthday" prop="birthdate">
+                                        <el-date-picker v-model="addBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
+                                        </el-date-picker>
+                                    </el-form-item>
+                                    <el-form-item label="Gender" prop="gender">
+                                        <el-radio-group v-model="addBhw.gender">
+                                            <el-radio-button label="Female"></el-radio-button>
+                                            <el-radio-button label="Male"></el-radio-button>
+                                        </el-radio-group>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                            <div class="d-flex p-4">
+                                <el-button class="flex-1" type="primary" @click="submitForm('addBhw')">Submit</el-button>
+                                <el-button class="flex-1" @click="resetForm('addBhw')">Reset</el-button>
+                            </div>
+                        </el-drawer>
+                        <!----------------------------------------------------------------------------------- End of Modals/Drawers ----------------------------------------------------------------------------------->
                     </el-container>
                 </main>
                 <?php include("../import/footer.php"); ?>
@@ -101,12 +132,73 @@ $date_before_eighteen = "$date_interval-$month_day";
         new Vue({
             el: "#app",
             data() {
+                const validateID = (rule, value, callback) => {
+                    if (this.checkIdentification.includes(value.trim())) {
+                        callback(new Error('Identification no. already exist!'));
+                    } else {
+                        callback();
+                    }
+                };
+                const validateBirthdate = (rule, value, callback) => {
+                    var currentDate = new Date();
+                    var difference = currentDate - value;
+                    var age = Math.floor(difference/31557600000);
+                    if (age < 18) {
+                        callback(new Error('Age should atleast 18!'));
+                    } else {
+                        callback();
+                    }
+                };
                 return {
+                    rules: {
+                        identification: [{
+                            required: true,
+                            message: 'Identification no. is required!',
+                            trigger: 'blur'
+                        }, {
+                            validator: validateID,
+                            trigger: 'blur'
+                        }],
+                        firstName: [{
+                            required: true,
+                            message: 'First name is required!',
+                            trigger: 'blur'
+                        }],
+                        lastName: [{
+                            required: true,
+                            message: 'Last name is required!',
+                            trigger: 'blur'
+                        }],
+                        birthdate: [{
+                            required: true,
+                            message: 'Birthday is required!',
+                            trigger: 'blur'
+                        }, {
+                            validator: validateBirthdate,
+                            trigger: 'blur'
+                        }],
+                        gender: [{
+                            required: true,
+                            message: 'Gender is required!',
+                            trigger: 'blur'
+                        }],
+                    },
+                    labelPosition: "top",
+                    openAddDrawer: false,
                     multipleSelection: [],
                     searchName: "",
                     searchID: "",
                     fullscreenLoading: true,
-                    tableData: []
+                    tableData: [],
+                    checkIdentification: [],
+                    addBhw: {
+                        identification: "",
+                        firstName: "",
+                        lastName: "",
+                        birthdate: "",
+                        gender: "",
+                    },
+
                 }
             },
             computed: {
@@ -159,8 +251,23 @@ $date_before_eighteen = "$date_interval-$month_day";
                         .then(response => {
                             if (response.data) {
                                 this.tableData = response.data
+                                this.checkIdentification = response.data.map(res => res.identification)
+                                // console.log(date)
                             }
                         })
+                },
+                submitForm(addBhw) {
+                    this.$refs[addBhw].validate((valid) => {
+                        if (valid) {
+                            console.log(this.addBhw.birthdate)
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                resetForm(addBhw) {
+                    this.$refs[addBhw].resetFields();
                 },
                 handleEdit(index, row) {
                     console.log(index, row)

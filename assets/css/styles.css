@@ -12848,6 +12848,10 @@ body {
   border-radius: 0.25rem !important;
 }
 
+.flex-1 {
+  flex: 1 !important;
+}
+
 /********************************************** Custom CSS ************************************************/
 
 /* User Login Page */
@@ -12863,14 +12867,14 @@ body {
 
 /* Navigation */
 nav.sb-topnav.navbar.navbar-expand.navbar-dark.bg-dark {
-  
+  background-color: #0080ff !important;
 }
 
 /* Sidebar Nav */
 nav#sidenavAccordion {
-  
+  background-color: #001b44 !important;
 }
 
 .sb-sidenav-dark .sb-sidenav-footer {
-  
+  background-color: #00112b !important;
 }

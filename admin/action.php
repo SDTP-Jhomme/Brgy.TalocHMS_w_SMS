@@ -2,12 +2,6 @@
 
 include("../database/database.php");
 
-date_default_timezone_set("Asia/Manila");
-$date_now = date("m/d/Y");
-$time_now = date("h:i A");
-$date_time = $date_now . " " . $time_now;
-$end_time = date("h:i A", strtotime("+5 minutes", strtotime($time_now)));
-
 $response = array('error' => false);
 
 
