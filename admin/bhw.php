@@ -113,7 +113,9 @@
 
                         <!-- After Add Show BHW Username & Password -->
                         <el-dialog title="BHW Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
+                            <label>Username</label>
                             <el-input class="mb-2" v-model="newUser.username" disabled></el-input>
+                            <label>Password</label>
                             <el-input class="mb-2" v-model="newUser.password" disabled></el-input>
                             <span slot="footer" class="dialog-footer">
                                 <el-button type="primary" @click="closeAddDialog">Close</el-button>
@@ -316,9 +318,16 @@
                             axios.post("action.php?action=store", newData)
                                 .then(response => {
                                     if (response.data) {
-                                        this.resetFormData()
+                                        this.$notify({
+                                            title: 'Success',
+                                            message: 'New BHW has been added successfully!',
+                                            type: 'success'
+                                        });
+                                        setTimeout(() => {
+                                            this.openAddDialog = true;
+                                        }, 2000);
+                                        this.resetFormData();
                                         this.newUser = response.data;
-                                        this.openAddDialog = true;
                                         this.loadButton = false;
                                     }
                                 })
