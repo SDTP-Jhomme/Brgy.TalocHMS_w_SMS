@@ -30,7 +30,48 @@ if ($action == 'fetch') {
         );
 
         array_push($user_data, $array_data);
+        $response = $user_data;
     }
 }
 
-echo json_encode($user_data);
+if ($action == 'store') {
+
+    $identification = $_POST["identification"];
+    $first_name = $_POST["first_name"];
+    $last_name = $_POST["last_name"];
+    $birthdate = $_POST["birthdate"];
+    $gender = $_POST["gender"];
+
+    function random_password($length = 5)
+    {
+        $str = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $shuffled = substr(str_shuffle($str), 0, $length);
+        return $shuffled;
+    }
+
+    $password = random_password(8);
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    $username = "BHW-" . $first_name;
+
+    $response = array(
+        "first_name" => $first_name,
+        "last_name" => $last_name,
+        "identification" => $identification,
+        "username" => $username,
+        "birthdate" => $birthdate,
+        "gender" => $gender,
+        "password" => $password
+    );
+
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification')");
+}
+
+if ($action == 'delete') {
+
+    $user_id = $_POST["id"];
+    $response = mysqli_query($db, "DELETE FROM users WHERE id=$user_id");
+}
+
+echo json_encode($response);
