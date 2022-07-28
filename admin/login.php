@@ -79,7 +79,7 @@
                     var data = new FormData()
                     data.append("username", this.username)
                     data.append("password", this.password)
-                    axios.post("action.php?action=login", data)
+                    axios.post("auth.php?action=login", data)
                         .then(response => {
                             if (response.data.error) {
                                 this.error = response.data.message
@@ -90,7 +90,7 @@
                                     message: 'Successfully logged in!',
                                     type: 'success'
                                 });
-                                setTimeout( function () {
+                                setTimeout(() => {
                                     window.location.href="index"
                                 }, 1000)
                             }

@@ -1,8 +1,12 @@
-<!-- import External JS -->
+<!-- import External.js -->
 <script src="../assets/js/scripts.js"></script>
-<!-- import Vue JS -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.7.8"></script>
-<!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<!-- import Vue.js -->
+<script src="../assets/js/vue.js"></script>
+<!-- import Element.js -->
+<script src="../assets/js/element.js"></script>
 <!-- import Bootstrap.js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script src="../assets/js/bootstrap.min.js" ></script>
+<!-- import Axios.js -->
+<script src="../assets/js/axios.js"></script>
+<!-- import Font Awesome -->
+<script defer src="../assets/js/fontawesome.js"></script>

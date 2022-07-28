@@ -1,22 +1,3 @@
-<?php
-
-
-
-$identification =  $first_name = $last_name = $birthdate = $gender = $password = "";
-$errors = array();
-
-$viewBHW = md5(rand(1, 9));
-$addBHW = md5(rand(1, 9));
-$editBHW = md5(rand(1, 9));
-
-$date_now = date("Y-m-d");
-$month_day = date("m-d");
-$date_interval = intval("$date_now") - 18;
-$date_before_eighteen = "$date_interval-$month_day";
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,17 +26,52 @@ $date_before_eighteen = "$date_interval-$month_day";
 </head>
 
 <body class="sb-nav-fixed">
-    <?php include("../import/nav.php"); ?>
-    <div id="layoutSidenav">
-        <?php include("../import/sidebar.php"); ?>
-        <div id="layoutSidenav_content">
-            <main>
+    <div id="app">
+        <?php include("../import/nav.php"); ?>
+        <div id="layoutSidenav" v-loading.fullscreen.lock="fullscreenLoading">
+            <?php include("../import/sidebar.php"); ?>
+            <div id="layoutSidenav_content">
+                <main>
 
-            </main>
-            <?php include("../import/footer.php"); ?>
+                </main>
+                <?php include("../import/footer.php"); ?>
+            </div>
         </div>
+        <?php include("../import/body.php"); ?>
     </div>
-    <?php include("../import/body.php"); ?>
+    <script>
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    fullscreenLoading: true
+                }
+            },
+            mounted() {
+                setTimeout(() => {
+                    this.fullscreenLoading = false
+                }, 2000)
+            },
+            methods: {
+                logout() {
+                    this.fullscreenLoading = true
+                    axios.post("auth.php?action=logout")
+                        .then(response => {
+                            if (response.data.message) {
+                                this.$notify({
+                                    title: 'Success',
+                                    message: 'Successfully logged out!',
+                                    type: 'success'
+                                });
+                                setTimeout(() => {
+                                    window.location.href = "login"
+                                }, 1000)
+                            }
+                        })
+                }
+            }
+        })
+    </script>
 </body>
 
 </html>

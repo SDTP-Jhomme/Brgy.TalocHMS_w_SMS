@@ -15,67 +15,19 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if ($action == 'login') {
+if ($action == 'fetch') {
 
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-    $check_admin = mysqli_query($db, "SELECT * FROM admin WHERE username='$username'");
-    $check_admin_row = mysqli_num_rows($check_admin);
+    $user_data = array();
 
-    if (!$username && !$password) {
-        $response["error"] = true;
-        $response["message"] = "Please fill in the data completely!";
-    }
+    $data = mysqli_query($db, "SELECT * FROM users");
+    while ($data_row = mysqli_fetch_assoc($data)) {
 
-    if (!$check_admin_row) {
+        $array_data = array(
+            "name" => $data_row["first_name"] . " " . $data_row["last_name"]
+        );
 
-        $response["error"] = true;
-        $response["message"] = "Admin user does not exist!";
-    } else {
-
-        $admin_row = mysqli_fetch_assoc($check_admin);
-
-        $db_id = $admin_row["id"];
-        $db_password = $admin_row["password"];
-        $db_attempt = $admin_row["attempt"];
-        $db_log_time = $admin_row["log_time"];
-
-        $new_log_time = strtotime($db_log_time);
-
-        if ($db_log_time <= $time_now) {
-
-            if (password_verify($password, $db_password)) {
-
-                session_start();
-
-                $_SESSION["id"] = $db_id;
-
-                mysqli_query($db, "UPDATE admin SET last_login='$date_time', attempt=0, log_time='' WHERE id='$db_id'");
-
-            } else {
-
-                $response["error"] = true;
-                $response["message"] = "Password does not match!";
-
-                $attempt = $db_attempt + 1;
-
-                if ($attempt == 5) {
-
-                    $error_attempt = 1;
-                    mysqli_query($db, "UPDATE admin SET attempt=0, log_time='$end_time' WHERE id='$db_id'");
-                    $response["error"] = true;
-                    $response["message"] = "You have reached the maximum attempt. Please try again after $end_time.";
-                } else {
-
-                    mysqli_query($db, "UPDATE admin SET attempt='$attempt' WHERE id='$db_id'");
-                }
-            }
-        } else {
-
-            $response["error"] = true;
-            $response["message"] = "Sorry you can't login until $db_log_time.";
-        }
+        array_push($user_data, $array_data);
     }
 }
 
-echo json_encode($response);
+echo json_encode($user_data);

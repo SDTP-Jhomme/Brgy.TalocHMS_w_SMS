@@ -12853,8 +12853,11 @@ body {
 /* User Login Page */
 .gradient-custom-2 {
   background: linear-gradient(40deg, rgba(5, 0, 96, 1) 0%, rgba(0, 0, 149, 1) 35%, rgba(0, 164, 255, 1) 100%);
+  opacity: 1;
+  transition: 0.3s !important;
 }
 
 .btn.gradient-custom-2:hover {
-  background: linear-gradient(40deg, rgb(10 0 202) 0%, rgb(0 0 224) 35%, rgb(0 241 255) 100%);
+  opacity: 0.85;
+  
 }
