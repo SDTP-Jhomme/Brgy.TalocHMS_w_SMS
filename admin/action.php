@@ -121,4 +121,14 @@ if ($action == 'reset') {
     mysqli_query($db, "UPDATE users SET password='$hashed_password' WHERE id='$user_id'");
 }
 
+if ($action == 'bulk_delete') {
+    $array_id = $_POST["user_ids"];
+
+    $delete_array_query = mysqli_query($db, "DELETE FROM users WHERE id IN($array_id)");
+
+    if ($delete_array_query) {
+        $response["message"] = "Data deleted successfully!";
+    }
+}
+
 echo json_encode($response);

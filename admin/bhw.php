@@ -37,7 +37,7 @@
                             <el-row :gutter="20">
                                 <el-col :span="6">
                                     <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
-                                    <el-button type="danger" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
+                                    <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
                                 </el-col>
                             </el-row>
                         </el-header>
@@ -54,7 +54,7 @@
                                         <el-input v-model="searchID" size="mini" placeholder="Search ID no..." clearable />
                                     </el-col>
                                 </el-row>
-                                <el-table :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" max-height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                <el-table :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
@@ -112,7 +112,7 @@
                         </el-drawer>
 
                         <!-- After Add Show BHW Username & Password -->
-                        <el-dialog title="BHW Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
+                        <el-dialog title="New BHW Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
                             <label>Username</label>
                             <el-input class="mb-2" v-model="newUser.username" disabled></el-input>
                             <label>Password</label>
@@ -305,6 +305,7 @@
                     searchID: "",
                     fullscreenLoading: true,
                     tableData: [],
+                    multiID: [],
                     newUser: [],
                     resetUser: [],
                     checkIdentification: [],
@@ -385,6 +386,7 @@
                 // ******************************************************
                 handleSelectionChange(val) {
                     this.multipleSelection = val;
+                    this.multiID = Object.values(this.multipleSelection).map(i => i.id)
                 },
                 filterHandler(value, row, column) {
                     const property = column['property'];
@@ -604,7 +606,33 @@
                                                 message: 'User deleted successfully!',
                                                 type: 'success'
                                             })
-                                        }, 1000)
+                                        }, 1500)
+                                    }
+                                })
+                        })
+                        .catch(() => {});
+                },
+                bulkDelete() {
+                    this.$confirm('This will permanently delete all selected users. Continue?', "Warning", {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            var ids = new FormData()
+                            ids.append("user_ids", this.multiID)
+                            axios.post("action.php?action=bulk_delete", ids)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        this.getData()
+                                        setTimeout(() => {
+                                            this.tableLoad = false;
+                                            this.$message({
+                                                message: 'Selected users has been deleted successfully!',
+                                                type: 'success'
+                                            });
+                                        }, 1500);
                                     }
                                 })
                         })
