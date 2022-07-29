@@ -88,7 +88,7 @@ if ($action == 'update') {
         "birthdate" => $new_birthdate,
         "gender" => $new_gender
     );
-    
+
     mysqli_query($db, "UPDATE users SET first_name='$new_first_name',last_name='$new_last_name',birthday='$new_birthdate',
         gender='$new_gender',username='$username',bhw_id='$new_identification' WHERE id='$user_id'");
 }
@@ -97,6 +97,28 @@ if ($action == 'delete') {
 
     $user_id = $_POST["id"];
     $response = mysqli_query($db, "DELETE FROM users WHERE id=$user_id");
+}
+
+if ($action == 'reset') {
+
+    $user_id = $_POST["id"];
+    $username = $_POST["username"];
+    function random_password($length = 5)
+    {
+        $str = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $shuffled = substr(str_shuffle($str), 0, $length);
+        return $shuffled;
+    }
+
+    $password = random_password(8);
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    $response = array(
+        "username" => $username,
+        "password" => $password
+    );
+
+    mysqli_query($db, "UPDATE users SET password='$hashed_password' WHERE id='$user_id'");
 }
 
 echo json_encode($response);

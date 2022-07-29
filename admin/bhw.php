@@ -122,36 +122,47 @@
                             </span>
                         </el-dialog>
 
+                        <!-- After Add Show BHW Username & Password -->
+                        <el-dialog title="BHW Username and Password" :visible.sync="openResetDialog" width="30%" :before-close="closeResetDialog">
+                            <label>Username</label>
+                            <el-input class="mb-2" v-model="resetUser.username" disabled></el-input>
+                            <label>New Password</label>
+                            <el-input class="mb-2" v-model="resetUser.password" disabled></el-input>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="closeResetDialog">Close</el-button>
+                            </span>
+                        </el-dialog>
+
                         <!-- Edit Dialog -->
                         <el-dialog :visible.sync="editDialog" width="40%" :before-close="closeEditDialog">
                             <template #title>
-                                Edit User {{ editBhw.username }}
+                                Edit User {{ updateBhw.username }}
                             </template>
-                            <el-form :label-position="leftLabel" label-width="160px" :model="editBhw" :rules="editRules" ref="editBhw">
+                            <el-form :label-position="leftLabel" label-width="160px" :model="updateBhw" :rules="editRules" ref="updateBhw">
                                 <el-form-item label="Identification Number" prop="identification">
-                                    <el-input v-model="editBhw.identification" clearable></el-input>
+                                    <el-input v-model="updateBhw.identification" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item label="First Name" prop="firstName">
-                                    <el-input v-model="editBhw.firstName" clearable></el-input>
+                                    <el-input v-model="updateBhw.firstName" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item label="Last Name" prop="lastName">
-                                    <el-input v-model="editBhw.lastName" clearable></el-input>
+                                    <el-input v-model="updateBhw.lastName" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item label="Birthday" prop="birthdate">
-                                    <el-date-picker v-model="editBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
+                                    <el-date-picker v-model="updateBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
                                     </el-date-picker>
                                 </el-form-item>
                                 <el-form-item label="Gender" prop="gender">
-                                    <el-radio-group v-model="editBhw.gender">
+                                    <el-radio-group v-model="updateBhw.gender">
                                         <el-radio-button label="Female"></el-radio-button>
                                         <el-radio-button label="Male"></el-radio-button>
                                     </el-radio-group>
                                 </el-form-item>
                             </el-form>
                             <span slot="footer" class="dialog-footer">
-                                <el-button :loading="loadButton" @click="closeEditDialog('editBhw')">Cancel</el-button>
+                                <el-button :loading="loadButton" @click="closeEditDialog('updateBhw')">Cancel</el-button>
                                 <el-button :loading="loadButton" type="warning" @click="resetPassword">Reset Password</el-button>
-                                <el-button :loading="loadButton" type="primary" @click="updateUser('editBhw')">Update</el-button>
+                                <el-button :loading="loadButton" type="primary" @click="updateUser('updateBhw')">Update</el-button>
                             </span>
                         </el-dialog>
                         <!----------------------------------------------------------------------------------- End of Modals/Drawers ----------------------------------------------------------------------------------->
@@ -285,6 +296,7 @@
                     leftLabel: "left",
                     tableLoad: false,
                     openAddDialog: false,
+                    openResetDialog: false,
                     openAddDrawer: false,
                     loadButton: false,
                     editDialog: false,
@@ -294,7 +306,9 @@
                     fullscreenLoading: true,
                     tableData: [],
                     newUser: [],
+                    resetUser: [],
                     checkIdentification: [],
+                    editBhw: [],
                     addBhw: {
                         identification: "",
                         firstName: "",
@@ -302,7 +316,7 @@
                         birthdate: "",
                         gender: "",
                     },
-                    editBhw: {
+                    updateBhw: {
                         id: 0,
                         username: "",
                         identification: "",
@@ -331,6 +345,24 @@
                 setTimeout(() => {
                     this.fullscreenLoading = false
                 }, 1000)
+                this.updateBhw.id = this.editBhw.id ? this.editBhw.id : "";
+                this.updateBhw.username = this.editBhw.username ? this.editBhw.username : "";
+                this.updateBhw.identification = this.editBhw.identification ? this.editBhw.identification : "";
+                this.updateBhw.firstName = this.editBhw.firstName ? this.editBhw.firstName : "";
+                this.updateBhw.lastName = this.editBhw.lastName ? this.editBhw.lastName : "";
+                this.updateBhw.birthdate = this.editBhw.birthdate ? this.editBhw.birthdate : "";
+                this.updateBhw.gender = this.editBhw.gender ? this.editBhw.gender : "";
+            },
+            watch: {
+                editBhw(value) {
+                    this.updateBhw.id = value.id ? value.id : "";
+                    this.updateBhw.username = value.username ? value.username : "";
+                    this.updateBhw.identification = value.identification ? value.identification : "";
+                    this.updateBhw.firstName = value.firstName ? value.firstName : "";
+                    this.updateBhw.lastName = value.lastName ? value.lastName : "";
+                    this.updateBhw.birthdate = value.birthdate ? value.birthdate : "";
+                    this.updateBhw.gender = value.gender ? value.gender : "";
+                }
             },
             methods: {
                 // Logout ***********************************************
@@ -369,25 +401,35 @@
                         .catch(() => {});
                 },
                 closeAddDialog() {
-                    this.$confirm('Done copying username & password ?', 'Warning', {
+                    this.$confirm('Done copying username & password?', 'Warning', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                             type: "warning"
                         })
                         .then(() => {
                             this.openAddDialog = false
-                            this.getData()
                         })
                         .catch(() => {});
                 },
                 closeEditDialog(editBhw) {
-                    this.$confirm('Are you sure you want to cancel updating BHW??', {
+                    this.$confirm('Are you sure you want to cancel updating BHW?', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                         })
                         .then(() => {
                             this.editDialog = false
                             this.$refs[editBhw].resetFields();
+                        })
+                        .catch(() => {});
+                },
+                closeResetDialog() {
+                    this.$confirm('Done copying new password?', 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            this.openResetDialog = false
                         })
                         .catch(() => {});
                 },
@@ -401,9 +443,9 @@
                         })
                 },
                 submitForm(addBhw) {
-                    this.loadButton = true;
                     this.$refs[addBhw].validate((valid) => {
                         if (valid) {
+                            this.loadButton = true;
                             this.openAddDrawer = false;
                             const birthday = this.addBhw.birthdate;
                             const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
@@ -419,8 +461,9 @@
                                         this.$message({
                                             message: 'New BHW has been added successfully!',
                                             type: 'success'
-                                        })
+                                        });
                                         this.tableLoad = true;
+                                        this.getData()
                                         setTimeout(() => {
                                             this.openAddDialog = true;
                                             this.tableLoad = false;
@@ -442,40 +485,70 @@
                 resetFormData() {
                     this.addBhw = []
                 },
+                handleView(index, row) {
+
+                },
                 handleEdit(index, row) {
-                    this.editBhw.username = row.username;
-                    this.editBhw.id = row.id;
-                    this.editBhw.identification = row.identification;
-                    this.editBhw.firstName = row.first_name;
-                    this.editBhw.lastName = row.last_name;
-                    this.editBhw.birthdate = row.birthdate;
-                    this.editBhw.gender = row.gender;
+                    this.editBhw = {
+                        id: row.id,
+                        username: row.username,
+                        identification: row.identification,
+                        firstName: row.first_name,
+                        lastName: row.last_name,
+                        birthdate: row.birthdate,
+                        gender: row.gender
+                    }
                     this.editDialog = true;
                 },
-                updateUser(editBhw) {
-                    this.loadButton = true;
-                    this.$refs[editBhw].validate((valid) => {
+                updateUser(updateBhw) {
+                    this.$refs[updateBhw].validate((valid) => {
                         if (valid) {
-                            const birthday = this.editBhw.birthdate;
-                            const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
-                            this.editDialog = false;
-                            var editData = new FormData()
-                            editData.append("id", this.editBhw.id)
-                            editData.append("identification", this.editBhw.identification)
-                            editData.append("first_name", this.editBhw.firstName)
-                            editData.append("last_name", this.editBhw.lastName)
-                            editData.append("birthdate", birthdayFormat)
-                            editData.append("gender", this.editBhw.gender)
-                            axios.post("action.php?action=update", editData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.$notify({
-                                            title: 'Success',
-                                            message: 'BHW has been updated successfully!',
-                                            type: 'success'
-                                        });
-                                    }
-                                })
+                            if (this.editBhw.identification != this.updateBhw.identification || this.editBhw.firstName != this.updateBhw.firstName || this.editBhw.lastName != this.updateBhw.lastName || this.editBhw.birthdate != this.updateBhw.birthdate || this.editBhw.gender != this.updateBhw.gender) {
+                                this.loadButton = true;
+                                this.$confirm('This will update user ' + this.editBhw.username + '. Continue?', {
+                                        confirmButtonText: 'Confirm',
+                                        cancelButtonText: 'Cancel',
+                                    })
+                                    .then(() => {
+                                        const birthday = new Date(Date.parse(this.updateBhw.birthdate));
+                                        const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
+                                        this.editDialog = false;
+                                        var updateData = new FormData()
+                                        updateData.append("id", this.updateBhw.id)
+                                        updateData.append("identification", this.updateBhw.identification)
+                                        updateData.append("first_name", this.updateBhw.firstName)
+                                        updateData.append("last_name", this.updateBhw.lastName)
+                                        updateData.append("birthdate", birthdayFormat)
+                                        updateData.append("gender", this.updateBhw.gender)
+                                        axios.post("action.php?action=update", updateData)
+                                            .then(response => {
+                                                if (response.data) {
+                                                    this.loadButton = false;
+                                                    this.tableLoad = true;
+                                                    this.getData()
+                                                    setTimeout(() => {
+                                                        this.tableLoad = false;
+                                                        this.$message({
+                                                            message: 'BHW has been updated successfully!',
+                                                            type: 'success'
+                                                        });
+                                                    }, 2000)
+                                                }
+                                            })
+                                    })
+                                    .catch(() => {
+                                        this.loadButton = false;
+                                    });
+                            } else {
+                                this.$confirm('No changes detected. Cancel editing user?', {
+                                        confirmButtonText: 'Yes',
+                                        cancelButtonText: 'No',
+                                    })
+                                    .then(() => {
+                                        this.editDialog = false
+                                    })
+                                    .catch(() => {});
+                            }
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -483,12 +556,33 @@
                     });
                 },
                 resetPassword() {
-                    setTimeout(() => {
-                        this.openAddDialog = true;
-                    }, 2000);
-                    this.resetFormData();
-                    this.newUser = response.data;
-                    this.loadButton = false;
+                    this.loadButton = true;
+                    this.$confirm('This will reset user ' + this.editBhw.username + "'s password. Continue?", 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            this.editDialog = false;
+                            var data = new FormData();
+                            data.append("id", this.editBhw.id)
+                            data.append("username", this.editBhw.username)
+                            axios.post("action.php?action=reset", data)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.tableLoad = false;
+                                            this.openResetDialog = true;
+                                        }, 2000);
+                                        this.resetUser = response.data;
+                                        this.loadButton = false;
+                                    }
+                                })
+                        })
+                        .catch(() => {
+                            this.loadButton = false;
+                        });
                 },
                 handleDelete(index, row) {
                     this.$confirm('This will permanently delete user ' + row.username + ". Continue?", 'Warning', {
