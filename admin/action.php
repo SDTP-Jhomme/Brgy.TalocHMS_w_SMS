@@ -14,25 +14,34 @@ if ($action == 'fetch') {
     $user_data = array();
 
     $data = mysqli_query($db, "SELECT * FROM users");
-    while ($data_row = mysqli_fetch_assoc($data)) {
 
-        $fullname = $data_row["first_name"] . " " . $data_row["last_name"];
-        $db_birthdate = $data_row["birthday"];
-        $birthdate = date("F d, Y", strtotime($db_birthdate));
+    if (mysqli_num_rows($data) > 0) {
+        while ($data_row = mysqli_fetch_assoc($data)) {
 
-        $array_data = array(
-            "id" => $data_row["id"],
-            "username" => $data_row["username"],
-            "name" => $fullname,
-            "birthdate" => $birthdate,
-            "gender" => $data_row["gender"],
-            "identification" => $data_row["bhw_id"],
-            "first_name" => $data_row["first_name"],
-            "last_name" => $data_row["last_name"]
-        );
+            $fullname = $data_row["first_name"] . " " . $data_row["last_name"];
+            $db_birthdate = $data_row["birthday"];
+            $birthdate = date("F d, Y", strtotime($db_birthdate));
+            $db_avatar = $data_row["avatar"];
 
-        array_push($user_data, $array_data);
-        $response = $user_data;
+            $array_data = array(
+                "id" => $data_row["id"],
+                "username" => $data_row["username"],
+                "name" => $fullname,
+                "birthdate" => $birthdate,
+                "gender" => $data_row["gender"],
+                "identification" => $data_row["bhw_id"],
+                "first_name" => $data_row["first_name"],
+                "last_name" => $data_row["last_name"],
+                "avatar" => "../assets/$db_avatar",
+            );
+
+            array_push($user_data, $array_data);
+            $response = $user_data;
+        }
+    } else {
+
+        $response["error"] = true;
+        $response["message"] = "Table is empty!";
     }
 }
 
@@ -51,6 +60,8 @@ if ($action == 'store') {
         return $shuffled;
     }
 
+    $avatar = "avatar/default.png";
+
     $password = random_password(8);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
@@ -66,8 +77,8 @@ if ($action == 'store') {
         "password" => $password
     );
 
-    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id)
-        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification')");
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar')");
 }
 
 if ($action == 'update') {

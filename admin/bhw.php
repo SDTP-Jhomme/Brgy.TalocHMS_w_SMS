@@ -34,12 +34,14 @@
                 <main>
                     <el-container>
                         <el-header class="mt-4" height="40">
-                            <el-row :gutter="20">
-                                <el-col :span="6">
-                                    <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
-                                    <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
-                                </el-col>
-                            </el-row>
+                            <div class="container p-0">
+                                <el-row :gutter="20">
+                                    <el-col :span="6">
+                                        <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
+                                        <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
+                                    </el-col>
+                                </el-row>
+                            </div>
                         </el-header>
                         <el-main>
                             <div class="container border rounded p-4">
@@ -54,7 +56,7 @@
                                         <el-input v-model="searchID" size="mini" placeholder="Search ID no..." clearable />
                                     </el-col>
                                 </el-row>
-                                <el-table :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
@@ -79,10 +81,11 @@
                                 </el-table>
                             </div>
                         </el-main>
+
                         <!----------------------------------------------------------------------------------- Modals/Drawers ----------------------------------------------------------------------------------->
                         <!-- Add Drawer -->
-                        <el-drawer title="Add New BHW" :visible.sync="openAddDrawer" size="40%" :before-close="closeAddDrawer">
-                            <div class="container p-4 d-flex flex-column">
+                        <el-drawer title="Add New BHW" :visible.sync="openAddDrawer" size="35%" :before-close="closeAddDrawer">
+                            <div class="container p-4 d-flex flex-column pe-5">
                                 <el-form :label-position="topLabel" :model="addBhw" :rules="rules" ref="addBhw">
                                     <el-form-item label="Identification Number" prop="identification">
                                         <el-input v-model="addBhw.identification" clearable></el-input>
@@ -130,6 +133,33 @@
                             <el-input class="mb-2" v-model="resetUser.password" disabled></el-input>
                             <span slot="footer" class="dialog-footer">
                                 <el-button type="primary" @click="closeResetDialog">Close</el-button>
+                            </span>
+                        </el-dialog>
+
+                        <!-- View Dialog -->
+                        <el-dialog :visible.sync="viewDialog" width="35%" :before-close="closeViewDialog">
+                            <template #title>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="fs-5">User {{ viewBhw.username }}</div>
+                                    <div class="pe-4">
+                                        <el-avatar :size="70" :src="viewBhw.avatar"></el-avatar>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="container">
+                                <div class="">
+                                    <el-descriptions direction="horizontal" :column="1" border>
+                                        <el-descriptions-item label="Identification Number">{{ viewBhw.identification }}</el-descriptions-item>
+                                        <el-descriptions-item label="Name">{{ viewBhw.name }}</el-descriptions-item>
+                                        <el-descriptions-item label="Birthday">{{ viewBhw.birthdate }}</el-descriptions-item>
+                                        <el-descriptions-item label="Gender">
+                                            <el-tag>{{ viewBhw.gender }}</el-tag>
+                                        </el-descriptions-item>
+                                    </el-descriptions>
+                                </div>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="closeViewDialog">Close</el-button>
                             </span>
                         </el-dialog>
 
@@ -300,6 +330,7 @@
                     openAddDrawer: false,
                     loadButton: false,
                     editDialog: false,
+                    viewDialog: false,
                     multipleSelection: [],
                     searchName: "",
                     searchID: "",
@@ -310,6 +341,7 @@
                     resetUser: [],
                     checkIdentification: [],
                     editBhw: [],
+                    viewBhw: [],
                     addBhw: {
                         identification: "",
                         firstName: "",
@@ -413,6 +445,9 @@
                         })
                         .catch(() => {});
                 },
+                closeViewDialog() {
+                    this.viewDialog = false;
+                },
                 closeEditDialog(editBhw) {
                     this.$confirm('Are you sure you want to cancel updating BHW?', {
                             confirmButtonText: 'Yes',
@@ -438,7 +473,9 @@
                 getData() {
                     axios.post("action.php?action=fetch")
                         .then(response => {
-                            if (response.data) {
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
                                 this.tableData = response.data
                                 this.checkIdentification = response.data.map(res => res.identification)
                             }
@@ -465,10 +502,10 @@
                                             type: 'success'
                                         });
                                         this.tableLoad = true;
-                                        this.getData()
                                         setTimeout(() => {
                                             this.openAddDialog = true;
                                             this.tableLoad = false;
+                                            this.getData()
                                         }, 2000);
                                         this.resetFormData();
                                         this.newUser = response.data;
@@ -488,7 +525,9 @@
                     this.addBhw = []
                 },
                 handleView(index, row) {
-
+                    this.viewBhw = row;
+                    this.viewDialog = true;
+                    console.log(this.viewBhw)
                 },
                 handleEdit(index, row) {
                     this.editBhw = {
@@ -527,9 +566,9 @@
                                                 if (response.data) {
                                                     this.loadButton = false;
                                                     this.tableLoad = true;
-                                                    this.getData()
                                                     setTimeout(() => {
                                                         this.tableLoad = false;
+                                                        this.getData();
                                                         this.$message({
                                                             message: 'BHW has been updated successfully!',
                                                             type: 'success'
@@ -598,9 +637,9 @@
                             axios.post("action.php?action=delete", id)
                                 .then(response => {
                                     if (response.data) {
-                                        this.getData()
                                         this.tableLoad = true
                                         setTimeout(() => {
+                                            this.getData();
                                             this.tableLoad = false
                                             this.$message({
                                                 message: 'User deleted successfully!',
@@ -613,30 +652,34 @@
                         .catch(() => {});
                 },
                 bulkDelete() {
-                    this.$confirm('This will permanently delete all selected users. Continue?', "Warning", {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            var ids = new FormData()
-                            ids.append("user_ids", this.multiID)
-                            axios.post("action.php?action=bulk_delete", ids)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        this.getData()
-                                        setTimeout(() => {
-                                            this.tableLoad = false;
-                                            this.$message({
-                                                message: 'Selected users has been deleted successfully!',
-                                                type: 'success'
-                                            });
-                                        }, 1500);
-                                    }
-                                })
-                        })
-                        .catch(() => {});
+                    if (Object.keys(this.multiID).length === 0) {
+                        this.$message.error("Please select aleast one(1) user to delete!")
+                    } else {
+                        this.$confirm('This will permanently delete all selected users. Continue?', "Warning", {
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+                                type: "warning"
+                            })
+                            .then(() => {
+                                var ids = new FormData()
+                                ids.append("user_ids", this.multiID)
+                                axios.post("action.php?action=bulk_delete", ids)
+                                    .then(response => {
+                                        if (response.data) {
+                                            this.tableLoad = true;
+                                            setTimeout(() => {
+                                                this.getData()
+                                                this.tableLoad = false;
+                                                this.$message({
+                                                    message: 'Selected users has been deleted successfully!',
+                                                    type: 'success'
+                                                });
+                                            }, 1500);
+                                        }
+                                    })
+                            })
+                            .catch(() => {});
+                    }
                 }
             }
         })
