@@ -9,6 +9,6 @@
 <!-- import Bootstrap.js -->
 <script src="../assets/js/bootstrap.min.js" ></script>
 <!-- import Axios.js -->
-<script src="../assets/js/axios.js"></script>
+<script src="../assets/js/axios.min.js"></script>
 <!-- import Font Awesome -->
 <script defer src="../assets/js/fontawesome.js"></script>
