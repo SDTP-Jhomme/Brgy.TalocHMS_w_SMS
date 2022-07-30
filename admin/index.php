@@ -51,7 +51,7 @@
             mounted() {
                 setTimeout(() => {
                     this.fullscreenLoading = false
-                }, 2000)
+                }, 1000)
             },
             methods: {
                 // Logout ****************

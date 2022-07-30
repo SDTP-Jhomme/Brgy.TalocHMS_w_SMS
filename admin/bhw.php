@@ -36,7 +36,7 @@
                         <el-header class="mt-4" height="40">
                             <div class="container p-0">
                                 <el-row :gutter="20">
-                                    <el-col :span="6">
+                                    <el-col :span="12">
                                         <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
                                         <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
                                     </el-col>
@@ -45,17 +45,32 @@
                         </el-header>
                         <el-main>
                             <div class="container border rounded p-4">
-                                <el-row :gutter="20" class="mb-2">
-                                    <el-col :span="6">
-                                        <p class="mb-0">BHW Information Table</p>
-                                    </el-col>
-                                    <el-col :offset="6" :span="6">
-                                        <el-input v-model="searchName" size="mini" placeholder="Search name..." clearable />
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <el-input v-model="searchID" size="mini" placeholder="Search ID no..." clearable />
-                                    </el-col>
-                                </el-row>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <p class="mb-0">BHW Information Table</p>
+                                    <div class="d-flex">
+                                        <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
+                                            <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
+                                            </el-option>
+                                        </el-select>
+                                        <div class="ps-2">
+                                            <div v-if="searchValue == ''">
+                                                <el-input v-model="searchNull" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-if="searchValue == 'identification'">
+                                                <el-input v-model="searchID" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-if="searchValue == 'name'">
+                                                <el-input v-model="searchName" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-if="searchValue == 'username'">
+                                                <el-input v-model="searchUsername" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-if="searchValue == 'birthdate'">
+                                                <el-input v-model="searchBirthday" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
@@ -71,11 +86,17 @@
                                     </el-table-column>
                                     <el-table-column sortable label="Gender" prop="gender" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
                                     </el-table-column>
-                                    <el-table-column label="Actions" width="200" fixed="right">
+                                    <el-table-column label="Actions" width="200">
                                         <template slot-scope="scope">
-                                            <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)"></el-button>
-                                            <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
-                                            <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"></el-button>
+                                            <el-tooltip class="item" effect="dark" content="View" placement="top-start">
+                                                <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)"></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip class="item" effect="dark" content="Edit" placement="top-start">
+                                                <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip class="item" effect="dark" content="Delete" placement="top-start">
+                                                <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"></el-button>
+                                            </el-tooltip>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -322,6 +343,12 @@
                             trigger: 'blur'
                         }],
                     },
+                    searchValue: "",
+                    searchNull: "",
+                    searchName: "",
+                    searchID: "",
+                    searchUsername: "",
+                    searchBirthday: "",
                     topLabel: "top",
                     leftLabel: "left",
                     tableLoad: false,
@@ -332,8 +359,6 @@
                     editDialog: false,
                     viewDialog: false,
                     multipleSelection: [],
-                    searchName: "",
-                    searchID: "",
                     fullscreenLoading: true,
                     tableData: [],
                     multiID: [],
@@ -357,7 +382,20 @@
                         lastName: "",
                         birthdate: "",
                         gender: "",
-                    }
+                    },
+                    options: [{
+                        value: 'identification',
+                        label: 'Identification No.'
+                    }, {
+                        value: 'username',
+                        label: 'Username'
+                    }, {
+                        value: 'name',
+                        label: 'Name'
+                    }, {
+                        value: 'birthdate',
+                        label: 'Birthday'
+                    }]
                 }
             },
             computed: {
@@ -369,6 +407,12 @@
                         .filter((data) => {
                             return data.identification.toLowerCase().includes(this.searchID.toLowerCase());
                         })
+                        .filter((data) => {
+                            return data.username.toLowerCase().includes(this.searchUsername.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
+                        })
                 }
             },
             created() {
@@ -378,13 +422,6 @@
                 setTimeout(() => {
                     this.fullscreenLoading = false
                 }, 1000)
-                this.updateBhw.id = this.editBhw.id ? this.editBhw.id : "";
-                this.updateBhw.username = this.editBhw.username ? this.editBhw.username : "";
-                this.updateBhw.identification = this.editBhw.identification ? this.editBhw.identification : "";
-                this.updateBhw.firstName = this.editBhw.firstName ? this.editBhw.firstName : "";
-                this.updateBhw.lastName = this.editBhw.lastName ? this.editBhw.lastName : "";
-                this.updateBhw.birthdate = this.editBhw.birthdate ? this.editBhw.birthdate : "";
-                this.updateBhw.gender = this.editBhw.gender ? this.editBhw.gender : "";
             },
             watch: {
                 editBhw(value) {
@@ -395,6 +432,15 @@
                     this.updateBhw.lastName = value.lastName ? value.lastName : "";
                     this.updateBhw.birthdate = value.birthdate ? value.birthdate : "";
                     this.updateBhw.gender = value.gender ? value.gender : "";
+                },
+                searchValue(value) {
+                    if (value == "" || value == "identification" || value == "name" || value == "username" || value == "birthdate") {
+                        this.searchNull = '';
+                        this.searchID = '';
+                        this.searchName = '';
+                        this.searchUsername = '';
+                        this.searchBirthday = '';
+                    }
                 }
             },
             methods: {
@@ -680,6 +726,13 @@
                             })
                             .catch(() => {});
                     }
+                },
+                changeColumn(selected) {
+                    this.searchNull = ""
+                    this.searchName = ""
+                    this.searchID = ""
+                    this.searchUsername = ""
+                    this.searchBirthday = ""
                 }
             }
         })
