@@ -45,7 +45,7 @@
                         </el-header>
                         <el-main>
                             <div class="container border rounded p-4">
-                                <div class="d-flex justify-content-between mb-2">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
                                     <p class="mb-0">BHW Information Table</p>
                                     <div class="d-flex">
                                         <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
@@ -84,7 +84,11 @@
                                     </el-table-column>
                                     <el-table-column sortable label="Birthday" prop="birthdate">
                                     </el-table-column>
-                                    <el-table-column sortable label="Gender" prop="gender" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                    <el-table-column sortable label="Gender" prop="gender" width="110" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                        <template slot-scope="scope">
+                                            <el-tag size="small" v-if="scope.row.gender == 'Male'">{{ scope.row.gender }}</el-tag>
+                                            <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
+                                        </template>
                                     </el-table-column>
                                     <el-table-column label="Actions" width="200">
                                         <template slot-scope="scope">
@@ -573,7 +577,6 @@
                 handleView(index, row) {
                     this.viewBhw = row;
                     this.viewDialog = true;
-                    console.log(this.viewBhw)
                 },
                 handleEdit(index, row) {
                     this.editBhw = {
