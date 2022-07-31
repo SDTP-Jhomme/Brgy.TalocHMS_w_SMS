@@ -104,6 +104,11 @@
                                         </template>
                                     </el-table-column>
                                 </el-table>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <el-checkbox v-model="showAllData">Show All</el-checkbox>
+                                    <el-pagination :current-page.sync="page" :pager-count="5" :page-size="this.pageSize" background layout="prev, pager, next" :total="this.tableData.length" @current-change="setPage">
+                                    </el-pagination>
+                                </div>
                             </div>
                         </el-main>
 
@@ -150,8 +155,8 @@
                             </span>
                         </el-dialog>
 
-                        <!-- After Add Show BHW Username & Password -->
-                        <el-dialog title="BHW Username and Password" :visible.sync="openResetDialog" width="30%" :before-close="closeResetDialog">
+                        <!-- Reset Password Dialog -->
+                        <el-dialog title="BHW Username and New Password" :visible.sync="openResetDialog" width="30%" :before-close="closeResetDialog">
                             <label>Username</label>
                             <el-input class="mb-2" v-model="resetUser.username" disabled></el-input>
                             <label>New Password</label>
@@ -178,7 +183,8 @@
                                         <el-descriptions-item label="Name">{{ viewBhw.name }}</el-descriptions-item>
                                         <el-descriptions-item label="Birthday">{{ viewBhw.birthdate }}</el-descriptions-item>
                                         <el-descriptions-item label="Gender">
-                                            <el-tag>{{ viewBhw.gender }}</el-tag>
+                                            <el-tag v-if="viewBhw.gender == 'Male'">{{ viewBhw.gender }}</el-tag>
+                                            <el-tag v-else type="danger">{{ viewBhw.gender }}</el-tag>
                                         </el-descriptions-item>
                                     </el-descriptions>
                                 </div>
@@ -347,6 +353,9 @@
                             trigger: 'blur'
                         }],
                     },
+                    page: 1,
+                    pageSize: 10,
+                    showAllData: false,
                     searchValue: "",
                     searchNull: "",
                     searchName: "",
@@ -417,6 +426,7 @@
                         .filter((data) => {
                             return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
                         })
+                        .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
                 }
             },
             created() {
@@ -444,6 +454,14 @@
                         this.searchName = '';
                         this.searchUsername = '';
                         this.searchBirthday = '';
+                    }
+                },
+                showAllData(value) {
+                    if (value == true) {
+                        this.page = 1;
+                        this.pageSize = this.tableData.length
+                    } else {
+                        this.pageSize = 10
                     }
                 }
             },
@@ -520,6 +538,9 @@
                         })
                         .catch(() => {});
                 },
+                setPage(value) {
+                    this.page = value
+                },
                 getData() {
                     axios.post("action.php?action=fetch")
                         .then(response => {
@@ -547,16 +568,18 @@
                             axios.post("action.php?action=store", newData)
                                 .then(response => {
                                     if (response.data) {
-                                        this.$message({
-                                            message: 'New BHW has been added successfully!',
-                                            type: 'success'
-                                        });
                                         this.tableLoad = true;
                                         setTimeout(() => {
-                                            this.openAddDialog = true;
+                                            this.$message({
+                                                message: 'New BHW has been added successfully!',
+                                                type: 'success'
+                                            });
                                             this.tableLoad = false;
                                             this.getData()
-                                        }, 2000);
+                                            setTimeout(() => {
+                                                this.openAddDialog = true;
+                                            }, 1500)
+                                        }, 1500);
                                         this.resetFormData();
                                         this.newUser = response.data;
                                         this.loadButton = false;
@@ -622,7 +645,7 @@
                                                             message: 'BHW has been updated successfully!',
                                                             type: 'success'
                                                         });
-                                                    }, 2000)
+                                                    }, 1500)
                                                 }
                                             })
                                     })
@@ -630,7 +653,7 @@
                                         this.loadButton = false;
                                     });
                             } else {
-                                this.$confirm('No changes detected. Cancel editing user?', {
+                                this.$confirm('No changes made. Cancel editing user?', {
                                         confirmButtonText: 'Yes',
                                         cancelButtonText: 'No',
                                     })
@@ -663,8 +686,14 @@
                                         this.tableLoad = true;
                                         setTimeout(() => {
                                             this.tableLoad = false;
-                                            this.openResetDialog = true;
-                                        }, 2000);
+                                            this.$message({
+                                                message: 'Password has been reset successfully!',
+                                                type: 'success'
+                                            });
+                                            setTimeout(() => {
+                                                this.openResetDialog = true;
+                                            }, 1500)
+                                        }, 1500);
                                         this.resetUser = response.data;
                                         this.loadButton = false;
                                     }
@@ -694,6 +723,7 @@
                                                 message: 'User deleted successfully!',
                                                 type: 'success'
                                             })
+                                            this.page = 1;
                                         }, 1500)
                                     }
                                 })
@@ -723,6 +753,7 @@
                                                     message: 'Selected users has been deleted successfully!',
                                                     type: 'success'
                                                 });
+                                                this.page = 1;
                                             }, 1500);
                                         }
                                     })
