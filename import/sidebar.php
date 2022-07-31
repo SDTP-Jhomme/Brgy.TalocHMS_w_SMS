@@ -18,13 +18,13 @@
                 </a>
                 <div class="collapse" id="collapsePages" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="">Prenatal</a>
+                        <a class="nav-link" href="./prenatal">Prenatal</a>
                     </nav>
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="">Immunization</a>
+                        <a class="nav-link" href="./immunization">Immunization</a>
                     </nav>
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="">Individual Checkup</a>
+                        <a class="nav-link" href="./checkup">Individual Checkup</a>
                     </nav>
                 </div>
                 <a class="nav-link" href="#">
