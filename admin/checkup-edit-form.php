@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Dashboard</title>
+    <title>Admin | Prenatal Patients Edit Form</title>
     <?php
 
     include("../import/head.php");
@@ -32,13 +32,27 @@
             <?php include("../import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
-
+                    <el-container>
+                        <el-header class="mt-4" height="40">
+                            <div class="container p-0">
+                                <el-row :gutter="20">
+                                    <div class="d-flex justify-content-between">
+                                        <el-col :span="12">
+                                            <h3 class="m-0">Edit Checkup Form</h3>
+                                        </el-col>
+                                        <el-link class="fs-6 pe-5" href="./checkup" icon="el-icon-back" type="primary" :underline="false">Back</el-link>
+                                    </div>
+                                </el-row>
+                            </div>
+                        </el-header>
+                        <el-main></el-main>
+                    </el-container>
                 </main>
                 <?php include("../import/footer.php"); ?>
             </div>
         </div>
-        <?php include("../import/body.php"); ?>
     </div>
+    <?php include("../import/body.php"); ?>
     <script>
         ELEMENT.locale(ELEMENT.lang.en)
         new Vue({
@@ -54,7 +68,7 @@
                 }, 1000)
             },
             methods: {
-                // Logout ****************
+                // Logout **********************************************************
                 logout() {
                     this.fullscreenLoading = true
                     axios.post("auth.php?action=logout")
@@ -71,7 +85,7 @@
                             }
                         })
                 },
-                // *************************
+                // ******************************************************************
             }
         })
     </script>
