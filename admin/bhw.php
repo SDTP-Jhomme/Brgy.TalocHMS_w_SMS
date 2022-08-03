@@ -53,20 +53,20 @@
                                             </el-option>
                                         </el-select>
                                         <div class="ps-2">
-                                            <div v-if="searchValue == ''">
-                                                <el-input v-model="searchNull" size="mini" placeholder="Type to search..." clearable />
-                                            </div>
                                             <div v-if="searchValue == 'identification'">
                                                 <el-input v-model="searchID" size="mini" placeholder="Type to search..." clearable />
                                             </div>
-                                            <div v-if="searchValue == 'name'">
+                                            <div v-else-if="searchValue == 'name'">
                                                 <el-input v-model="searchName" size="mini" placeholder="Type to search..." clearable />
                                             </div>
-                                            <div v-if="searchValue == 'username'">
+                                            <div v-else-if="searchValue == 'username'">
                                                 <el-input v-model="searchUsername" size="mini" placeholder="Type to search..." clearable />
                                             </div>
-                                            <div v-if="searchValue == 'birthdate'">
+                                            <div v-else-if="searchValue == 'birthdate'">
                                                 <el-input v-model="searchBirthday" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-else>
+                                                <el-input v-model="searchNull" size="mini" placeholder="Type to search..." clearable />
                                             </div>
                                         </div>
                                     </div>
