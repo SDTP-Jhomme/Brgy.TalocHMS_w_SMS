@@ -248,11 +248,15 @@
                     }
                 };
                 const validateBirthdate = (rule, value, callback) => {
-                    var currentDate = new Date();
-                    var difference = currentDate - value;
-                    var age = Math.floor(difference / 31557600000);
+                    var today = new Date();
+                    var birthDate = new Date(value);
+                    var age = today.getFullYear() - birthDate.getFullYear();
+                    var m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
                     if (age < 18) {
-                        callback(new Error('Age should atleast 18!'));
+                        callback(new Error('Age should atleast eightteen(18)!'));
                     } else {
                         callback();
                     }
@@ -485,8 +489,7 @@
                 },
                 // ******************************************************
                 handleSelectionChange(val) {
-                    this.multipleSelection = val;
-                    this.multiID = Object.values(this.multipleSelection).map(i => i.id)
+                    this.multiID = Object.values(val).map(i => i.id)
                 },
                 filterHandler(value, row, column) {
                     const property = column['property'];
