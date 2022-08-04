@@ -35,13 +35,16 @@
                                 <h3 class="mb-5 text-center">Admin Login</h3>
 
                                 <label class="form-label" for="username">Username</label>
-                                <div class="form-outline mb-4 input-group">
-                                    <input type="text" id="username" class="form-control" :class="{'has-error': this.error}" v-model="username" />
+                                <div class="form-outline input-group">
+                                    <input type="text" id="username" class="form-control" :class="{'has-error': this.userErr}" v-model="username" />
+                                </div>
+                                <div class="mb-4">
+                                    <span class="text-danger">{{this.userErr}}</span>
                                 </div>
 
                                 <label class="form-label" for="password">Password</label>
-                                <div class="form-outline mb-5 input-group">
-                                    <input :type="type" id="password" class="form-control" :class="{'has-error': this.error}" v-model="password" />
+                                <div class="form-outline input-group">
+                                    <input :type="type" id="password" class="form-control" :class="{'has-error': this.passErr}" v-model="password" />
                                     <button class="input-group-text" @click="showPassword" v-if="type == 'password'">
                                         <span>
                                             <i class="fa fa-eye"></i>
@@ -52,6 +55,9 @@
                                             <i class="fa fa-eye-slash"></i>
                                         </span>
                                     </button>
+                                </div>
+                                <div class="mb-5">
+                                    <span class="text-danger">{{this.passErr}}</span>
                                 </div>
 
                                 <div class="text-center pt-1 mb-2 pb-1 d-grid gap-2">
@@ -73,6 +79,8 @@
                 return {
                     type: "password",
                     error: "",
+                    userErr: "",
+                    passErr: "",
                     username: "",
                     password: ""
                 }
@@ -85,7 +93,8 @@
                     this.type = "password"
                 },
                 login() {
-                    this.error = ""
+                    this.userErr = ""
+                    this.passErr = ""
                     var data = new FormData()
                     data.append("username", this.username)
                     data.append("password", this.password)
@@ -93,7 +102,11 @@
                         .then(response => {
                             if (response.data.error) {
                                 this.error = response.data.message
-                                this.$message.error(this.error)
+                                this.userErr = response.data.adminErr
+                                this.passErr = response.data.passErr
+                                if(response.data.message) {
+                                    this.$message.error(this.error)
+                                }
                             } else {
                                 this.$notify({
                                     title: 'Success',

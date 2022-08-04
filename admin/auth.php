@@ -22,14 +22,31 @@ if ($action == 'login') {
     $check_admin = mysqli_query($db, "SELECT * FROM admin WHERE username='$username'");
     $check_admin_row = mysqli_num_rows($check_admin);
 
-    
+    if (empty($username)) {
+
+        $response["error"] = true;
+        $response["adminErr"] = "Username is required!";
+    }
+    if (empty($password)) {
+
+        $response["error"] = true;
+        $response["passErr"] = "Password is required!";
+    }
+
+    if ($username) {
+        if (!$check_admin_row) {
+
+            $response["error"] = true;
+            $response["adminErr"] = "Admin user does not exist!";
+        }
+    }
 
     if ($username && $password) {
 
         if (!$check_admin_row) {
 
             $response["error"] = true;
-            $response["message"] = "Admin user does not exist!";
+            $response["adminErr"] = "Admin user does not exist!";
         } else {
 
             $admin_row = mysqli_fetch_assoc($check_admin);
@@ -53,7 +70,7 @@ if ($action == 'login') {
                 } else {
 
                     $response["error"] = true;
-                    $response["message"] = "Password does not match!";
+                    $response["passErr"] = "Password does not match!";
 
                     $attempt = $db_attempt + 1;
 
@@ -75,15 +92,13 @@ if ($action == 'login') {
             }
         }
     } else {
-
-        $response["error"] = true;
-        $response["message"] = "Please complete the form form!";
     }
-    if (!$check_admin_row) {
 
-        $response["error"] = true;
-        $response["message"] = "Admin user does not exist!";
-    }
+    // if (!$check_admin_row) {
+
+    //     $response["error"] = true;
+    //     $response["adminErr"] = "Admin user does not exist!";
+    // }
 }
 
 if ($action == 'logout') {
