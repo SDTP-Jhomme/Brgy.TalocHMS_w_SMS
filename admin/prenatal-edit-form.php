@@ -46,10 +46,7 @@
                             </div>
                         </el-header>
                         <el-main>
-                            <div class="saveDataWrap">
-                                <button id="saveData" type="button">External Save Button</button>
-                            </div>
-                            <div id="build-wrap"></div>
+                            
                         </el-main>
                     </el-container>
                 </main>
@@ -59,16 +56,6 @@
     </div>
     <?php include("../import/body.php"); ?>
     <script>
-        jQuery(($) => {
-            const fbEditor = document.getElementById("build-wrap");
-            const formBuilder = $(fbEditor).formBuilder();
-
-            document.getElementById("saveData").addEventListener("click", () => {
-                console.log("external save clicked");
-                const result = formBuilder.actions.save();
-                console.log("result:", result);
-            });
-        });
         ELEMENT.locale(ELEMENT.lang.en)
         new Vue({
             el: "#app",

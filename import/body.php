@@ -12,9 +12,3 @@
 <script src="../assets/js/axios.min.js"></script>
 <!-- import Font Awesome -->
 <script defer src="../assets/js/fontawesome.js"></script>
-<!-- Import Jquery -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<!-- Form Builder JS -->
-<script src="../assets/js/vendor.min.js?v=3.3.0"></script>
-<script src="../assets/js/form-builder.min.js"></script>
-<script src="../assets/js/form-render.min.js"></script>
