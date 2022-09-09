@@ -7,7 +7,7 @@
 <!-- import Element-English.js -->
 <script src="../assets/js/element-en.js"></script>
 <!-- import Bootstrap.js -->
-<script src="../assets/js/bootstrap.min.js" ></script>
+<script src="../assets/js/bootstrap.min.js"></script>
 <!-- import Axios.js -->
 <script src="../assets/js/axios.min.js"></script>
 <!-- import Font Awesome -->

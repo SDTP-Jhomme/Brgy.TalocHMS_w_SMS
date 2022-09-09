@@ -45,7 +45,36 @@
                                 </el-row>
                             </div>
                         </el-header>
-                        <el-main></el-main>
+                        <el-main class="mt-4">
+                            <el-row :gutter="20">
+                                <el-col :span="18">
+                                    <el-card shadow="never" class="vh-100">
+                                        <el-form ref="form" :label-position="labelPosition" :model="form" label-width="120px">
+                                            <el-form-item v-for="input in inputs" label="Activity name">
+                                                <el-input v-model="input.value"></el-input>
+                                            </el-form-item>
+                                        </el-form>
+                                    </el-card>
+                                </el-col>
+                                <el-col :span="6">
+                                    <el-card class="box-card vh-100">
+                                        <el-tabs v-model="activeName" stretch>
+                                            <el-tab-pane label="Field Attributes" name="first">
+                                                <el-button @click="addInput" size="small" icon="el-icon-c-scale-to-original">Add Input</el-button>
+                                            </el-tab-pane>
+                                            <el-tab-pane label="Form Attributes" name="second">
+                                                <label class="mb-2">Label Position</label>
+                                                <el-radio-group v-model="labelPosition" size="small" class="d-block">
+                                                    <el-radio-button label="left">Left</el-radio-button>
+                                                    <el-radio-button label="top">Top</el-radio-button>
+                                                    <el-radio-button label="right">Right</el-radio-button>
+                                                </el-radio-group>
+                                            </el-tab-pane>
+                                        </el-tabs>
+                                    </el-card>
+                                </el-col>
+                            </el-row>
+                        </el-main>
                     </el-container>
                 </main>
                 <?php include("../import/footer.php"); ?>
@@ -59,7 +88,11 @@
             el: "#app",
             data() {
                 return {
-                    fullscreenLoading: true
+                    fullscreenLoading: true,
+                    inputs: [],
+                    form: [],
+                    activeName: 'first',
+                    labelPosition: "right"
                 }
             },
             mounted() {
@@ -86,6 +119,11 @@
                         })
                 },
                 // ******************************************************************
+                addInput() {
+                    this.inputs.push({
+                        value: ''
+                    });
+                },
             }
         })
     </script>

@@ -13,7 +13,7 @@ if ($action == 'fetch') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM users");
+    $data = mysqli_query($db, "SELECT * FROM users ORDER BY bhw_id");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
@@ -53,14 +53,18 @@ if ($action == 'store') {
     $birthdate = $_POST["birthdate"];
     $gender = $_POST["gender"];
 
+    if ($gender == "Male") {
+        $avatar = "avatar/default.png";
+    } else {
+        $avatar = "avatar/default-woman.png";
+    }
+
     function random_password($length = 5)
     {
         $str = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
         $shuffled = substr(str_shuffle($str), 0, $length);
         return $shuffled;
     }
-
-    $avatar = "avatar/default.png";
 
     $password = random_password(8);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
@@ -91,6 +95,12 @@ if ($action == 'update') {
     $new_gender = $_POST["gender"];
     $username = "BHW-" . $new_first_name;
 
+    if ($new_gender == "Male") {
+        $avatar = "avatar/default.png";
+    } else {
+        $avatar = "avatar/default-woman.png";
+    }
+
     $response = array(
         "first_name" => $new_first_name,
         "last_name" => $new_last_name,
@@ -101,7 +111,7 @@ if ($action == 'update') {
     );
 
     mysqli_query($db, "UPDATE users SET first_name='$new_first_name',last_name='$new_last_name',birthday='$new_birthdate',
-        gender='$new_gender',username='$username',bhw_id='$new_identification' WHERE id='$user_id'");
+        gender='$new_gender',username='$username',bhw_id='$new_identification',avatar='$avatar' WHERE id='$user_id'");
 }
 
 if ($action == 'delete') {
