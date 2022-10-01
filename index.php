@@ -72,6 +72,13 @@
                 </div>
             </div>
         </section>
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?> | <a href="./about.php" class="text-muted">About</a></div>
+                </div>
+            </div>
+        </footer>
     </div>
     <!-- import External.js -->
     <script src="./assets/js/scripts.js"></script>
