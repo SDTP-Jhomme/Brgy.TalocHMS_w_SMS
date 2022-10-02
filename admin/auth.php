@@ -70,7 +70,7 @@ if ($action == 'login') {
                 } else {
 
                     $response["error"] = true;
-                    $response["passErr"] = "Password does not match!";
+                    $response["passErr"] = "Password is incorrect!";
 
                     $attempt = $db_attempt + 1;
 

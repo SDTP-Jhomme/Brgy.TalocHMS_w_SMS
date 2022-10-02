@@ -4,7 +4,7 @@
 <head>
     <title>Admin | Login</title>
     <?php
-    include("../import/head.php");
+    include("./import/head.php");
 
     if (isset($_SESSION["id"])) {
 
@@ -71,7 +71,7 @@
             </div>
         </section>
     </div>
-    <?php include("../import/body.php"); ?>
+    <?php include("./import/body.php"); ?>
     <script>
         new Vue({
             el: "#app",

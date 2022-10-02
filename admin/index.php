@@ -5,7 +5,7 @@
     <title>Admin | Dashboard</title>
     <?php
 
-    include("../import/head.php");
+    include("./import/head.php");
 
     if (isset($_SESSION["id"])) {
 
@@ -27,17 +27,17 @@
 
 <body class="sb-nav-fixed">
     <div id="app">
-        <?php include("../import/nav.php"); ?>
+        <?php include("./import/nav.php"); ?>
         <div id="layoutSidenav" v-loading.fullscreen.lock="fullscreenLoading">
-            <?php include("../import/sidebar.php"); ?>
+            <?php include("./import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
 
                 </main>
-                <?php include("../import/footer.php"); ?>
+                <?php include("./import/footer.php"); ?>
             </div>
         </div>
-        <?php include("../import/body.php"); ?>
+        <?php include("./import/body.php"); ?>
     </div>
     <script>
         ELEMENT.locale(ELEMENT.lang.en)

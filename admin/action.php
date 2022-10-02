@@ -69,7 +69,7 @@ if ($action == 'store') {
     $password = random_password(8);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    $username = "BHW-" . $first_name;
+    $username = "BHW-" . ucfirst($first_name);
 
     $response = array(
         "first_name" => $first_name,
@@ -93,7 +93,7 @@ if ($action == 'update') {
     $new_last_name = $_POST["last_name"];
     $new_birthdate = $_POST["birthdate"];
     $new_gender = $_POST["gender"];
-    $username = "BHW-" . $new_first_name;
+    $username = "BHW-" . ucfirst($new_first_name);
 
     if ($new_gender == "Male") {
         $avatar = "avatar/default.png";

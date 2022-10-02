@@ -15,6 +15,15 @@
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
     <!-- import Favicon -->
     <link href="./assets/img/favicon.png">
+    <style>
+        .has-error {
+            border: 1px solid #dc3545;
+            background-image: url(../assets/img/error.svg);
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+    </style>
 </head>
 
 <body>
@@ -34,13 +43,16 @@
                                         </div>
 
                                         <label class="form-label" for="username">Username</label>
-                                        <div class="form-outline mb-4">
-                                            <input type="text" id="username" class="form-control" v-model="username" />
+                                        <div class="form-outline">
+                                            <input type="text" id="username" class="form-control" :class="{'has-error': this.userErr}" v-model="username" />
+                                        </div>
+                                        <div class="">
+                                            <span class="text-danger">{{this.userErr}}</span>
                                         </div>
 
-                                        <label class="form-label" for="password">Password</label>
-                                        <div class="form-outline mb-4 input-group">
-                                            <input :type="type" id="password" class="form-control" v-model="password" />
+                                        <label class="form-label mt-4" for="password">Password</label>
+                                        <div class="form-outline input-group">
+                                            <input :type="type" id="password" class="form-control" :class="{'has-error': this.userErr}" v-model="password" />
                                             <button class="input-group-text" @click="showPassword" v-if="type == 'password'">
                                                 <span>
                                                     <i class="fa fa-eye"></i>
@@ -52,9 +64,12 @@
                                                 </span>
                                             </button>
                                         </div>
+                                        <div class="mb-5">
+                                            <span class="text-danger">{{this.passErr}}</span>
+                                        </div>
 
                                         <div class="text-center pt-1 mb-5 pb-1 d-grid gap-2">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Login</button>
+                                            <button @click="login" class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Login</button>
                                         </div>
 
 
@@ -104,7 +119,9 @@
                 return {
                     type: "password",
                     username: "",
-                    password: ""
+                    password: "",
+                    userErr: "",
+                    passErr: "",
                 }
             },
             methods: {
@@ -113,6 +130,39 @@
                 },
                 hidePassword() {
                     this.type = "password"
+                },
+                login() {
+                    this.userErr = ""
+                    this.passErr = ""
+                    var data = new FormData()
+                    data.append("username", this.username)
+                    data.append("password", this.password)
+                    axios.post("auth.php?action=login", data)
+                        .then(response => {
+                            console.log(response.data)
+                            if (response.data.error) {
+                                this.userErr = response.data.userErr
+                                this.passErr = response.data.passErr
+                            } else if (response.data === "") {
+                                this.$notify({
+                                    title: 'Success',
+                                    message: 'Successfully logged in!',
+                                    type: 'success'
+                                });
+                                setTimeout(() => {
+                                    window.location.href = "./bhw/change-password"
+                                }, 1000)
+                            } else {
+                                this.$notify({
+                                    title: 'Success',
+                                    message: 'Successfully logged in!',
+                                    type: 'success'
+                                });
+                                setTimeout(() => {
+                                    window.location.href = "./bhw"
+                                }, 1000)
+                            }
+                        })
                 }
             }
         })
