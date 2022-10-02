@@ -3,7 +3,28 @@
 
 <head>
     <title>Health Management | Login</title>
-    <?php include("./database/database.php"); ?>
+    <?php
+    include("./database/database.php");
+
+    if (isset($_SESSION["id"])) {
+
+        $id = $_SESSION["id"];
+
+        $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
+        $user_row = mysqli_fetch_assoc($user_record);
+        $db_last_login = $user_row["last_login"];
+
+        if ($db_last_login) {
+
+            header("Location: ./bhw");
+            die();
+        } else {
+
+            header("Location: ./bhw/change-password");
+            die();
+        }
+    }
+    ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -52,7 +73,7 @@
 
                                         <label class="form-label mt-4" for="password">Password</label>
                                         <div class="form-outline input-group">
-                                            <input :type="type" id="password" class="form-control" :class="{'has-error': this.userErr}" v-model="password" />
+                                            <input :type="type" id="password" class="form-control" :class="{'has-error': this.passErr}" v-model="password" />
                                             <button class="input-group-text" @click="showPassword" v-if="type == 'password'">
                                                 <span>
                                                     <i class="fa fa-eye"></i>
@@ -92,7 +113,8 @@
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid px-4">
                 <div class="d-flex align-items-center justify-content-between small">
-                    <div class="text-muted">Copyright &copy; Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?> | <a href="./about.php" class="text-muted">About</a></div>
+                    <div class="text-muted">Copyright &copy; Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?> </div>
+                    <div><a href="./about">About</a> | All Rigths Reserved</div>
                 </div>
             </div>
         </footer>

@@ -6,17 +6,15 @@
     <?php
     include("./import/head.php");
 
+    $id = $_SESSION["id"];
+
     if (isset($_SESSION["id"])) {
 
         $id = $_SESSION["id"];
 
-        $admin_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
-
-        while ($admin_row = mysqli_fetch_assoc($admin_record)) {
-
-            $db_username = $admin_row["username"];
-            $logged_admin = ucfirst($db_username);
-        }
+        $user_record = mysqli_query($db, "SELECT * FROM users where id=$id");
+        $user_row = mysqli_fetch_assoc($user_record);
+        $db_username = $user_row["username"];
     } else {
 
         header("Location: ../");
@@ -34,30 +32,26 @@
                         <div class="col-lg-5">
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
                                 <div class="card-header">
-                                    <h3 class="text-center font-weight-light my-4">Login</h3>
+                                    <h3 class="text-center font-weight-light my-4">Fill in Your New Password</h3>
                                 </div>
                                 <div class="card-body">
                                     <form>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
-                                            <label for="inputEmail">Email address</label>
+                                            <input class="form-control" id="username" type="text" disabled value="<?php echo $db_username; ?>" />
+                                            <label for="username">Username</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputPassword" type="password" placeholder="Password" />
-                                            <label for="inputPassword">Password</label>
+                                            <input class="form-control" id="inputPassword" type="password" placeholder="Password" v-model="newPassword" />
+                                            <label for="inputPassword">Enter New Password</label>
                                         </div>
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                                            <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="confirmPassword" type="password" placeholder="Password" v-model="confirmPassword" />
+                                            <label for="confirmPassword">Confirm Password</label>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="small" href="password.html">Forgot Password?</a>
-                                            <a class="btn btn-primary" href="index.html">Login</a>
+                                            <button @click="submit" class="btn btn-primary" type="submit">Submit</button>
                                         </div>
                                     </form>
-                                </div>
-                                <div class="card-footer text-center py-3">
-                                    <div class="small"><a href="register.html">Need an account? Sign up!</a></div>
                                 </div>
                             </div>
                         </div>
@@ -66,22 +60,65 @@
             </main>
         </div>
         <div id="layoutAuthentication_footer">
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2022</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <?php include("./import/footer.php"); ?>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="js/scripts.js"></script>
+    <?php include("./import/body.php"); ?>
+    <script>
+        ELEMENT.locale(ELEMENT.lang.en)
+        new Vue({
+            el: "#layoutAuthentication",
+            data() {
+                return {
+                    type: "password",
+                    newPassword: "",
+                    confirmPassword: "",
+                    passErr: "",
+                }
+            },
+            methods: {
+                showPassword() {
+                    this.type = "text"
+                },
+                hidePassword() {
+                    this.type = "password"
+                },
+                submit() {
+                    this.userErr = ""
+                    this.passErr = ""
+                    var data = new FormData()
+                    data.append("username", this.username)
+                    data.append("password", this.password)
+                    axios.post("auth.php?action=login", data)
+                        .then(response => {
+                            console.log(response.data)
+                            if (response.data.error) {
+                                this.userErr = response.data.userErr
+                                this.passErr = response.data.passErr
+                            } else if (response.data === "") {
+                                this.$notify({
+                                    title: 'Success',
+                                    message: 'Successfully logged in!',
+                                    type: 'success'
+                                });
+                                setTimeout(() => {
+                                    window.location.href = "./bhw/change-password"
+                                }, 1000)
+                            } else {
+                                this.$notify({
+                                    title: 'Success',
+                                    message: 'Successfully logged in!',
+                                    type: 'success'
+                                });
+                                setTimeout(() => {
+                                    window.location.href = "./bhw"
+                                }, 1000)
+                            }
+                        })
+                }
+            }
+        })
+    </script>
 </body>
 
 </html>

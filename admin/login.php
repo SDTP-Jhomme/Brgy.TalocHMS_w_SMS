@@ -114,7 +114,7 @@
                                     type: 'success'
                                 });
                                 setTimeout(() => {
-                                    window.location.href = "index"
+                                    window.location.href = "../admin"
                                 }, 1000)
                             }
                         })

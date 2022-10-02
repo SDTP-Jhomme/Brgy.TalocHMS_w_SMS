@@ -261,7 +261,14 @@
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
-    <?php include("./import/footer.php"); ?><!-- End Footer -->
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?></div>
+                <div><a href="./about">About</a> | All Rigths Reserved</div>
+            </div>
+        </div>
+    </footer>
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
