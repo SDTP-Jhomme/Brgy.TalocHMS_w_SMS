@@ -34,12 +34,6 @@
     <!-- Template Main CSS File -->
     <link href="./assets/css/style.css" rel="stylesheet">
 
-    <!-- =======================================================
-  * Template Name: Tempo - v4.9.0
-  * Template URL: https://bootstrapmade.com/tempo-free-onepage-bootstrap-theme/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -47,13 +41,10 @@
     <header id="header" class="fixed-top ">
         <div class="container d-flex align-items-center justify-content-between">
 
-            <h1 class="logo"><a href="index" class="btn btn-outline-dark px-5 border border-2 border-dark text-danger fw-bold">Login</a></h1>
-            <!-- Uncomment below if you prefer to use an image logo -->
-            <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            <h1 class="logo"><a href="../capstone-new" class="btn btn-outline-dark px-5 border border-2 border-light fw-bold">Go Back to Login</a></h1>
 
             <nav id="navbar" class="navbar">
                 <ul>
-                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
                     <li><a class="nav-link scrollto" href="#about">About</a></li>
                     <li><a class="nav-link scrollto" href="#services">Services</a></li>
                     <li><a class="nav-link scrollto" href="#team">Team</a></li>
@@ -69,8 +60,7 @@
         <div class="hero-container">
             <h3>Welcome to <strong>Barangay Taloc Online Health Management System</strong></h3>
             <h1>Bago City College - BSIS</h1>
-            <h2>Capstone project AY <?php echo date("Y"); ?></h2>
-            <a href="#about" class="btn-get-started scrollto">Get Started</a>
+            <h2>Capstone Project AY <?php echo date("Y"); ?></h2>
         </div>
     </section><!-- End Hero -->
 
@@ -153,7 +143,6 @@
                             <p class="description">Accessible to all</p>
                         </div>
                     </div>
-
                 </div>
 
             </div>
@@ -176,7 +165,7 @@
                             <div class="member-img">
                                 <img src="./assets/avatar/jhomme.jpg" class="img-fluid" alt="jhomme" style="max-width: 300px;">
                                 <div class="social">
-                                    <a href="https://web.facebook.com/jhomme.dimasuay"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://web.facebook.com/jhomme.dimasuay" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
                             </div>
                             <div class="member-info">
@@ -191,7 +180,7 @@
                             <div class="member-img">
                                 <img src="./assets/avatar/ryan.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
-                                    <a href="https://web.facebook.com/ryan.seguirogwapo"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://web.facebook.com/ryan.seguirogwapo" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
                             </div>
                             <div class="member-info">
@@ -206,7 +195,7 @@
                             <div class="member-img">
                                 <img src="./assets/avatar/kaloi.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
-                                    <a href="https://web.facebook.com/carlo.panoncillo.3"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://web.facebook.com/carlo.panoncillo.3" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
                             </div>
                             <div class="member-info">
@@ -221,7 +210,7 @@
                             <div class="member-img">
                                 <img src="./assets/avatar/andrew.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
-                                    <a href="https://web.facebook.com/andrew.g.alba"><i class="bi bi-facebook"></i></a>
+                                    <a href="https://web.facebook.com/andrew.g.alba" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
                             </div>
                             <div class="member-info">

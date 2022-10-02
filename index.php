@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="./assets/css/element.css">
     <!-- import Bootstrap.css  -->
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <!-- import Favicon -->
+    <link href="./assets/img/favicon.png">
 </head>
 
 <body>

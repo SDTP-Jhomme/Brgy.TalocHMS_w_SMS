@@ -139,7 +139,7 @@
                                 </el-form>
                             </div>
                             <div class="d-flex p-4">
-                                <el-button :loading="loadButton" class="flex-1" type="primary" @click="submitForm('addBhw')">Submit</el-button>
+                                <el-button :loading="loadButton" class="flex-1" type="primary" @click="addUser('addBhw')">Submit</el-button>
                                 <el-button :loading="loadButton" class="flex-1" @click="resetForm('addBhw')">Reset</el-button>
                             </div>
                         </el-drawer>
@@ -239,10 +239,20 @@
         new Vue({
             el: "#app",
             data() {
-                var textOnly = /^[a-zA-Z ]*$/;
-                const validateID = (rule, value, callback) => {
+                const validateAddID = (rule, value, callback) => {
                     if (this.checkIdentification.includes(value.trim())) {
                         callback(new Error('Identification no. already exist!'));
+                    } else {
+                        callback();
+                    }
+                };
+                const validateUpdateID = (rule, value, callback) => {
+                    if (localStorage.getItem("identification") != value) {
+                        if (this.checkIdentification.includes(value.trim())) {
+                            callback(new Error('Identification no. already exist!'));
+                        } else {
+                            callback();
+                        }
                     } else {
                         callback();
                     }
@@ -268,7 +278,7 @@
                             message: 'Identification no. is required!',
                             trigger: 'blur'
                         }, {
-                            validator: validateID,
+                            validator: validateAddID,
                             trigger: 'blur'
                         }],
                         firstName: [{
@@ -315,6 +325,9 @@
                         identification: [{
                             required: true,
                             message: 'Identification no. is required!',
+                            trigger: 'blur'
+                        }, {
+                            validator: validateUpdateID,
                             trigger: 'blur'
                         }],
                         firstName: [{
@@ -555,7 +568,7 @@
                             }
                         })
                 },
-                submitForm(addBhw) {
+                addUser(addBhw) {
                     this.$refs[addBhw].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
@@ -605,6 +618,7 @@
                     this.viewDialog = true;
                 },
                 handleEdit(index, row) {
+                    localStorage.setItem("identification", row.identification)
                     this.editBhw = {
                         id: row.id,
                         username: row.username,
@@ -663,7 +677,9 @@
                                     .then(() => {
                                         this.editDialog = false
                                     })
-                                    .catch(() => {});
+                                    .catch(() => {
+                                        this.editDialog = true
+                                    })
                             }
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
