@@ -139,7 +139,7 @@ if ($action == 'reset') {
         "password" => $password
     );
 
-    mysqli_query($db, "UPDATE users SET password='$hashed_password' WHERE id='$user_id'");
+    mysqli_query($db, "UPDATE users SET password='$hashed_password',last_login=null WHERE id='$user_id'");
 }
 
 if ($action == 'bulk_delete') {

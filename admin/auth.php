@@ -91,14 +91,7 @@ if ($action == 'login') {
                 $response["message"] = "Sorry you can't login until $db_log_time.";
             }
         }
-    } else {
     }
-
-    // if (!$check_admin_row) {
-
-    //     $response["error"] = true;
-    //     $response["adminErr"] = "Admin user does not exist!";
-    // }
 }
 
 if ($action == 'logout') {
