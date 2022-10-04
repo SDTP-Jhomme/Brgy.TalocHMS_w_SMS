@@ -18,9 +18,12 @@ if ($action == 'change_password') {
     $new_password = $_POST["newPassword"];
     $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
 
-    $response = $hashed_password;
+    $response = mysqli_query($db, "UPDATE users SET password='$hashed_password',last_login='$date_now' WHERE id='$user_id'");
 
-    mysqli_query($db, "UPDATE users SET password='$hashed_password',last_login='$date_now' WHERE id='$user_id'");
+    if ($response) {
+        session_start();
+        unset($_SESSION["user_id"]);
+    }
 }
 
 echo json_encode($response);

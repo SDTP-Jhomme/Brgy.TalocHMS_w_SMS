@@ -5,18 +5,22 @@
     <title>Admin | Prenatal Patients Information</title>
     <?php
 
-    include("../import/head.php");
+    include("./import/head.php");
 
-    if (isset($_SESSION["id"])) {
+    if (isset($_SESSION["user_id"])) {
 
-        $id = $_SESSION["id"];
+        $id = $_SESSION["user_id"];
 
-        $admin_record = mysqli_query($db, "SELECT * FROM admin where id='$id'");
+        $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 
-        while ($admin_row = mysqli_fetch_assoc($admin_record)) {
+        $user_row = mysqli_fetch_assoc($user_record);
 
-            $db_username = $admin_row["username"];
-            $logged_admin = ucfirst($db_username);
+        $db_username = $user_row["username"];
+        $db_last_login = $user_row["last_login"];
+        $logged_user = ucfirst($db_username);
+
+        if ($db_last_login == "") {
+            header("Location: ./change-password");
         }
     } else {
 
@@ -27,17 +31,17 @@
 
 <body class="sb-nav-fixed">
     <div id="app">
-        <?php include("../import/nav.php"); ?>
+        <?php include("./import/nav.php"); ?>
         <div id="layoutSidenav" v-loading.fullscreen.lock="fullscreenLoading">
-            <?php include("../import/sidebar.php"); ?>
+            <?php include("./import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
                 </main>
-                <?php include("../import/footer.php"); ?>
+                <?php include("./import/footer.php"); ?>
             </div>
         </div>
     </div>
-    <?php include("../import/body.php"); ?>
+    <?php include("./import/body.php"); ?>
     <script>
         ELEMENT.locale(ELEMENT.lang.en)
         new Vue({
@@ -56,7 +60,7 @@
                 // Logout **********************************************************
                 logout() {
                     this.fullscreenLoading = true
-                    axios.post("auth.php?action=logout")
+                    axios.post("../auth.php?action=logout")
                         .then(response => {
                             if (response.data.message) {
                                 this.$notify({

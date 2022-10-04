@@ -161,7 +161,6 @@
                     data.append("password", this.password)
                     axios.post("auth.php?action=login", data)
                         .then(response => {
-                            console.log(response.data)
                             if (response.data.error) {
                                 this.userErr = response.data.userErr
                                 this.passErr = response.data.passErr

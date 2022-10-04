@@ -54,18 +54,17 @@ if ($action == 'login') {
 
             if (password_verify($password, $db_password)) {
 
-                if ($db_last_login) {
+                if ($db_last_login != "") {
 
                     session_start();
-
                     $_SESSION["user_id"] = $db_id;
 
-                    mysqli_query($db, "UPDATE users SET last_login='$date_time' WHERE id='$db_id'");
+                    mysqli_query($db, "UPDATE users SET last_login='$date_now' WHERE id='$db_id'");
                 } else {
-
+                    
                     session_start();
-
                     $_SESSION["user_id"] = $db_id;
+
                     $response = $db_last_login;
                 }
             } else {
@@ -79,9 +78,8 @@ if ($action == 'login') {
 
 if ($action == 'logout') {
 
-    unset($_SESSION["id"]);
-    session_unset();
-    session_destroy();
+    session_start();
+    unset($_SESSION["user_id"]);
     $response["message"] = "Logout success!";
 }
 
