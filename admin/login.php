@@ -36,7 +36,7 @@
 
                                 <label class="form-label" for="username">Username</label>
                                 <div class="form-outline input-group">
-                                    <input type="text" id="username" class="form-control" :class="{'has-error': this.userErr}" v-model="username" />
+                                    <input v-on:keyup.enter="login" type="text" id="username" class="form-control" :class="{'has-error': this.userErr}" v-model="username" />
                                 </div>
                                 <div class="mb-4">
                                     <span class="text-danger">{{this.userErr}}</span>
@@ -44,7 +44,7 @@
 
                                 <label class="form-label" for="password">Password</label>
                                 <div class="form-outline input-group">
-                                    <input :type="type" id="password" class="form-control" :class="{'has-error': this.passErr}" v-model="password" />
+                                    <input v-on:keyup.enter="login" :type="type" id="password" class="form-control" :class="{'has-error': this.passErr}" v-model="password" />
                                     <button class="input-group-text" @click="showPassword" v-if="type == 'password'">
                                         <span>
                                             <i class="fa fa-eye"></i>
