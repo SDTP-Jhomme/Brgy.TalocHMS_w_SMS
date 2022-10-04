@@ -58,14 +58,14 @@ if ($action == 'login') {
 
                     session_start();
 
-                    $_SESSION["id"] = $db_id;
+                    $_SESSION["user_id"] = $db_id;
 
                     mysqli_query($db, "UPDATE users SET last_login='$date_time' WHERE id='$db_id'");
                 } else {
 
                     session_start();
 
-                    $_SESSION["id"] = $db_id;
+                    $_SESSION["user_id"] = $db_id;
                     $response = $db_last_login;
                 }
             } else {
