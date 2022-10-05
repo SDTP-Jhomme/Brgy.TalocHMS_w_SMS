@@ -44,7 +44,7 @@
                                         <label for="username">Username</label>
                                     </div>
                                     <div class="form-floating input-group">
-                                        <input class="form-control" id="inputPassword" :type="type" placeholder="Password" v-model="newPassword" />
+                                        <input v-on:keyup.enter="submit" class="form-control" id="inputPassword" :type="type" placeholder="Password" v-model="newPassword" />
                                         <button class="input-group-text" @click="showPassword" v-if="type == 'password'">
                                             <span>
                                                 <i class="fa fa-eye"></i>
@@ -59,7 +59,7 @@
                                     </div>
                                     <span class="text-danger">{{this.newPassErr}}</span>
                                     <div class="form-floating mt-3 input-group">
-                                        <input :disabled="isDisabled" class="form-control" id="confirmPassword" :type="confirmType" placeholder="Password" v-model="confirmPassword" />
+                                        <input v-on:keyup.enter="submit" :disabled="isDisabled" class="form-control" id="confirmPassword" :type="confirmType" placeholder="Password" v-model="confirmPassword" />
                                         <button class="input-group-text" @click="showConfirmPassword" v-if="confirmType == 'password'">
                                             <span>
                                                 <i class="fa fa-eye"></i>

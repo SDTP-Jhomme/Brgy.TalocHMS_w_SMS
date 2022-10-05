@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Prenatal Patients Information</title>
+    <title>BHW | Add Patient</title>
     <?php
 
     include("./import/head.php");

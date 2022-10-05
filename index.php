@@ -35,7 +35,7 @@
     <!-- import Bootstrap.css  -->
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
     <!-- import Favicon -->
-    <link href="./assets/img/favicon.png">
+    <link href="./assets/img/favicon.png" rel="icon">
     <style>
         .has-error {
             border: 1px solid #dc3545;
