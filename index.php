@@ -165,14 +165,7 @@
                                 this.userErr = response.data.userErr
                                 this.passErr = response.data.passErr
                             } else if (response.data === "") {
-                                this.$notify({
-                                    title: 'Success',
-                                    message: 'Successfully logged in!',
-                                    type: 'success'
-                                });
-                                setTimeout(() => {
-                                    window.location.href = "./bhw/change-password"
-                                }, 1000)
+                                window.location.href = "./bhw/change-password"
                             } else {
                                 this.$notify({
                                     title: 'Success',

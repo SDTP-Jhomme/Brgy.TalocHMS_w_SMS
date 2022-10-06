@@ -48,17 +48,52 @@
                         <el-container>
                             <el-header>Header</el-header>
                             <el-main>
-                                <el-row :gutter="20" type="flex" justify="center">
-                                    <el-col :span="6">
-                                        <el-input placeholder="Please input" v-model="input"></el-input>
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <el-input placeholder="Please input" v-model="input"></el-input>
-                                    </el-col>
-                                    <el-col :span="6">
-                                        <el-input placeholder="Please input" v-model="input"></el-input>
-                                    </el-col>
-                                </el-row>
+                                <el-form :model="addPatient" :rules="addRules" ref="addPatient">
+                                    <el-row :gutter="20" type="flex" justify="center">
+                                        <el-col :span="6">
+                                            <el-form-item prop="lastName">
+                                                <label class="m-0"><span class="text-danger">*</span> Last Name</label>
+                                                <el-input v-model="addPatient.lastName" clearable></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6">
+                                            <el-form-item prop="firstName">
+                                                <label class="m-0"><span class="text-danger">*</span> First Name</label>
+                                                <el-input v-model="addPatient.firstName" clearable></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6">
+                                            <el-form-item prop="middleName">
+                                                <label class="m-0">Middle Name</label>
+                                                <el-input v-model="addPatient.middleName" clearable></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="2">
+                                            <el-form-item prop="suffix">
+                                                <label class="m-0">Suffix</label>
+                                                <el-input v-model="addPatient.suffix" clearable></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row :gutter="30" type="flex" justify="center">
+                                        <el-col :span="6">
+                                            <el-form-item prop="birthDate">
+                                                <label class="m-0 d-block"><span class="text-danger">*</span> Birthdate</label>
+                                                <el-date-picker v-model="addPatient.birthDate" type="date" placeholder="">
+                                                </el-date-picker>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="6">
+                                            <el-form-item prop="gender">
+                                                <label class="m-0"><span class="text-danger">*</span> Gender</label>
+                                                <div>
+                                                    <el-radio v-model="addPatient.gender" label="Male">Male</el-radio>
+                                                    <el-radio v-model="addPatient.gender" label="Female">Female</el-radio>
+                                                </div>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
                             </el-main>
                         </el-container>
                     </div>
@@ -82,7 +117,37 @@
             data() {
                 return {
                     fullscreenLoading: true,
-                    input: ""
+                    input: "",
+                    addPatient: {
+                        firstName: "",
+                        middleName: "",
+                        lastName: "",
+                        suffix: "",
+                        birtthDate: "",
+                        gender: "",
+                    },
+                    addRules: {
+                        firstName: [{
+                            required: true,
+                            message: 'First name is required!',
+                            trigger: 'blur'
+                        }],
+                        lastName: [{
+                            required: true,
+                            message: 'Last name is required!',
+                            trigger: 'blur'
+                        }],
+                        birthDate: [{
+                            required: true,
+                            message: 'Birthdate is required!',
+                            trigger: 'blur'
+                        }],
+                        gender: [{
+                            required: true,
+                            message: 'Gender is required!',
+                            trigger: 'blur'
+                        }],
+                    }
                 }
             },
             mounted() {
