@@ -540,6 +540,7 @@
                         .then(() => {
                             this.editDialog = false
                             this.$refs[editBhw].resetFields();
+                            localStorage.removeItem("identification")
                         })
                         .catch(() => {});
                 },
@@ -665,6 +666,7 @@
                                                     }, 1500)
                                                 }
                                             })
+                                        localStorage.removeItem("identification")
                                     })
                                     .catch(() => {
                                         this.loadButton = false;
@@ -676,6 +678,7 @@
                                     })
                                     .then(() => {
                                         this.editDialog = false
+                                        localStorage.removeItem("identification")
                                     })
                                     .catch(() => {
                                         this.editDialog = true
