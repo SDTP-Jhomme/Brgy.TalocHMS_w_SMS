@@ -169,7 +169,7 @@
                                 <el-row type="flex" justify="center" v-if="active == 2">
                                     <el-button-group>
                                         <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                                        <el-button type="primary" size="small" plain @click="next">Submit <i class="el-icon-arrow-right el-icon-right"></i></el-button>
+                                        <el-button type="primary" size="small" plain @click="submit">Submit <i class="el-icon-arrow-right el-icon-right"></i></el-button>
                                     </el-button-group>
                                 </el-row>
                             </el-main>
@@ -277,10 +277,11 @@
                 },
                 back() {
                     this.active--
+                    localStorage.setItem("active", this.active)
                     if (this.active == 0) {
                         localStorage.removeItem("addPatient")
                     }
-                    localStorage.isHealthCheckup ? localStorage.removeItem("addPatient") : ""
+                    localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
                     localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
                     localStorage.isPregnancy ? localStorage.removeItem("isPregnancy") : ""
                 },
@@ -289,7 +290,7 @@
                         localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
                     } else if (this.isImmunization) {
                         localStorage.setItem("isImmunization", this.isImmunization)
-                    } else {
+                    } else if (this.isPregnancy) {
                         localStorage.setItem("isPregnancy", this.isPregnancy)
                     }
 
@@ -314,6 +315,9 @@
                     this.isPregnancy = true;
                     this.isImmunization = false;
                     this.isHealthCheckup = false;
+                },
+                submit() {
+                    console.log(this.addPatient)
                 }
             }
         })
