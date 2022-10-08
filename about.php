@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+    <?php
+
+    include("./database/database.php");
+
+    session_start();
+    
+    ?>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
@@ -39,9 +46,8 @@
 <body>
     <!-- ======= Header ======= -->
     <header id="header" class="fixed-top ">
-        <div class="container d-flex align-items-center justify-content-between">
-
-            <h1 class="logo"><a href="../capstone-new" class="btn btn-outline-dark px-5 border border-2 border-light fw-bold">Go Back to Login</a></h1>
+        <div id="app" class="container d-flex align-items-center justify-content-between">
+            <h1 class="logo"><a v-if="isVisible" href="../capstone-new" class="btn btn-outline-dark px-5 border border-2 border-light fw-bold">Go Back to Login</a></h1>
 
             <nav id="navbar" class="navbar">
                 <ul>
@@ -278,9 +284,21 @@
     <script src="./assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="./assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="./assets/vendor/php-email-form/validate.js"></script>
+    <script src="./assets/js/vue.js"></script>
 
     <!-- Template Main JS File -->
     <script src="./assets/js/main.js"></script>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    isVisible: <?php echo isset($_SESSION["user_id"]); ?> ? false : true
+                }
+            }
+        })
+    </script>
 
 </body>
 
