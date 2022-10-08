@@ -11,6 +11,11 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow" v-if="this.backToHome">
+            <a class="nav-link" href="../bhw" id="" role="button" aria-haspopup="true" aria-expanded="false">
+                Back To Home
+            </a>
+        </li>
 
         <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->

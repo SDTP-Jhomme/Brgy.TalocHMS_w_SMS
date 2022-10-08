@@ -74,7 +74,7 @@
                     this.fullscreenLoading = false
                 }, 1000)
                 if (window.location.pathname != "/caps/capstone-new/bhw/") {
-                    localStorage.clear() 
+                    localStorage.clear()
                     this.backToHome = true;
                 }
             },

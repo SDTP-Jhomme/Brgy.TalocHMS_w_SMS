@@ -12882,3 +12882,7 @@ nav#sidenavAccordion {
 .sb-sidenav-dark .sb-sidenav-footer {
   background-color: #00112b !important;
 }
+
+.profile .profile-card img {
+  max-width: 120px;
+}

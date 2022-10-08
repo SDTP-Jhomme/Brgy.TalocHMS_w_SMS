@@ -66,6 +66,7 @@
                 return {
                     active: 0,
                     fullscreenLoading: true,
+                    backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
@@ -121,6 +122,7 @@
                     axios.post("../auth.php?action=logout")
                         .then(response => {
                             if (response.data.message) {
+                                localStorage.clear();
                                 this.$notify({
                                     title: 'Success',
                                     message: 'Successfully logged out!',
