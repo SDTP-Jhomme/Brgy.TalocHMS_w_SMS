@@ -20,12 +20,16 @@
                 <div class="card p-4 shadow">
                     <el-tabs>
                         <el-tab-pane>
-                            <span slot="label"><i class="el-icon-document"></i> User Profile Info</span>
-                            User Profile Info
+                            <span slot="label">
+                                <h5><i class="el-icon-document"></i> User Profile Info</h5>
+                            </span>
+                            <?php include("./profile-info.php"); ?>
                         </el-tab-pane>
                         <el-tab-pane>
-                            <span slot="label"><i class="el-icon-lock"></i> Change Password</span>
-                            Change Password
+                            <span slot="label">
+                                <h5><i class="el-icon-lock"></i> Change Password</h5>
+                            </span>
+                            <?php include("./update-pass.php"); ?>
                         </el-tab-pane>
                     </el-tabs>
                 </div>

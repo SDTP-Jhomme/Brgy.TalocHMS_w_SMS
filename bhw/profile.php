@@ -16,10 +16,13 @@
         $user_row = mysqli_fetch_assoc($user_record);
 
         $db_username = $user_row["username"];
+        $db_identification = $user_row["bhw_id"];
         $name = ucfirst($user_row["first_name"])." ".ucfirst($user_row["last_name"]);
         $db_last_login = $user_row["last_login"];
         $logged_user = ucfirst($db_username);
         $db_avatar = $user_row["avatar"];
+        $db_birthday = $birthdate = date("F d, Y", strtotime($user_row["birthday"]));
+        $db_gender = $user_row["gender"];
 
         if ($db_last_login == "") {
             header("Location: ./change-password");
