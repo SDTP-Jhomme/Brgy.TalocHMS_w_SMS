@@ -1,6 +1,3 @@
-<style>
-    
-</style>
 <div>
     <el-container>
         <el-header height="0px"></el-header>
@@ -64,27 +61,48 @@
                     Select Checkup
                 </el-col>
             </el-row>
-            <el-row :gutter="30" type="flex" justify="center">
+            <el-row :gutter="40" type="flex" justify="center">
                 <el-col :span="5">
-                    <a href="javascript:void(0)" @click="healthCheckup">
-                        <div class="card" :class="{'border border-primary': this.isHealthCheckup}">
-                            <img src="../assets/img/health-checkup.png" alt="Health Checkup">
-                        </div>
-                    </a>
+                    <div>
+                        <a href="javascript:void(0)" @click="healthCheckup">
+                            <div class="card card-overflow-hidden health-checkup" :class="{'card-border-health': this.isHealthCheckup}">
+                                <img src="../assets/img/health-checkup.png" alt="Health Checkup">
+                                <div :class="this.isHealthCheckup ? 'card-with-hover-active' : 'card-with-hover'">
+                                    <div class="card-text-center">
+                                        <h4 class="text-center">Health Checkup</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </el-col>
                 <el-col :span="5">
-                    <a href="javascript:void(0)" @click="immunization">
-                        <div class="card" :class="{'border border-primary': this.isImmunization}">
-                            <img src="../assets/img/immunization.png" alt="Immunization Checkup">
-                        </div>
-                    </a>
+                    <div>
+                        <a href="javascript:void(0)" @click="immunization">
+                            <div class="card card-overflow-hidden immunization-checkup" :class="{'card-border-immunization': this.isImmunization}">
+                                <img src="../assets/img/immunization.png" alt="Immunization Checkup">
+                                <div :class="this.isImmunization ? 'card-with-hover-active' : 'card-with-hover'">
+                                    <div class="card-text-center">
+                                        <h4 class="text-center">Immunization Checkup</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </el-col>
                 <el-col :span="5">
-                    <a href="javascript:void(0)" @click="pregnancy">
-                        <div class="card" :class="{'border border-primary': this.isPregnancy}">
-                            <img src="../assets/img/pregnancy.png" alt="Pregnancy Checkup">
-                        </div>
-                    </a>
+                    <div>
+                        <a href="javascript:void(0)" @click="pregnancy">
+                            <div class="card card-overflow-hidden pregnancy-checkup" :class="{'card-border-pregnancy': this.isPregnancy}">
+                                <img src="../assets/img/pregnancy.png" alt="Pregnancy Checkup">
+                                <div :class="this.isPregnancy ? 'card-with-hover-active' : 'card-with-hover'">
+                                    <div class="card-text-center">
+                                        <h4 class="text-center">Pregnancy Checkup</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 </el-col>
             </el-row>
         </el-main>
@@ -95,13 +113,13 @@
                 </el-col>
             </el-row>
             <el-row v-if="this.isHealthCheckup" :gutter="30" type="flex" justify="center">
-                health checkup
+                Health Checkup
             </el-row>
             <el-row v-if="this.isImmunization" :gutter="30" type="flex" justify="center">
-                immunization
+                Immunization
             </el-row>
             <el-row v-if="this.isPregnancy" :gutter="30" type="flex" justify="center">
-                pregnancy
+                Pregnancy
             </el-row>
         </el-main>
         <el-main>

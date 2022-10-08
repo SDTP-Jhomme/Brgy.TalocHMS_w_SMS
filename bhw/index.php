@@ -83,10 +83,18 @@
                             required: true,
                             message: 'First name is required!',
                             trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
                         }],
                         lastName: [{
                             required: true,
                             message: 'Last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
                             trigger: 'blur'
                         }],
                         birthDate: [{
@@ -141,6 +149,9 @@
                             this.active++;
                             localStorage.setItem("active", this.active)
                             localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
+                            this.isHealthCheckup = false;
+                            this.isImmunization = false;
+                            this.isImmunization = false;
                         } else {
                             this.$message.error("Please fill in the required informations!");
                             return false;

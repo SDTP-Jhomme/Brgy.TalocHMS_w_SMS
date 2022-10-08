@@ -12886,3 +12886,79 @@ nav#sidenavAccordion {
 .profile .profile-card img {
   max-width: 120px;
 }
+
+.card-overflow-hidden {
+  overflow: hidden;
+}
+
+.health-checkup {
+  background-color: #c5ffc0 !important;
+}
+
+.immunization-checkup {
+  background-color: #c0e0ff !important;
+}
+
+.pregnancy-checkup {
+  background-color: #ffc0cb !important;
+}
+
+.card-border-health {
+  outline-style: solid !important;
+  outline-color: #a7ffc1 !important;
+  outline-width: 3px !important;
+  outline-offset: -1px !important;
+}
+
+.card-border-immunization {
+  outline-style: solid !important;
+  outline-color: #b1cefa !important;
+  outline-width: 3px !important;
+  outline-offset: -1px !important;
+}
+
+.card-border-pregnancy {
+  outline-style: solid !important;
+  outline-color: #e4abab !important;
+  outline-width: 3px !important;
+  outline-offset: -1px !important;
+}
+
+.card-with-hover {
+  position: absolute;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  top: 100%;
+  background-color: rgb(255 255 255 / 15%);
+  height: 100%;
+  transition: all 0.4s;
+}
+
+.card-with-hover-active {
+  position: absolute;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  top: 0;
+  background-color: rgb(255 255 255 / 15%);
+  height: 100%;
+  transition: all 0.4s;
+}
+
+.card-text-center {
+  position: relative;
+  top: 100%;
+  transform: translateY(-85%);
+  padding: 5px;
+  background: #ffffff;
+  line-height: 10px;
+}
+
+.card-text-center h4 {
+  color: #777777;
+}
+
+.card-overflow-hidden:hover .card-with-hover {
+  top: 0;
+}
