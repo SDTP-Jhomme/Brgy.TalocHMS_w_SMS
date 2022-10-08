@@ -706,6 +706,7 @@
                                 .then(response => {
                                     if (response.data) {
                                         this.tableLoad = true;
+                                        localStorage.removeItem("identification")
                                         setTimeout(() => {
                                             this.tableLoad = false;
                                             this.$message({

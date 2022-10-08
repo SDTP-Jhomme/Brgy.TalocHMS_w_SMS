@@ -85,7 +85,7 @@
                 // Logout **********************************************************
                 logout() {
                     this.fullscreenLoading = true
-                    axios.post("auth.php?action=logout")
+                    axios.post("../auth.php?action=logout")
                         .then(response => {
                             if (response.data.message) {
                                 this.$notify({
