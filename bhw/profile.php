@@ -72,7 +72,7 @@
                     backToHome: false,
                     fileImg: null,
                     fileUrl: null,
-                    avatar: true,
+                    avatar: "",
                     error: true,
                     loadButton: false,
                     checkPass: false,
@@ -84,6 +84,9 @@
                     confirmPassErr: "",
                     errors: true,
                 }
+            },
+            created() {
+                this.fetchAvatar()
             },
             mounted() {
                 setTimeout(() => {
@@ -113,6 +116,16 @@
                         })
                 },
                 // ******************************************************************
+                fetchAvatar() {
+                    const fetchAvatar = new FormData();
+                    fetchAvatar.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_avatar", fetchAvatar)
+                        .then(response => {
+                            if (response) {
+                                this.avatar = "../assets/" + response.data
+                            }
+                        })
+                },
                 fileUpload() {
                     if (this.$refs.file.files.length > 0) {
                         if (this.$refs.file.files[0].size > 20000000) {
@@ -152,8 +165,8 @@
                         .then(res => {
                             if (res) {
                                 setTimeout(() => {
+                                    this.fetchAvatar();
                                     this.loadButton = false;
-                                    this.avatar = false;
                                     this.fileImg = null;
                                     this.$message({
                                         message: 'Profile image has been updated!',

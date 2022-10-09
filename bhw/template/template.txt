@@ -98,6 +98,16 @@
                         })
                 },
                 // ******************************************************************
+                fetchAvatar() {
+                    const fetchAvatar = new FormData();
+                    fetchAvatar.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_avatar", fetchAvatar)
+                        .then(response => {
+                            if (response) {
+                                this.avatar = "../assets/" + response.data
+                            }
+                        })
+                }
             }
         })
     </script>

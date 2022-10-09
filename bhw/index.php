@@ -18,7 +18,6 @@
         $db_username = $user_row["username"];
         $db_last_login = $user_row["last_login"];
         $logged_user = ucfirst($db_username);
-        $db_avatar = $user_row["avatar"];
 
         if ($db_last_login == "") {
             header("Location: ./change-password");
@@ -66,11 +65,11 @@
                 return {
                     active: 0,
                     fullscreenLoading: true,
-                    avatar: true,
                     backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
+                    avatar: "",
                     addPatient: {
                         firstName: "",
                         middleName: "",
@@ -111,6 +110,9 @@
                     }
                 }
             },
+            created() {
+                this.fetchAvatar()
+            },
             mounted() {
                 setTimeout(() => {
                     this.fullscreenLoading = false
@@ -120,9 +122,6 @@
                 this.isHealthCheckup = localStorage.isHealthCheckup ? localStorage.isHealthCheckup : false
                 this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
-            },
-            watch: {
-
             },
             methods: {
                 // Logout **********************************************************
@@ -144,6 +143,16 @@
                         })
                 },
                 // ******************************************************************
+                fetchAvatar() {
+                    const fetchAvatar = new FormData();
+                    fetchAvatar.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_avatar", fetchAvatar)
+                        .then(response => {
+                            if (response) {
+                                this.avatar = "../assets/" + response.data
+                            }
+                        })
+                },
                 proceed(addPatient) {
                     this.$refs[addPatient].validate((valid) => {
                         if (valid) {

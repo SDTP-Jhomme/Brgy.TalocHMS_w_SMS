@@ -10,8 +10,7 @@
             <el-col :span="6">
                 <div class="card profile shadow">
                     <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                        <img v-if="avatar" src="../assets/<?php echo $db_avatar; ?>" alt="Profile" class="rounded-circle mb-3">
-                        <img v-else :src="fileUrl" alt="Profile" class="rounded-circle mb-3">
+                        <img :src="this.avatar" alt="Profile" class="rounded-circle mb-3">
                         <h4><?php echo $name; ?></h4>
                         <p>Barangay Health Worker</p>
                     </div>
