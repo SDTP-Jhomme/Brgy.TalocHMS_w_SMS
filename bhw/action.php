@@ -26,4 +26,18 @@ if ($action == 'change_password') {
     }
 }
 
+if ($action == 'update_avatar') {
+
+    $user_id = $_POST["id"];
+    $targetDir = "../assets/avatar/";
+    $temp = explode(".", $_FILES["file"]["name"]);
+    $newfilename = round(microtime(true)) . '.' . end($temp);
+    $targetFilePath = $targetDir . $newfilename;
+    $savedb_name = "avatar/$newfilename";
+
+    if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+        $response = mysqli_query($db, "UPDATE users SET avatar='$savedb_name' WHERE id='$user_id'");
+    }
+}
+
 echo json_encode($response);

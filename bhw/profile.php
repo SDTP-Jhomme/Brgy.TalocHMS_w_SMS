@@ -17,7 +17,7 @@
 
         $db_username = $user_row["username"];
         $db_identification = $user_row["bhw_id"];
-        $name = ucfirst($user_row["first_name"])." ".ucfirst($user_row["last_name"]);
+        $name = ucfirst($user_row["first_name"]) . " " . ucfirst($user_row["last_name"]);
         $db_last_login = $user_row["last_login"];
         $logged_user = ucfirst($db_username);
         $db_avatar = $user_row["avatar"];
@@ -69,7 +69,12 @@
             data() {
                 return {
                     fullscreenLoading: true,
-                    backToHome: false
+                    backToHome: false,
+                    fileImg: null,
+                    fileUrl: null,
+                    avatar: true,
+                    error: true,
+                    loadButton: false,
                 }
             },
             mounted() {
@@ -77,7 +82,7 @@
                     this.fullscreenLoading = false
                 }, 1000)
                 if (window.location.pathname != "/caps/capstone-new/bhw/") {
-                    localStorage.clear() 
+                    localStorage.clear()
                     this.backToHome = true;
                 }
             },
@@ -100,6 +105,60 @@
                         })
                 },
                 // ******************************************************************
+                fileUpload() {
+                    if (this.$refs.file.files.length > 0) {
+                        if (this.$refs.file.files[0].size > 20000000) {
+                            this.$message.error("Avatar image size can not exceed 2MB!");
+                            this.fileImg = null;
+                            this.error = true;
+                            this.$refs.file.value = null;
+                        } else {
+                            this.error = false;
+                        }
+
+                        if (this.$refs.file.files[0].type != "image/jpeg") {
+                            this.$message.error("Avatar image must be in JPG format!");
+                            this.fileImg = null;
+                            this.error = true;
+                            this.$refs.file.value = null;
+                        } else {
+                            this.error = false;
+                        }
+                    }
+
+                    if (!this.error) {
+                        this.fileImg = this.$refs.file.files[0];
+                        const reader = new FileReader();
+                        reader.readAsDataURL(this.fileImg);
+                        reader.onload = (e) => {
+                            this.fileUrl = e.target.result;
+                        };
+                    }
+                },
+                submitFile() {
+                    this.loadButton = true;
+                    const newAvatar = new FormData();
+                    newAvatar.append("id", <?php echo $id; ?>)
+                    newAvatar.append("file", this.fileImg)
+                    axios.post("action.php?action=update_avatar", newAvatar)
+                        .then(res => {
+                            if (res) {
+                                setTimeout(() => {
+                                    this.loadButton = false;
+                                    this.avatar = false;
+                                    this.fileImg = null;
+                                    this.$message({
+                                        message: 'Profile image has been updated!',
+                                        type: 'success'
+                                    });
+                                }, 500)
+                            }
+                        })
+                },
+                removeAvatar() {
+                    this.fileImg = null;
+                    this.fileUrl = null;
+                }
             }
         })
     </script>

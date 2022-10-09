@@ -169,7 +169,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/avatar/jhomme.jpg" class="img-fluid" alt="jhomme" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/jhomme.jpg" class="img-fluid" alt="jhomme" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/jhomme.dimasuay" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
@@ -184,7 +184,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/avatar/ryan.jpg" class="img-fluid" alt="" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/ryan.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/ryan.seguirogwapo" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
@@ -199,7 +199,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/avatar/kaloi.jpg" class="img-fluid" alt="" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/kaloi.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/carlo.panoncillo.3" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
@@ -214,7 +214,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/avatar/andrew.jpg" class="img-fluid" alt="" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/andrew.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/andrew.g.alba" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>

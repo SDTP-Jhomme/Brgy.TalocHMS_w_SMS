@@ -1,11 +1,22 @@
 <div>
     <label class="form-label mb-0" for="">Change Avatar</label>
-    <el-row :gutter="20">
-        <el-col :span="18">
-            <input type="file" class="form-control" />
-        </el-col>
-        <el-col :span="4">
-            <input class="btn btn-primary" type="submit" class="form-control" value="Upload" />
+    <el-row type="flex" v-if="fileImg" justify="center">
+        <div class="mb-3 mt-2 avatar-container d-flex card-overflow-hidden">
+            <img :src="fileUrl" class="avatar">
+            <div class="avatar-overlay">
+                <span class="hover-remove-avatar">
+                    <i class="el-icon-delete" @click="removeAvatar"></i>
+                </span>
+            </div>
+        </div>
+    </el-row>
+    <el-row type="flex" v-if="fileImg" justify="center">
+        <button class="btn btn-primary" class="form-control" v-if="loadButton" disabled><i class="el-icon-loading"></i> Uploading</button>
+        <button class="btn btn-primary" class="form-control" @click="submitFile" v-else>Upload</button>
+    </el-row>
+    <el-row :gutter="20" v-else>
+        <el-col :span="12">
+            <input type="file" ref="file" class="form-control" @change="fileUpload" />
         </el-col>
     </el-row>
     <el-row :gutter="20" class="mt-3">
