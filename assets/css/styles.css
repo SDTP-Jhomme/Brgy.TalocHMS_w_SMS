@@ -13001,3 +13001,7 @@ nav#sidenavAccordion {
 .hover-remove-avatar i {
   cursor: pointer;
 }
+
+.topbar .nav-item .nav-link .img-profile {
+  object-fit: cover;
+}

@@ -66,6 +66,7 @@
                 return {
                     active: 0,
                     fullscreenLoading: true,
+                    avatar: true,
                     backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
@@ -187,15 +188,15 @@
                 healthCheckup() {
                     this.isPregnancy = false;
                     this.isImmunization = false;
-                    this.isHealthCheckup = true;
+                    this.isHealthCheckup = !this.isHealthCheckup;
                 },
                 immunization() {
                     this.isPregnancy = false;
-                    this.isImmunization = true;
+                    this.isImmunization = !this.isImmunization;
                     this.isHealthCheckup = false;
                 },
                 pregnancy() {
-                    this.isPregnancy = true;
+                    this.isPregnancy = !this.isPregnancy;
                     this.isImmunization = false;
                     this.isHealthCheckup = false;
                 },

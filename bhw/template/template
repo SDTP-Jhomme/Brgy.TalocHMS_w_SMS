@@ -66,7 +66,8 @@
             data() {
                 return {
                     fullscreenLoading: true,
-                    backToHome: false
+                    backToHome: false,
+                    avatar: true,
                 }
             },
             mounted() {
