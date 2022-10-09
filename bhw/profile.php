@@ -75,6 +75,14 @@
                     avatar: true,
                     error: true,
                     loadButton: false,
+                    checkPass: false,
+                    currentPassword: "",
+                    newPassword: "",
+                    confirmPassword: "",
+                    currentPassErr: "",
+                    newPassErr: "",
+                    confirmPassErr: "",
+                    errors: true,
                 }
             },
             mounted() {
@@ -158,7 +166,97 @@
                 removeAvatar() {
                     this.fileImg = null;
                     this.fileUrl = null;
-                }
+                },
+                checkPassword() {
+                    this.currentPassErr = ""
+                    if (!this.currentPassword) {
+                        this.currentPassErr = "Current password is required!"
+                    } else {
+                        const checkPassword = new FormData();
+                        checkPassword.append("id", <?php echo $id; ?>)
+                        checkPassword.append("currentPassword", this.currentPassword)
+                        axios.post("action.php?action=check_password", checkPassword)
+                            .then(res => {
+                                if (res) {
+                                    if (res.data.error) {
+                                        this.currentPassErr = res.data.message;
+                                    } else {
+                                        this.checkPass = true;
+                                    }
+                                }
+                            })
+                    }
+                },
+                updatePassword() {
+                    this.newPassErr = ""
+                    this.confirmPassErr = ""
+                    if (!this.newPassword) {
+                        this.newPassErr = "New password is required!"
+                    } else {
+                        if (this.newPassword.length < 8) {
+                            this.newPassErr = "Password should atleast eight(8) characters!"
+                        }
+
+                        if (this.newPassword == this.currentPassword) {
+                            this.newPassErr = "You have entered your current password!";
+                        }
+
+                    }
+
+                    if (!this.confirmPassword) {
+                        this.confirmPassErr = "Confirm password is required!"
+                    }
+
+                    if (this.newPassword && this.confirmPassword) {
+
+                        if (this.newPassword.length < 8) {
+                            this.newPassErr = "Password should atleast eight(8) characters!";
+                            this.errors = true;
+                        } else {
+                            this.errors = false;
+                        }
+                        if (this.newPassword != this.confirmPassword) {
+                            this.confirmPassErr = "Password does not match!";
+                            this.errors = true;
+                        } else {
+                            this.errors = false;
+                        }
+
+                        if (this.newPassword == this.currentPassword) {
+                            this.newPassErr = "You have entered your current password!";
+                            this.errors = true;
+                        } else {
+
+                        }
+                    }
+
+                    if (!this.errors) {
+                        this.loadButton = true;
+                        const newPassword = new FormData();
+                        newPassword.append("id", <?php echo $id; ?>)
+                        newPassword.append("newPassword", this.newPassword)
+                        axios.post("action.php?action=update_password", newPassword)
+                            .then(res => {
+                                if (res) {
+                                    setTimeout(() => {
+                                        this.$message({
+                                            message: 'Password has been updated successfully!',
+                                            type: 'success'
+                                        });
+                                        this.currentPassword = ""
+                                        this.newPassword = ""
+                                        this.confirmPassword = ""
+                                        this.checkPass = false;
+                                        this.loadButton = false;
+                                    }, 500)
+                                }
+                            })
+                    }
+                },
+                resetPassword() {
+                    this.newPassword = ""
+                    this.confirmPassword = ""
+                },
             }
         })
     </script>

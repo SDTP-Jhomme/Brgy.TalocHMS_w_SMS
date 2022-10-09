@@ -35,9 +35,36 @@ if ($action == 'update_avatar') {
     $targetFilePath = $targetDir . $newfilename;
     $savedb_name = "avatar/$newfilename";
 
-    if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
         $response = mysqli_query($db, "UPDATE users SET avatar='$savedb_name' WHERE id='$user_id'");
     }
+}
+
+if ($action == "check_password") {
+
+    $user_id = $_POST["id"];
+    $user_record = mysqli_query($db, "SELECT * FROM users where id='$user_id'");
+
+    $user_row = mysqli_fetch_assoc($user_record);
+    $db_password = $user_row["password"];
+
+    if (!password_verify($_POST["currentPassword"], $db_password)) {
+
+        $response["error"] = true;
+        $response["message"] = "Password is incorrect!";
+    } else {
+
+        $response = true;
+    }
+}
+
+if ($action == "update_password") {
+
+    $user_id = $_POST["id"];
+    $new_password = $_POST["newPassword"];
+    $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+
+    $response = mysqli_query($db, "UPDATE users SET password='$hashed_password' WHERE id='$user_id'");
 }
 
 echo json_encode($response);
