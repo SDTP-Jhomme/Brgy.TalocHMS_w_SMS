@@ -11,7 +11,68 @@ $response = array('error' => false);
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
+if($action == 'store'){
+    $user_id = $_POST['id'];
+    $first_name = $_POST["first_name"];
+    $middle_name = $_POST["middle_name"];
+    $last_name = $_POST["last_name"];
+    $suffix = $_POST["suffix"];
+    $birthdate = $_POST["birthdate"];
+    $gender = $_POST["gender"];
+    $civil = $_POST["civil"];
+    $spouse = $_POST["spouse"];
+    $educAttainment = $_POST["educ_attainment"];
+    $employmentStatus =$_POST["employment_status"];
+    $religion = $_POST["religion"];
+    $telephone = $_POST["telephone"];
+    $street = $_POST["street"];
+    $purok = $_POST["purok"];
+    $barangay = $_POST["barangay"];
+    $bloodType = $_POST["blood_type"];
+    $familyMember = $_POST["family_member"];
+    $Philhealth = $_POST["phil_health"];
 
+    if ($gender == "Male") {
+        $avatar = "avatar/default.png";
+    } else {
+        $avatar = "avatar/default-woman.png";
+    }
+    function random_password($length = 5)
+    {
+        $str = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $shuffled = substr(str_shuffle($str), 0, $length);
+        return $shuffled;
+    }
+
+    $password = random_password(8);
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+    $username = "PATIENT-" . ucfirst($first_name);
+
+    $response = array(
+        "first_name" => $first_name,
+        "middle_name" => $middle_name,
+        "last_name" => $last_name,
+        "suffix" => $suffix,
+        "username" => $username,
+        "birthdate" => $birthdate,
+        "gender" => $gender,
+        "password" => $password,
+        "civil" => $civil,
+        "spouse" => $spouse,
+        "educ_attainment" => $educAttainment,
+        "suffix" => $suffix,
+        "username" => $username,
+        "birthdate" => $birthdate,
+        "gender" => $gender,
+        "password" => $password
+    );
+
+    mysqli_query($db, "INSERT INTO patient(first_name,middle_name,last_name,suffix,birthday,gender,username,password,avatar,civil,spouse,educ_attainment,employment_status,
+    religion,telephone,street,purok,barangay,blood_type,family_member,phil_health)
+        VALUES('$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$civil','$spouse','$educAttainment','$employmentStatus,
+        '$religion','$telephone','$street','$purok','$brangay','$bloodType','$familyMember','$Philhealth')");
+}
 if ($action == 'change_password') {
 
     $user_id = $_POST["id"];

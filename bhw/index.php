@@ -62,6 +62,9 @@
         new Vue({
             el: "#app",
             data() {
+                var first = /(^(\+63)(\d){10}$)/;
+                var second = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+                var third = new RegExp('(?!' + second.source + ')(?:' + first.source + ')')
                 return {
                     active: 0,
                     fullscreenLoading: true,
@@ -70,6 +73,7 @@
                     isImmunization: false,
                     isPregnancy: false,
                     avatar: "",
+                    Married: "",
                     addPatient: {
                         firstName: "",
                         middleName: "",
@@ -77,7 +81,34 @@
                         suffix: "",
                         birtthDate: "",
                         gender: "",
+                        spouse: "",
+                        educAttainment: [],
+                        employmentStatus: [],
+                        religion: "",
+                        telephomne: "",
+                        street: "",
+                        purok: "",
+                        barangay: "",
+                        bloodType: "",
+                        familyMember: [],
+                        Philhealth: [],
+                        type: [],
                     },
+                    options: [{
+                        value: 'Single',
+                        label: 'Single'
+                    }, {
+                        value: 'Married',
+                        label: 'Married'
+                    }, {
+                        value: 'Divorced',
+                        label: 'Divorced'
+                    }, {
+                        value: 'Widowed',
+                        label: 'Widowed'
+                    }],
+                    value: '',
+
                     addRules: {
                         firstName: [{
                             required: true,
@@ -105,6 +136,90 @@
                         gender: [{
                             required: true,
                             message: 'Gender is required!',
+                            trigger: 'blur'
+                        }],
+                        civil: [{
+                            required: true,
+                            message: 'Civil Status is required!',
+                            trigger: 'blur'
+                        }],
+                        spouse: [{
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid spouse format!',
+                            trigger: 'blur'
+                        }],
+                        educAttainment: [{
+                            required: true,
+                            message: 'Educational Attainment is required!',
+                            trigger: 'blur'
+                        }],
+                        employmentStatus: [{
+                            required: true,
+                            message: 'Employment Status is required!',
+                            trigger: 'blur'
+                        }],
+                        religion: [{
+                            required: true,
+                            message: 'Religion is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid Religion format!',
+                            trigger: 'blur'
+                        }],
+                        telephone: [{
+                            required: true,
+                            message: 'Phone number/ Email Address is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: this.third,
+                            message: 'Invalid Phone number/ Email Address format!',
+                            trigger: 'blur'
+                        }],
+                        street: [{
+                            required: true,
+                            message: 'Street is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid Street format!',
+                            trigger: 'blur'
+                        }],
+                        purok: [{
+                            required: true,
+                            message: 'Purok is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid Purok format!',
+                            trigger: 'blur'
+                        }],
+                        barangay: [{
+                            required: true,
+                            message: 'Barangay is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid Barangay format!',
+                            trigger: 'blur'
+                        }],
+                        bloodType: [{
+                            required: true,
+                            message: 'Bloodtype is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid Bloodtype format!',
+                            trigger: 'blur'
+                        }],
+                        familyMember: [{
+                            required: true,
+                            message: 'Please select!',
+                            trigger: 'blur'
+                        }],
+                        Philhealth: [{
+                            required: true,
+                            message: 'Please select!',
                             trigger: 'blur'
                         }],
                     }
@@ -209,7 +324,45 @@
                     this.isImmunization = false;
                     this.isHealthCheckup = false;
                 },
-                submit() {
+                submit(addPatient) {
+                    this.$refs[addPatient].validate((valid) => {
+                        if (valid) {
+                            this.loadButton = true;
+                            this.openAddDrawer = false;
+                            const birthday = this.addPatient.birthdate;
+                            const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
+                            var newData = new FormData()
+                            newData.append("first_name", this.addPatient.firstName)
+                            newData.append("niddle_name", this.addPatient.middleName)
+                            newData.append("last_name", this.addPatient.lastName)
+                            newData.append("suffix", this.addPatient.suffix)
+                            newData.append("birthdate", birthdayFormat)
+                            newData.append("gender", this.addPatient.gender)
+                            axios.post("action.php?action=store", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'New Patient has been added successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                            this.getData()
+                                            setTimeout(() => {
+                                                this.openAddDialog = true;
+                                            }, 1500)
+                                        }, 1500);
+                                        this.resetFormData();
+                                        this.newUser = response.data;
+                                        this.loadButton = false;
+                                    }
+                                })
+                        } else {
+                            this.$message.error("Cannot submit the form. Please check the error(s).")
+                            return false;
+                        }
+                    });
                     console.log(this.addPatient)
                 }
             }
