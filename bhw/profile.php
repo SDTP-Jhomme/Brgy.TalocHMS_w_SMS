@@ -128,17 +128,19 @@
                 },
                 fileUpload() {
                     if (this.$refs.file.files.length > 0) {
-                        if (this.$refs.file.files[0].size > 20000000) {
-                            this.$message.error("Avatar image size can not exceed 2MB!");
+                        if (this.$refs.file.files[0].type != "image/jpeg") {
+                            this.$message.error("Avatar image must be in JPG format!");
                             this.fileImg = null;
                             this.error = true;
                             this.$refs.file.value = null;
                         } else {
                             this.error = false;
                         }
+                    }
 
-                        if (this.$refs.file.files[0].type != "image/jpeg") {
-                            this.$message.error("Avatar image must be in JPG format!");
+                    if (this.$refs.file.files.length > 0) {
+                        if (this.$refs.file.files[0].size > 2000000) {
+                            this.$message.error("Avatar image size can not exceed 2MB!");
                             this.fileImg = null;
                             this.error = true;
                             this.$refs.file.value = null;
