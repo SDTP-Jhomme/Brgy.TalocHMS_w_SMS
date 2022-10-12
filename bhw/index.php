@@ -67,13 +67,13 @@
                 var third = new RegExp('(?!' + second.source + ')(?:' + first.source + ')')
                 return {
                     active: 0,
+                    checkbox: false,
                     fullscreenLoading: true,
                     backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
                     avatar: "",
-                    Married: "",
                     addPatient: {
                         firstName: "",
                         middleName: "",
@@ -82,33 +82,26 @@
                         birtthDate: "",
                         gender: "",
                         spouse: "",
-                        educAttainment: [],
-                        employmentStatus: [],
+                        educAttainment: "",
+                        emloymentStatus: "",
+                        employed: "",
                         religion: "",
                         telephomne: "",
                         street: "",
                         purok: "",
                         barangay: "",
                         bloodType: "",
-                        familyMember: [],
-                        Philhealth: [],
-                        type: [],
+                        familyMember: "",
+                        others: "",
+                        Philhealth: "",
+                        philhealthNo: "",
+                        motherfirstName: "",
+                        mothermiddleName: "",
+                        motherlastName: "",
+                        nhts: "",
+                        pantawid: "",
+                        pantawidMember: "",
                     },
-                    options: [{
-                        value: 'Single',
-                        label: 'Single'
-                    }, {
-                        value: 'Married',
-                        label: 'Married'
-                    }, {
-                        value: 'Divorced',
-                        label: 'Divorced'
-                    }, {
-                        value: 'Widowed',
-                        label: 'Widowed'
-                    }],
-                    value: '',
-
                     addRules: {
                         firstName: [{
                             required: true,
@@ -125,7 +118,7 @@
                             trigger: 'blur'
                         }, {
                             pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
+                            message: 'Invalid last name format!',
                             trigger: 'blur'
                         }],
                         birthDate: [{
@@ -145,7 +138,7 @@
                         }],
                         spouse: [{
                             pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid spouse format!',
+                            message: 'Invalid Spouse format!',
                             trigger: 'blur'
                         }],
                         educAttainment: [{
@@ -153,9 +146,14 @@
                             message: 'Educational Attainment is required!',
                             trigger: 'blur'
                         }],
-                        employmentStatus: [{
+                        emloymentStatus: [{
                             required: true,
                             message: 'Employment Status is required!',
+                            trigger: 'blur'
+                        }],
+                        employed: [{
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid Occupation format!',
                             trigger: 'blur'
                         }],
                         religion: [{
@@ -222,9 +220,59 @@
                             message: 'Please select!',
                             trigger: 'blur'
                         }],
+                        philhealthNo: [{
+                            pattern: /^[0-9]+(-[0-9]+)+$/,
+                            message: 'Invalid Philhealth Number format!',
+                            trigger: 'blur'
+                        }, {
+                            min: 2,
+                            message: 'Philhealth Number should atleast two(2) digits!',
+                            trigger: 'blur'
+                        }],
+                        others: [{
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid format!',
+                            trigger: 'blur'
+                        }],
+                        motherfirstName: [{
+                            required: true,
+                            message: 'First name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        motherlastName: [{
+                            required: true,
+                            message: 'Last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid last name format!',
+                            trigger: 'blur'
+                        }],
+                        pantawidMember: [{
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid format!',
+                            trigger: 'blur'
+                        }],
                     }
                 }
             },
+            watch: {
+                philhealthNo(addPatient) {
+                    // Card number without dash (-)
+                    let realNumber = this.philhealthNo.replace(/-/gi, '')
+
+                    // Generate dashed number
+                    let dashedNumber = realNumber.match(/.{1,4}/g)
+
+                    // Replace the dashed number with the real one
+                    this.philhealthNo = dashedNumber.join('-')
+                }
+            },
+
             created() {
                 this.fetchAvatar()
             },
@@ -256,6 +304,11 @@
                                 }, 1000)
                             }
                         })
+                },
+                Onclick: function() {
+
+                    this.checkbox = this.employed;
+
                 },
                 // ******************************************************************
                 fetchAvatar() {

@@ -13,168 +13,241 @@
             </el-col>
         </el-row>
         <el-form :model="addPatient" :rules="addRules" ref="addPatient">
-            <el-row :gutter="20" type="flex" justify="end" align="middle">
-                <el-col :span="4" class="me-5">
-                    <el-form-item prop="fsn" label="FSN:" label-width="100px">
-                        <el-input v-model="addPatient.fsn"></el-input>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="7">
+                    <el-form-item prop="lastName">
+                        <label class="m-0"><span class="text-danger">*</span> Last Name</label>
+                        <el-input v-model="addPatient.lastName" disabled></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="7">
+                    <el-form-item prop="firstName">
+                        <label class="m-0"><span class="text-danger">*</span> First Name</label>
+                        <el-input v-model="addPatient.firstName" disabled></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item prop="middleName">
+                        <label class="m-0">Middle Name</label>
+                        <el-input v-model="addPatient.middleName" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                    <el-form-item prop="suffix">
+                        <label class="m-0">Suffix</label>
+                        <el-input v-model="addPatient.suffix" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20" type="flex" justify="end" align="middle">
-                <el-col :span="4" class="me-5">
-                    <el-form-item prop="fsn" label="Clinisys FSN:" label-width="100px">
-                        <el-input v-model="addPatient.fsn"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20" type="flex" justify="center">
-                <el-col :span="6">
-                    <el-form-item prop="lastName" label="Last Name" label-width="100px">
-                        <el-input v-model="addPatient.lastName" :disabled="true"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item prop="firstName" label="First Name" label-width="100px">
-                        <el-input v-model="addPatient.firstName" :disabled="true"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item prop="middleName" label="Middle Name" label-width="100px">
-                        <el-input v-model="addPatient.middleName"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item prop="suffix" label="Suffix" label-width="100px">
-                        <el-input v-model="addPatient.suffix"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="30" type="flex" justify="center" align="middle">
-                <el-col :span="6">
-                    <el-form-item prop="birthDate" label="Date of Birth" label-width="115px">
-                        <el-date-picker v-model="addPatient.birthDate" type="date" placeholder="" :disabled="true">
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="7">
+                    <el-form-item prop="birthDate">
+                        <label class="m-0 d-block"><span class="text-danger">*</span> Birthdate</label>
+                        <el-date-picker v-model="addPatient.birthDate" type="date" placeholder="" disabled>
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6">
-                    <el-form-item prop="gender" label="Gender" label-width="115px">
+                <el-col :span="7">
+                    <el-form-item prop="gender">
+                        <label class="m-0"><span class="text-danger">*</span> Gender</label>
                         <div>
-                            <el-radio v-model="addPatient.gender" label="Male" :disabled="true">Male</el-radio>
-                            <el-radio v-model="addPatient.gender" label="Female" :disabled="true">Female</el-radio>
+                            <el-radio v-model="addPatient.gender" label="Male" disabled>Male</el-radio>
+                            <el-radio v-model="addPatient.gender" label="Female" disabled>Female</el-radio>
                         </div>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
-                    <el-form-item prop="civil" label="Civil Status:" label-width="120px">
-                        <el-select v-model="value" placeholder="Select">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
+                <el-col :span="4">
+                    <el-form-item prop="civil">
+                        <label class="m-0"><span class="text-danger">*</span> Civil Status</label>
+                        <el-select v-model="addPatient.civil" clearable>
+                            <el-option value="Single" label="Single"></el-option>
+                            <el-option value="Married" label="Married"></el-option>
+                            <el-option value="Divorced" label="Divorced"></el-option>
+                            <el-option value="Widowed" label="Widowed"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
+                <el-col :span="4">
+                    <el-form-item prop="spouse">
+                        <label class="m-0">Spouse(if married)</label>
+                        <el-input v-if="addPatient.civil=='Married'" v-model="addPatient.spouse" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="50">
+                    <el-form-item prop="educAttainment">
+                        <label class="m-0"><span class="text-danger">*</span> Educational Attainment (Pls. Check)</label>
+                        <el-radio-group v-model="addPatient.educAttainment" size="medium">
+                            <el-radio-button label="Elementary">Elementary</el-radio-button>
+                            <el-radio-button label="High School">High School</el-radio-button>
+                            <el-radio-button label="College">College</el-radio-button>
+                            <el-radio-button label="Post Grad">Post Grad</el-radio-button>
+                            <el-radio-button label="No Formal Educ">No Formal Educ</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="10">
+                    <el-form-item prop="emloymentStatus">
+                        <label class="m-0"><span class="text-danger">*</span> Employment Status (Pls. Check)</label>
+                        <el-radio-group v-model="addPatient.emloymentStatus" size="medium">
+                            <el-radio-button label="Student">Student</el-radio-button>
+                            <el-radio-button label="Unemployed">Unemployed</el-radio-button>
+                            <el-radio-button label="Employed">Employed</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item prop="employed">
+                        <label class="m-0">(Occupation if employed)</label>
+                        <el-input v-if="addPatient.emloymentStatus=='Employed'" v-model="addPatient.employed"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="7">
+                    <el-form-item prop="religion">
+                        <label class="m-0"><span class="text-danger">*</span>Religion</label>
+                        <el-input v-model="addPatient.religion"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="15">
+                    <el-form-item prop="telephone">
+                        <label class="m-0"><span class="text-danger">*</span>Telephone</label>
+                        <el-input v-model="addPatient.telephone"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="11">
+                    <el-form-item prop="street">
+                        <label class="m-0"><span class="text-danger">*</span>Number/Street Name</label>
+                        <el-input v-model="addPatient.street"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                    <el-form-item prop="purok">
+                        <label class="m-0"><span class="text-danger">*</span>Purok</label>
+                        <el-input v-model="addPatient.purok"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="11">
+                    <el-form-item prop="barangay">
+                        <label class="m-0"><span class="text-danger">*</span>Barangay</label>
+                        <el-input v-model="addPatient.barangay"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item prop="bloodType">
+                        <label class="m-0"><span class="text-danger">*</span>Blood Type</label>
+                        <el-select v-model="addPatient.bloodType">
+                            <el-option value="A" label="Type A"></el-option>
+                            <el-option value="B" label="Type B"></el-option>
+                            <el-option value="AB" label="Type AB"></el-option>
+                            <el-option value="O" label="Type O"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="10">
+                    <el-form-item prop="familyMember">
+                        <label class="m-0"><span class="text-danger">*</span> Family Member (Pls. Check)</label>
+                        <el-radio-group v-model="addPatient.familyMember" size="medium">
+                            <el-radio-button label="Father">Father</el-radio-button>
+                            <el-radio-button label="Mother">Mother</el-radio-button>
+                            <el-radio-button label="Son">Son</el-radio-button>
+                            <el-radio-button label="Daughter">Daughter</el-radio-button>
+                            <el-radio-button label="Others">Others</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
                 <el-col :span="5">
-                    <el-form-item prop="spouse" label="Spouse: " label-width="120px">
-                        <div v-if="value == 'Married'">
-                            <el-input v-model="Married" placeholder="(if married)" clearable />
-                        </div>
+                    <el-form-item prop="others">
+                        <label class="m-0">Pls Specify</label>
+                        <el-input v-if="addPatient.familyMember=='Others'" v-model="addPatient.others"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20" type="flex" justify="center">
-                <el-col :span="20">
-                    <el-form-item prop="educAttainment" label="Educational Attainment (Pls. Check):" label-width="300px">
-                        <div v-model="addPatient.educAttainment">
-                            <el-checkbox label="Elementary">Elementary</el-checkbox>
-                            <el-checkbox label="High School">High School</el-checkbox>
-                            <el-checkbox label="College">College</el-checkbox>
-                            <el-checkbox label="Post Grad">Post Grad</el-checkbox>
-                            <el-checkbox label="No Formal Educ">No Formal Educ.</el-radio>
-                        </div>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="5">
+                    <el-form-item prop="Philhealth">
+                        <label class="m-0"><span class="text-danger">*</span> Philhealth Type</label>
+                        <el-radio-group v-model="addPatient.Philhealth" size="medium">
+                            <el-radio-button label="Member">Member</el-radio-button>
+                            <el-radio-button label="Dependent">Dependent</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item prop="philhealthNo">
+                        <label class="m-0">Philhealth No.</label>
+                        <el-input v-model="addPatient.philhealthNo" maxlength="14" id="myinput" OnInput="add_hyphen()"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="30" type="flex" justify="center" align="middle">
-                <el-col :span="25">
-                    <el-form-item prop="employmentStatus" label="Employment Status (Pls. Check):" label-width="250px">
-                        <div v-model="addPatient.employmentStatus">
-                            <el-checkbox label="Student">Student</el-checkbox>
-                            <el-checkbox label="Unemployed">Unemployed</el-checkbox>
-                            <el-checkbox label="Employed">Employed</el-checkbox>
-                            <label for="employmentStatus" class="mx-3">(Occupation if employed):</label>
-                            <div v-if="value=='Employed'">
-                                <el-input v-model="Employed" placeholder="(Occupation if employed):" clearable />
-                            </div>
-                        </div>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="7">
+                    <el-form-item prop="motherlastName">
+                        <label class="m-0"><span class="text-danger">*</span>Mother Last Name</label>
+                        <el-input v-model="addPatient.motherlastName"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="7">
+                    <el-form-item prop="motherfirstName">
+                        <label class="m-0"><span class="text-danger">*</span>Mother First Name</label>
+                        <el-input v-model="addPatient.motherfirstName"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item prop="middleName">
+                        <label class="m-0">Mother Middle Name</label>
+                        <el-input v-model="addPatient.mothermiddleName" clearable></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20" type="flex" justify="center">
-                <el-col :span="50">
-                    <el-form-item prop="religion" label="Religon:" label-width="120px">
-                        <el-input v-model="addPatient.religion" clearable></el-input>
+            <el-row :gutter="20" class="mx-3">
+                <el-col :span="5">
+                    <el-form-item prop="nhts">
+                        <label class="m-0"><span class="text-danger">*</span> NHTS Member</label>
+                        <el-radio-group v-model="addPatient.nhts" size="medium">
+                            <el-radio-button label="yes">Yes</el-radio-button>
+                            <el-radio-button label="no">No</el-radio-button>
+                        </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="50">
-                    <el-form-item prop="telephone" label="Telephone:" label-width="120px">
-                        <el-input v-model="addPatient.telephone" placeholder="(Mobile/Landline/Email)" clearable></el-input>
+                <el-col :span="5">
+                    <el-form-item prop="pantawid">
+                        <label class="m-0"><span class="text-danger">*</span> Pantawid Pamilya Member</label>
+                        <el-radio-group v-model="addPatient.pantawid" size="medium">
+                            <el-radio-button label="yes">Yes</el-radio-button>
+                            <el-radio-button label="no">No</el-radio-button>
+                        </el-radio-group>
                     </el-form-item>
                 </el-col>
-            </el-row>
-            <el-row :gutter="30" type="flex" justify="center">
-                <el-col :span="50">
-                    <el-form-item prop="street" label="Street Name:" label-width="120px">
-                        <el-input v-model="addPatient.street" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="50">
-                    <el-form-item prop="purok" label="Purok:" label-width="120px">
-                        <el-input v-model="addPatient.purok" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20" type="flex" justify="center">
-                <el-col :span="50">
-                    <el-form-item prop="barangay" label="Barangay:" label-width="120px">
-                        <el-input v-model="addPatient.barangay" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="50">
-                    <el-form-item prop="bloodType" label="Blood Type:" label-width="120px">
-                        <el-input v-model="addPatient.bloodType" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20" type="flex" justify="center" align="middle">
-                <el-col :span="20">
-                    <el-form-item prop="familyMember" label="Family Member (Pls. Check):" label-width="200px">
-                        <div v-model="addPatient.familyMember">
-                            <el-checkbox label="Father">Father</el-checkbox>
-                            <el-checkbox label="Mother">Mother</el-checkbox>
-                            <el-checkbox label="Son">Son</el-checkbox>
-                            <el-checkbox label="Daughter">Daughter</el-checkbox>
-                            <el-checkbox label="Others">Others:</el-checkbox>
-                            <label for="familyMember" class="mx-3"> Pls. Specify</label>
-                            <div v-if="value == 'Others'">
-                                <el-input v-model="addPatient.familyMember" clearable></el-input>
-                            </div>
-                        </div>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="20" type="flex" justify="center" align="middle">
-                <el-col :span="20">
-                    <el-form-item prop="Philhealth" label="Philhealth Type:" label-width="200px">
-                        <div v-model="addPatient.Philhealth">
-                            <el-checkbox label="Member">Member</el-checkbox>
-                            <el-checkbox label="Dependent">Dependent</el-checkbox>
-                            <label for=" Philhealth" class="mx-3"> Philhealth No.:</label>
-                            <div v-if="value == 'Member'|'Dependent'">
-                                <el-input v-model="addPatient.Philhealth" type="text" clearable></el-input>
-                            </div>
-                        </div>
+                <el-col :span="5">
+                    <el-form-item prop="pantawidMember">
+                        <label class="m-0">If yes, HH no.</label>
+                        <el-input v-if="addPatient.pantawid=='yes'" v-model="addPatient.pantawidMember"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
     </el-container>
 </div>
+<script>
+    function add_hyphen() {
+        var input = document.getElementById("myinput");
+        var str = input.value;
+        str = str.replace("-", "");
+        if (str.length > 9) {
+            str = str.substring(0, 2) + "-" + str.substring(0, 9) + "-" + str.substring(9)
+        }
+
+        input.value = str
+    }
+</script>
