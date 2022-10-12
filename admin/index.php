@@ -32,7 +32,7 @@
             <?php include("./import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
-
+                    <?php include("dashboard.php"); ?>
                 </main>
                 <?php include("./import/footer.php"); ?>
             </div>
@@ -45,7 +45,7 @@
             el: "#app",
             data() {
                 return {
-                    fullscreenLoading: true
+                    fullscreenLoading: true,
                 }
             },
             mounted() {
@@ -74,6 +74,28 @@
                 // *************************
             }
         })
+        var xValues = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        var yValues =[0];
+        new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    data: [0,0,0,0,00,0,0,0,, 0, 0, 0, 0],
+                    borderColor: "red",
+                    fill: false
+                }, {
+                    data: [1.0,0,0,0,0, 0, 0, 0],
+                    borderColor: "blue",
+                    fill: false
+                }]
+            },
+            options: {
+                legend: {
+                    display: true
+                }
+            }
+        });
     </script>
 </body>
 
