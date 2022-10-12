@@ -119,7 +119,7 @@
                 Immunization
             </el-row>
             <el-row v-if="this.isPregnancy" :gutter="30" type="flex" justify="center">
-                Pregnancy
+                <?php include("./prenatal-checkup.php"); ?>
             </el-row>
         </el-main>
         <el-main>

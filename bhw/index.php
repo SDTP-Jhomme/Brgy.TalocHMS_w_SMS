@@ -62,7 +62,9 @@
         new Vue({
             el: "#app",
             data() {
+                const dateToday = new Date();
                 return {
+                    labelPosition: "left",
                     active: 0,
                     fullscreenLoading: true,
                     backToHome: false,
@@ -71,12 +73,15 @@
                     isPregnancy: false,
                     avatar: "",
                     addPatient: {
+                        id: 0,
                         firstName: "",
                         middleName: "",
                         lastName: "",
                         suffix: "",
                         birtthDate: "",
                         gender: "",
+                        appointment: "",
+                        dateVisit: ""
                     },
                     addRules: {
                         firstName: [{
@@ -110,6 +115,9 @@
                     }
                 }
             },
+            watch: {
+                
+            },
             created() {
                 this.fetchAvatar()
             },
@@ -122,6 +130,8 @@
                 this.isHealthCheckup = localStorage.isHealthCheckup ? localStorage.isHealthCheckup : false
                 this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
+
+                this.addPatient.appointment = new Date()
             },
             methods: {
                 // Logout **********************************************************
