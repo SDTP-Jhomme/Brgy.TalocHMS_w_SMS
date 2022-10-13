@@ -116,10 +116,10 @@
                 <?php include("./health-checkup.php") ?>
             </el-row>
             <el-row v-if="this.isImmunization" :gutter="30" type="flex" justify="center">
-                
+
             </el-row>
             <el-row v-if="this.isPregnancy" :gutter="30" type="flex" justify="center">
-                
+                <?php include("./prenatal-checkup.php") ?>
             </el-row>
         </el-main>
         <el-main>

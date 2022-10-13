@@ -65,7 +65,9 @@
                 var first = /(^(\+63)(\d){10}$)/;
                 var second = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
                 var third = new RegExp('(?!' + second.source + ')(?:' + first.source + ')')
+
                 return {
+                    labelPosition: "left",
                     active: 0,
                     checkbox: false,
                     fullscreenLoading: true,
@@ -101,6 +103,16 @@
                         nhts: "",
                         pantawid: "",
                         pantawidMember: "",
+                        S: "",
+                        O: "",
+                        pr: "",
+                        rr: "",
+                        bp: "",
+                        weight: "",
+                        height: "",
+                        temp: "",
+                        A: "",
+                        P: "",
                     },
                     addRules: {
                         firstName: [{
@@ -272,6 +284,9 @@
                 this.isHealthCheckup = localStorage.isHealthCheckup ? localStorage.isHealthCheckup : false
                 this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
+
+                this.addPatient.appointment = new Date()
+                this.addPatient.consultationDate = new Date()
             },
             methods: {
                 // Logout **********************************************************

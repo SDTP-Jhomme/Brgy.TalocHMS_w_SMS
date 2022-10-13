@@ -12,8 +12,8 @@
                 INDIVIDUAL TREATMENT RECORD
             </el-col>
         </el-row>
-        <el-form :model="addPatient" :rules="addRules" ref="addPatient" class="mx-5 underline-input">
-            <el-row :gutter="20" class="mx-3">
+        <el-form :model="addPatient" :label-position="labelPosition" :rules="addRules" ref="addPatient" class="mx-5">
+            <el-row :gutter="20" class="mx-3 underline-input">
                 <el-col :span="7">
                     <el-form-item prop="lastName">
                         <label class="m-0"><span class="text-danger">*</span> Last Name</label>
@@ -67,7 +67,7 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="4" class="underline-input">
                     <el-form-item prop="spouse">
                         <label class="m-0">Spouse(if married)</label>
                         <el-input v-if="addPatient.civil=='Married'" v-model="addPatient.spouse" clearable></el-input>
@@ -99,14 +99,14 @@
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="4" class="underline-input">
                     <el-form-item prop="occupation">
                         <label class="m-0">(Occupation if employed)</label>
                         <el-input v-if="addPatient.emloymentStatus=='Employed'" v-model="addPatient.occupation"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20" class="mx-3">
+            <el-row :gutter="20" class="mx-3 underline-input">
                 <el-col :span="7">
                     <el-form-item prop="religion">
                         <label class="m-0"><span class="text-danger">*</span>Religion</label>
@@ -120,7 +120,7 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20" class="mx-3">
+            <el-row :gutter="20" class="mx-3 underline-input">
                 <el-col :span="11">
                     <el-form-item prop="street">
                         <label class="m-0"><span class="text-danger">*</span>Number/Street Name</label>
@@ -135,7 +135,7 @@
                 </el-col>
             </el-row>
             <el-row :gutter="20" class="mx-3">
-                <el-col :span="11">
+                <el-col :span="11" class="underline-input">
                     <el-form-item prop="barangay">
                         <label class="m-0"><span class="text-danger">*</span>Barangay</label>
                         <el-input v-model="addPatient.barangay"></el-input>
@@ -166,7 +166,7 @@
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="5" class="underline-input">
                     <el-form-item prop="others">
                         <label class="m-0">Pls Specify</label>
                         <el-input v-if="addPatient.familyMember=='Others'" v-model="addPatient.others"></el-input>
@@ -183,14 +183,14 @@
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="5" class="underline-input">
                     <el-form-item prop="philhealthNo">
                         <label class="m-0">Philhealth No.</label>
                         <el-input v-model="addPatient.philhealthNo" maxlength="14" id="myinput" OnInput="add_hyphen()"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row :gutter="20" class="mx-3">
+            <el-row :gutter="20" class="mx-3 underline-input">
                 <el-col :span="7">
                     <el-form-item prop="motherlastName">
                         <label class="m-0"><span class="text-danger">*</span>Mother Last Name</label>
@@ -229,7 +229,7 @@
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="5" class="underline-input">
                     <el-form-item prop="pantawidMember">
                         <label class="m-0">If yes, HH no.</label>
                         <el-input v-if="addPatient.pantawid=='yes'" v-model="addPatient.pantawidMember"></el-input>
@@ -251,7 +251,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
-                    <el-form-item prop="others">
+                    <el-form-item prop="others" class="underline-input">
                         <label class="m-0">Others</label>
                         <el-input v-if="addPatient.alertType=='Others'" v-model="addPatient.others"></el-input>
                     </el-form-item>
@@ -270,16 +270,14 @@
                         </el-radio-group>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="5" class="underline-input">
                     <el-form-item prop="others">
                         <label class="m-0">Others</label>
                         <el-input v-if="addPatient.medicalHistory=='Others'" v-model="addPatient.others"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <div>
-                <hr class="dropdown-divider border border-dark" />
-            </div>
+            <el-divider></el-divider>
             <el-row :gutter="20" class="mx-3">
                 <el-col :span="10">
                     <el-form-item prop="encounter">
@@ -305,7 +303,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
-                    <el-form-item prop="others">
+                    <el-form-item prop="others" class="underline-input">
                         <label class="m-0">Others</label>
                         <el-input v-if="addPatient.consultationType=='Others'" v-model="addPatient.others"></el-input>
                     </el-form-item>
@@ -319,7 +317,7 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-col :span="2">
+                <el-col :span="2" class="underline-input">
                     <el-form-item prop="age">
                         <label class="m-0">Age</label>
                         <el-input v-model="addPatient.age"></el-input>
@@ -341,9 +339,65 @@
             <div class="underline-input">
                 <el-row :gutter="20" class="mx-3">
                     <el-col :span="10">
-                        <el-form-item prop="Soap">
+                        <el-form-item prop="S">
                             <label class="m-0">S</label>
-                            <el-input type="textarea" v-model="addPatient.Soap"></el-input>
+                            <el-input v-model="addPatient.S"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" class="mx-3">
+                    <el-col :span="10">
+                        <el-form-item prop="O">
+                            <label class="m-0">O</label>
+                            <el-input v-model="addPatient.O"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" class="mx-3">
+                    <el-col :span="4">
+                        <el-form-item prop="pr" label="PR / CR :">
+                            <el-input v-model="addPatient.pr"><template slot="append">b / min</template></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="rr" label="RR :">
+                            <el-input v-model="addPatient.rr"><template slot="append">c / min</template></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="bp" label="BP :">
+                            <el-input v-model="addPatient.bp"><template slot="append">mmHg</template></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="weight" label="Weight :">
+                            <el-input v-model="addPatient.weight"><template slot="append">kgs / lbs</template></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="height" label="Height :">
+                            <el-input v-model="addPatient.height"><template slot="append">cm / ft</template></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="temp" label="Temp :">
+                            <el-input v-model="addPatient.temp"><template slot="append">°C</template></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" class="mx-3">
+                    <el-col :span="10">
+                        <el-form-item prop="A">
+                            <label class="m-0">A</label>
+                            <el-input v-model="addPatient.A"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" class="mx-3">
+                    <el-col :span="10">
+                        <el-form-item prop="P">
+                            <label class="m-0">P</label>
+                            <el-input v-model="addPatient.P"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
