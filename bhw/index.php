@@ -260,19 +260,6 @@
                     }
                 }
             },
-            watch: {
-                philhealthNo(addPatient) {
-                    // Card number without dash (-)
-                    let realNumber = this.philhealthNo.replace(/-/gi, '')
-
-                    // Generate dashed number
-                    let dashedNumber = realNumber.match(/.{1,4}/g)
-
-                    // Replace the dashed number with the real one
-                    this.philhealthNo = dashedNumber.join('-')
-                }
-            },
-
             created() {
                 this.fetchAvatar()
             },
@@ -304,11 +291,6 @@
                                 }, 1000)
                             }
                         })
-                },
-                Onclick: function() {
-
-                    this.checkbox = this.employed;
-
                 },
                 // ******************************************************************
                 fetchAvatar() {
@@ -417,7 +399,13 @@
                         }
                     });
                     console.log(this.addPatient)
-                }
+                },
+                resetForm(addPatient) {
+                    this.$refs[addPatient].resetFields();
+                },
+                resetFormData() {
+                    this.addBhw = []
+                },
             }
         })
     </script>
