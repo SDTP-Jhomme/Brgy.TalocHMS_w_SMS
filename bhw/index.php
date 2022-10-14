@@ -64,7 +64,6 @@
             data() {
                 const dateToday = new Date();
                 return {
-                    labelPosition: "left",
                     active: 0,
                     fullscreenLoading: true,
                     backToHome: false,
@@ -78,10 +77,21 @@
                         middleName: "",
                         lastName: "",
                         suffix: "",
-                        birtthDate: "",
+                        birthDate: "",
                         gender: "",
+                    },
+                    prenatal: {
                         appointment: "",
-                        dateVisit: ""
+                        dateVisit: "",
+                        weight: "",
+                        blood: "",
+                        aog: "",
+                        height: "",
+                        fhb: "",
+                        presentation: "",
+                    },
+                    individual: {
+                        age: ""
                     },
                     addRules: {
                         firstName: [{
@@ -114,9 +124,6 @@
                         }],
                     }
                 }
-            },
-            watch: {
-                
             },
             created() {
                 this.fetchAvatar()
@@ -172,6 +179,15 @@
                             this.isHealthCheckup = false;
                             this.isImmunization = false;
                             this.isImmunization = false;
+
+                            var today = new Date();
+                            var birthDate = new Date(this.addPatient.birthDate);
+                            var age = today.getFullYear() - birthDate.getFullYear();
+                            var m = today.getMonth() - birthDate.getMonth();
+                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                age--;
+                            }
+                            this.individual.age = age
                         } else {
                             this.$message.error("Please fill in the required informations!");
                             return false;
@@ -203,6 +219,15 @@
                     } else {
                         this.$message.error("Please select an appointment!");
                     }
+
+                    var today = new Date();
+                    var birthDate = new Date(this.addPatient.birthDate);
+                    var age = today.getFullYear() - birthDate.getFullYear();
+                    var m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
+                    this.individual.age = age
                 },
                 healthCheckup() {
                     this.isPregnancy = false;

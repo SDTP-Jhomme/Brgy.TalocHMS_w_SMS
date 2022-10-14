@@ -4,7 +4,7 @@
         <div class="body-card-form">
             <h3 class="text-center">Prenatal Form</h3>
             <el-main>
-                <el-form :model="addPatient" :label-position="labelPosition" :rules="addRules" ref="addPatient">
+                <el-form :model="addPatient" :rules="addRules" ref="addPatient">
                     <el-row :gutter="20" type="flex" justify="center">
                         <el-col :span="6">
                             <el-form-item class="el-item-form" prop="lastName">
@@ -49,63 +49,65 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
-                        <el-divider></el-divider>
-                    </el-row>
-                    <div class="underline-input">
+                </el-form>
+                <el-row>
+                    <el-divider></el-divider>
+                </el-row>
+                <div class="underline-input">
+                    <el-form>
                         <el-row :gutter="30" type="flex" justify="center" class="mb-3 mt-2">
                             <el-col :span="10">
                                 <el-form-item label="Appointment Date :" prop="appointment">
-                                    <el-input v-model="addPatient.appointment" clearable disabled></el-input>
+                                    <el-input v-model="prenatal.appointment" clearable disabled></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
                                 <el-form-item label="Date of Prenatal Visit :" prop="dateVisit">
-                                    <el-date-picker v-model="addPatient.dateVisit" type="date" placeholder="Pick a date">
+                                    <el-date-picker v-model="prenatal.dateVisit" type="date" placeholder="Pick a date">
                                     </el-date-picker>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row :gutter="30" type="flex" justify="center" class="mb-3">
                             <el-col :span="10">
-                                <el-form-item label="Weight :" prop="appointment">
-                                    <el-input v-model="addPatient.dateVisit" clearable></el-input>
+                                <el-form-item label="Weight :" prop="weight">
+                                    <el-input v-model="prenatal.weight" clearable></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
-                                <el-form-item class="measurement" label="Blood Pressure :" prop="dateVisit">
-                                    <el-input v-model="addPatient.dateVisit" clearable></el-input>
+                                <el-form-item class="measurement" label="Blood Pressure :" prop="blood">
+                                    <el-input v-model="prenatal.blood" clearable></el-input>
                                     <p>mmHg</p>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row :gutter="30" type="flex" justify="center" class="mb-3">
                             <el-col :span="10">
-                                <el-form-item class="measurement" label="AOG :" prop="dateVisit">
-                                    <el-input v-model="addPatient.dateVisit" clearable></el-input>
+                                <el-form-item class="measurement" label="aog :" prop="dateVisit">
+                                    <el-input v-model="prenatal.aog" clearable></el-input>
                                     <p>weeks</p>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
-                                <el-form-item label="Fundic Height :" prop="appointment">
-                                    <el-input v-model="addPatient.dateVisit" clearable></el-input>
+                                <el-form-item label="Fundic Height :" prop="height">
+                                    <el-input v-model="prenatal.height" clearable></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row :gutter="30" type="flex" justify="center" class="mb-3">
                             <el-col :span="10">
-                                <el-form-item label="FHB :" prop="dateVisit">
-                                    <el-input v-model="addPatient.dateVisit" clearable></el-input>
+                                <el-form-item label="FHB :" prop="fhb">
+                                    <el-input v-model="prenatal.fhb" clearable></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="10">
-                                <el-form-item label="Presentation :" prop="appointment">
-                                    <el-input v-model="addPatient.dateVisit" clearable></el-input>
+                                <el-form-item label="Presentation :" prop="presentation">
+                                    <el-input v-model="prenatal.presentation" clearable></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                    </div>
-                </el-form>
+                    </el-form>
+                </div>
             </el-main>
         </div>
     </el-container>

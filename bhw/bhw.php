@@ -113,7 +113,7 @@
                 </el-col>
             </el-row>
             <el-row v-if="this.isHealthCheckup" :gutter="30" type="flex" justify="center">
-                Health Checkup
+                <?php include("./health-checkup.php"); ?>
             </el-row>
             <el-row v-if="this.isImmunization" :gutter="30" type="flex" justify="center">
                 Immunization
