@@ -29,7 +29,7 @@
     } ?>
 </head>
 
-<body id="page-top">
+<body>
     <!-- Page Wrapper -->
     <div id="app" v-loading.fullscreen.lock="fullscreenLoading">
         <!-- Content Wrapper -->

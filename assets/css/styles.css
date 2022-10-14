@@ -13089,3 +13089,259 @@ body#page-top {
   border-color: #409EFF !important;
   border-width: 1px !important;
 }
+/* regitered */
+.icon-box-registered {
+  padding: 60px 30px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 2px 0 35px 0 rgba(68, 88, 144, 0.12);
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  z-index: 1;
+  text-align: center;
+}
+
+.icon-box-registered::before {
+  content: "";
+  position: absolute;
+  background: #fdeff2;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 100%;
+  transition: all 0.4s;
+  z-index: -1;
+}
+
+.icon-box-registered:hover::before {
+  background: #0d6efd;
+  top: 0;
+  border-radius: 0px;
+}
+
+.icon-registered {
+  margin-bottom: 15px;
+}
+
+.icon-registered {
+  font-size: 48px;
+  line-height: 1;
+  color: #0d6efd;
+  transition: all 0.3s ease-in-out;
+}
+
+.title-registered {
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #111;
+}
+
+.description-registered {
+  font-size: 15px;
+  line-height: 28px;
+  margin-bottom: 0;
+}
+
+.icon-box-registered:hover .title-registered,
+.icon-box-registered:hover .description-registered {
+  color: #fff;
+}
+
+.icon-box-registered:hover .icon-registered {
+  color: #fff;
+}
+/* end registered */
+/* approved */
+.icon-box-approved {
+  padding: 60px 30px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 2px 0 35px 0 rgba(68, 88, 144, 0.12);
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  z-index: 1;
+  text-align: center;
+}
+
+.icon-box-approved::before {
+  content: "";
+  position: absolute;
+  background: #fdeff2;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 100%;
+  transition: all 0.4s;
+  z-index: -1;
+}
+
+.icon-box-approved:hover::before {
+  background: #198754;
+  top: 0;
+  border-radius: 0px;
+}
+
+.icon-approved {
+  margin-bottom: 15px;
+}
+
+.icon-approved {
+  font-size: 48px;
+  line-height: 1;
+  color: #198754;
+  transition: all 0.3s ease-in-out;
+}
+
+.title-approved {
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #111;
+}
+
+.description-approved {
+  font-size: 15px;
+  line-height: 28px;
+  margin-bottom: 0;
+}
+
+.icon-box-approved:hover .title-approved,
+.icon-box-approved:hover .description-approved {
+  color: #fff;
+}
+
+.icon-box-approved:hover .icon-approved {
+  color: #fff;
+}
+/* end approved */
+/* declined */
+.icon-box-declined {
+  padding: 60px 30px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 2px 0 35px 0 rgba(68, 88, 144, 0.12);
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  z-index: 1;
+  text-align: center;
+}
+
+.icon-box-declined::before {
+  content: "";
+  position: absolute;
+  background: #fdeff2;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 100%;
+  transition: all 0.4s;
+  z-index: -1;
+}
+
+.icon-box-declined:hover::before {
+  background: #e43c5c;
+  top: 0;
+  border-radius: 0px;
+}
+
+.icon-declined {
+  margin-bottom: 15px;
+}
+
+.icon-declined {
+  font-size: 48px;
+  line-height: 1;
+  color: #e43c5c;
+  transition: all 0.3s ease-in-out;
+}
+
+.title-declined {
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #111;
+}
+
+.description-declined {
+  font-size: 15px;
+  line-height: 28px;
+  margin-bottom: 0;
+}
+
+.icon-box-declined:hover .title-declined,
+.icon-box-declined:hover .description-declined {
+  color: #fff;
+}
+
+.icon-box-declined:hover .icon-declined {
+  color: #fff;
+}
+/* end declined */
+/* pending */
+.icon-box-pending {
+  padding: 60px 30px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 2px 0 35px 0 rgba(68, 88, 144, 0.12);
+  transition: all 0.3s ease-in-out;
+  border-radius: 8px;
+  z-index: 1;
+  text-align: center;
+}
+
+.icon-box-pending::before {
+  content: "";
+  position: absolute;
+  background: #fdeff2;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 100%;
+  transition: all 0.4s;
+  z-index: -1;
+}
+
+.icon-box-pending:hover::before {
+  background: #ee9e34;
+  top: 0;
+  border-radius: 0px;
+}
+
+.icon-pending {
+  margin-bottom: 15px;
+}
+
+.icon-pending {
+  font-size: 48px;
+  line-height: 1;
+  color: #ee9e34;
+  transition: all 0.3s ease-in-out;
+}
+
+.title-pending {
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #111;
+}
+
+.description-pending {
+  font-size: 15px;
+  line-height: 28px;
+  margin-bottom: 0;
+}
+
+.icon-box-pending:hover .title-pending,
+.icon-box-pending:hover .description-pending {
+  color: #fff;
+}
+
+.icon-box-pending:hover .icon-pending {
+  color: #fff;
+}
+/* end pending */

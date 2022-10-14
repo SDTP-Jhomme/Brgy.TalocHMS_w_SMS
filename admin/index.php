@@ -85,7 +85,7 @@
                     borderColor: "red",
                     fill: false
                 }, {
-                    data: [1.0,0,0,0,0, 0, 0, 0],
+                    data: [0,0,0,0,0, 0, 0, 0],
                     borderColor: "blue",
                     fill: false
                 }]

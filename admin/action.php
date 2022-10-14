@@ -83,6 +83,10 @@ if ($action == 'store') {
 
     mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar)
         VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar')");
+
+    $sms = $_POST["sms"];
+
+    mysqli_query($db, "INSERT INTO patient(sms) VALUES ('$sms')");
 }
 
 if ($action == 'update') {

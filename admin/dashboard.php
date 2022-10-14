@@ -37,14 +37,14 @@ $count = $user_row['count'];
         </div>
     </div>
     <!-- chart -->
-    <?php 
+    <?php
     $query = mysqli_query($db, "SELECT * FROM patient");
     ?>
     <div class="col-xl-6 mt-3">
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-chart-area me-1"></i>
-                Area Chart Example
+                Total Patient Registered
             </div>
             <div class="card-body"><canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 
