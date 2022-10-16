@@ -107,10 +107,7 @@
             </el-row>
         </el-main>
         <el-main v-if="active == 2">
-            <el-row class="mb-3">
-                <el-col :span="12" :offset="2">
-                    Fill in the Forms
-                </el-col>
+            <el-row class="mb-4">
             </el-row>
             <el-row v-if="this.isHealthCheckup" :gutter="30" type="flex" justify="center">
                 <?php include("./health-checkup.php"); ?>
@@ -142,9 +139,17 @@
                 </el-button-group>
             </el-row>
             <el-row type="flex" justify="center" v-if="active == 2">
-                <el-button-group>
+                <el-button-group v-if="isHealthCheckup">
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submit">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitHealth">Submit</i></el-button>
+                </el-button-group>
+                <el-button-group v-else-if="isImmunization">
+                    <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
+                    <el-button type="primary" size="small" plain @click="submitImmunization">Submit</i></el-button>
+                </el-button-group>
+                <el-button-group v-else>
+                    <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
+                    <el-button type="primary" size="small" plain @click="submitPrenatal('prenatal')">Submit</i></el-button>
                 </el-button-group>
             </el-row>
         </el-main>

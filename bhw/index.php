@@ -90,7 +90,27 @@
                         fhb: "",
                         presentation: "",
                     },
-                    individual: {
+                    health: {
+                        fsn: "",
+                        clinisysFSN: "",
+                        civil: "",
+                        spouse: "",
+                        education: "",
+                        employment: "",
+                        occupation: "",
+                        religion: "",
+                        telephone: "",
+                        street: "",
+                        purok: "",
+                        barangay: "",
+                        blood: "",
+                        member: "",
+                        otherMember: "",
+                        phlType: "",
+                        philhealth: "",
+                        mLastName: "",
+                        mFirstName: "",
+                        mMidName: "",
                         age: ""
                     },
                     addRules: {
@@ -122,6 +142,46 @@
                             message: 'Gender is required!',
                             trigger: 'blur'
                         }],
+                    },
+                    prenatalRules: {
+                        dateVisit: [{
+                            required: true,
+                            message: 'Date is required!',
+                            trigger: 'blur'
+                        }],
+                        weight: [{
+                            required: true,
+                            message: 'Weight is required!',
+                            trigger: 'blur'
+                        }],
+                        blood: [{
+                            required: true,
+                            message: 'Blood type is required!',
+                            trigger: 'blur'
+                        }],
+                        aog: [{
+                            required: true,
+                            message: 'AOG is required!',
+                            trigger: 'blur'
+                        }],
+                        height: [{
+                            required: true,
+                            message: 'Height is required!',
+                            trigger: 'blur'
+                        }],
+                        fhb: [{
+                            required: true,
+                            message: 'FHB is required!',
+                            trigger: 'blur'
+                        }],
+                        presentation: [{
+                            required: true,
+                            message: 'Presentation is required!',
+                            trigger: 'blur'
+                        }],
+                    },
+                    healthRules: {
+
                     }
                 }
             },
@@ -138,7 +198,19 @@
                 this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
 
-                this.addPatient.appointment = new Date()
+                this.health.age = localStorage.age ? localStorage.age : 0
+
+                const today = new Date();
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+
+                const date = today.toLocaleDateString("en-US", options);
+                localStorage.setItem("date", date)
+
+                this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
             },
             methods: {
                 // Logout **********************************************************
@@ -187,7 +259,8 @@
                             if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                                 age--;
                             }
-                            this.individual.age = age
+                            localStorage.setItem("age", age);
+                            this.individual.age = age;
                         } else {
                             this.$message.error("Please fill in the required informations!");
                             return false;
@@ -199,6 +272,7 @@
                     localStorage.setItem("active", this.active)
                     if (this.active == 0) {
                         localStorage.removeItem("addPatient")
+                        localStorage.removeItem("age")
                     }
                     localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
                     localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
@@ -219,15 +293,6 @@
                     } else {
                         this.$message.error("Please select an appointment!");
                     }
-
-                    var today = new Date();
-                    var birthDate = new Date(this.addPatient.birthDate);
-                    var age = today.getFullYear() - birthDate.getFullYear();
-                    var m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-                    this.individual.age = age
                 },
                 healthCheckup() {
                     this.isPregnancy = false;
@@ -244,8 +309,20 @@
                     this.isImmunization = false;
                     this.isHealthCheckup = false;
                 },
-                submit() {
-                    console.log(this.addPatient)
+                submitHealth() {
+                    console.log(this.addPatient, "healthcheck")
+                },
+                submitImmunization() {
+                    console.log(this.addPatient, "immunization")
+                },
+                submitPrenatal(prenatal) {
+                    this.$refs[prenatal].validate((valid) => {
+                        if (valid) {
+                            console.log(this.addPatient, "pregnancy")
+                        } else {
+
+                        }
+                    })
                 }
             }
         })
