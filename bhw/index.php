@@ -62,14 +62,9 @@
         new Vue({
             el: "#app",
             data() {
-                var first = /(^(\+63)(\d){10}$)/;
-                var second = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-                var third = new RegExp('(?!' + second.source + ')(?:' + first.source + ')')
-
+                const dateToday = new Date();
                 return {
-                    labelPosition: "left",
                     active: 0,
-                    checkbox: false,
                     fullscreenLoading: true,
                     backToHome: false,
                     isHealthCheckup: false,
@@ -77,42 +72,46 @@
                     isPregnancy: false,
                     avatar: "",
                     addPatient: {
+                        id: 0,
                         firstName: "",
                         middleName: "",
                         lastName: "",
                         suffix: "",
-                        birtthDate: "",
+                        birthDate: "",
                         gender: "",
+                    },
+                    prenatal: {
+                        appointment: "",
+                        dateVisit: "",
+                        weight: "",
+                        blood: "",
+                        aog: "",
+                        height: "",
+                        fhb: "",
+                        presentation: "",
+                    },
+                    health: {
+                        fsn: "",
+                        clinisysFSN: "",
+                        civil: "",
                         spouse: "",
-                        educAttainment: "",
-                        emloymentStatus: "",
-                        employed: "",
+                        education: "",
+                        employment: "",
+                        occupation: "",
                         religion: "",
-                        telephomne: "",
+                        telephone: "",
                         street: "",
                         purok: "",
                         barangay: "",
-                        bloodType: "",
-                        familyMember: "",
-                        others: "",
-                        Philhealth: "",
-                        philhealthNo: "",
-                        motherfirstName: "",
-                        mothermiddleName: "",
-                        motherlastName: "",
-                        nhts: "",
-                        pantawid: "",
-                        pantawidMember: "",
-                        S: "",
-                        O: "",
-                        pr: "",
-                        rr: "",
-                        bp: "",
-                        weight: "",
-                        height: "",
-                        temp: "",
-                        A: "",
-                        P: "",
+                        blood: "",
+                        member: "",
+                        otherMember: "",
+                        phlType: "",
+                        philhealth: "",
+                        mLastName: "",
+                        mFirstName: "",
+                        mMidName: "",
+                        age: ""
                     },
                     addRules: {
                         firstName: [{
@@ -130,7 +129,7 @@
                             trigger: 'blur'
                         }, {
                             pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid last name format!',
+                            message: 'Invalid first name format!',
                             trigger: 'blur'
                         }],
                         birthDate: [{
@@ -143,132 +142,46 @@
                             message: 'Gender is required!',
                             trigger: 'blur'
                         }],
-                        civil: [{
+                    },
+                    prenatalRules: {
+                        dateVisit: [{
                             required: true,
-                            message: 'Civil Status is required!',
+                            message: 'Date is required!',
                             trigger: 'blur'
                         }],
-                        spouse: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Spouse format!',
-                            trigger: 'blur'
-                        }],
-                        educAttainment: [{
+                        weight: [{
                             required: true,
-                            message: 'Educational Attainment is required!',
+                            message: 'Weight is required!',
                             trigger: 'blur'
                         }],
-                        emloymentStatus: [{
+                        blood: [{
                             required: true,
-                            message: 'Employment Status is required!',
+                            message: 'Blood type is required!',
                             trigger: 'blur'
                         }],
-                        employed: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Occupation format!',
-                            trigger: 'blur'
-                        }],
-                        religion: [{
+                        aog: [{
                             required: true,
-                            message: 'Religion is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Religion format!',
+                            message: 'AOG is required!',
                             trigger: 'blur'
                         }],
-                        telephone: [{
+                        height: [{
                             required: true,
-                            message: 'Phone number/ Email Address is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: this.third,
-                            message: 'Invalid Phone number/ Email Address format!',
+                            message: 'Height is required!',
                             trigger: 'blur'
                         }],
-                        street: [{
+                        fhb: [{
                             required: true,
-                            message: 'Street is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Street format!',
+                            message: 'FHB is required!',
                             trigger: 'blur'
                         }],
-                        purok: [{
+                        presentation: [{
                             required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Purok format!',
+                            message: 'Presentation is required!',
                             trigger: 'blur'
                         }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Barangay format!',
-                            trigger: 'blur'
-                        }],
-                        bloodType: [{
-                            required: true,
-                            message: 'Bloodtype is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid Bloodtype format!',
-                            trigger: 'blur'
-                        }],
-                        familyMember: [{
-                            required: true,
-                            message: 'Please select!',
-                            trigger: 'blur'
-                        }],
-                        Philhealth: [{
-                            required: true,
-                            message: 'Please select!',
-                            trigger: 'blur'
-                        }],
-                        philhealthNo: [{
-                            pattern: /^[0-9]+(-[0-9]+)+$/,
-                            message: 'Invalid Philhealth Number format!',
-                            trigger: 'blur'
-                        }, {
-                            min: 2,
-                            message: 'Philhealth Number should atleast two(2) digits!',
-                            trigger: 'blur'
-                        }],
-                        others: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid format!',
-                            trigger: 'blur'
-                        }],
-                        motherfirstName: [{
-                            required: true,
-                            message: 'First name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        motherlastName: [{
-                            required: true,
-                            message: 'Last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }],
-                        pantawidMember: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid format!',
-                            trigger: 'blur'
-                        }],
+                    },
+                    healthRules: {
+
                     }
                 }
             },
@@ -285,8 +198,19 @@
                 this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
 
-                this.addPatient.appointment = new Date()
-                this.addPatient.consultationDate = new Date()
+                this.health.age = localStorage.age ? localStorage.age : 0
+
+                const today = new Date();
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+
+                const date = today.toLocaleDateString("en-US", options);
+                localStorage.setItem("date", date)
+
+                this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
             },
             methods: {
                 // Logout **********************************************************
@@ -327,6 +251,16 @@
                             this.isHealthCheckup = false;
                             this.isImmunization = false;
                             this.isImmunization = false;
+
+                            var today = new Date();
+                            var birthDate = new Date(this.addPatient.birthDate);
+                            var age = today.getFullYear() - birthDate.getFullYear();
+                            var m = today.getMonth() - birthDate.getMonth();
+                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                age--;
+                            }
+                            localStorage.setItem("age", age);
+                            this.individual.age = age;
                         } else {
                             this.$message.error("Please fill in the required informations!");
                             return false;
@@ -338,6 +272,7 @@
                     localStorage.setItem("active", this.active)
                     if (this.active == 0) {
                         localStorage.removeItem("addPatient")
+                        localStorage.removeItem("age")
                     }
                     localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
                     localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
@@ -374,53 +309,21 @@
                     this.isImmunization = false;
                     this.isHealthCheckup = false;
                 },
-                submit(addPatient) {
-                    this.$refs[addPatient].validate((valid) => {
+                submitHealth() {
+                    console.log(this.addPatient, "healthcheck")
+                },
+                submitImmunization() {
+                    console.log(this.addPatient, "immunization")
+                },
+                submitPrenatal(prenatal) {
+                    this.$refs[prenatal].validate((valid) => {
                         if (valid) {
-                            this.loadButton = true;
-                            this.openAddDrawer = false;
-                            const birthday = this.addPatient.birthdate;
-                            const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
-                            var newData = new FormData()
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("niddle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("birthdate", birthdayFormat)
-                            newData.append("gender", this.addPatient.gender)
-                            axios.post("action.php?action=store", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New Patient has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData()
-                                            setTimeout(() => {
-                                                this.openAddDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.resetFormData();
-                                        this.newUser = response.data;
-                                        this.loadButton = false;
-                                    }
-                                })
+                            console.log(this.addPatient, "pregnancy")
                         } else {
-                            this.$message.error("Cannot submit the form. Please check the error(s).")
-                            return false;
+
                         }
-                    });
-                    console.log(this.addPatient)
-                },
-                resetForm(addPatient) {
-                    this.$refs[addPatient].resetFields();
-                },
-                resetFormData() {
-                    this.addBhw = []
-                },
+                    })
+                }
             }
         })
     </script>

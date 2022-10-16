@@ -8055,16 +8055,60 @@ fieldset:disabled .btn {
   border-width: 5px !important;
 }
 
+.w-10 {
+  width: 10% !important;
+}
+
+.w-20 {
+  width: 20% !important;
+}
+
 .w-25 {
   width: 25% !important;
+}
+
+.w-30 {
+  width: 30% !important;
+}
+
+.w-33 {
+  width: 33% !important;
+}
+
+.w-40 {
+  width: 40% !important;
+}
+
+.w-45 {
+  width: 45% !important;
 }
 
 .w-50 {
   width: 50% !important;
 }
 
+.w-60 {
+  width: 60% !important;
+}
+
+.w-65 {
+  width: 65% !important;
+}
+
+.w-70 {
+  width: 70% !important;
+}
+
 .w-75 {
   width: 75% !important;
+}
+
+.w-80 {
+  width: 80% !important;
+}
+
+.w-90 {
+  width: 90% !important;
 }
 
 .w-100 {
@@ -13037,42 +13081,89 @@ body#page-top {
 .body-card-form {
   border: 1px solid #f3f3f3;
   box-shadow: 5px 5px 10px #b7b7b7;
-  padding-top: 30px;
-  padding-bottom: 20px;
-  border-radius: 5px;
+  padding: 50px 50px 30px;
+  border-radius: 10px;
 }
 
-.el-item-form .el-form-item__content {
-  line-height: 30px !important;
+.label-format label {
+  font-size: 14px;
+}
+
+.birth-width .el-date-editor.el-input {
+  width: 100%;
+}
+
+.underline-input {
+  padding: 0 40px;
 }
 
 .underline-input .el-form-item {
   display: flex !important;
-  align-items: flex-end;
+  align-items: center;
 }
 
-.underline-input .el-form-item.measurement .el-form-item__content {
-  display: flex;
-}
-
-.underline-input .el-form-item label {
-  line-height: 30px !important;
-  margin-bottom: 0 !important;
-}
-
-.underline-input .el-form-item p {
+.underline-input .el-form-item .el-form-item__label {
+  width: 40%;
+  text-align: left;
   margin: 0 !important;
 }
 
-.underline-input .el-input__icon {
-  line-height: 30px !important;
+.underline-input.health .el-form-item .el-form-item__label {
+  width: 50% !important;
 }
 
-.underline-input .el-form-item .el-form-item__content,
-.underline-input .el-form-item .el-form-item__content .el-date-editor {
-  width: 100%;
-  max-width: 290px;
-  line-height: 30px !important;
+.underline-input.health .el-form-item.column .el-form-item__label {
+  width: 55% !important;
+}
+
+.underline-input.health .radio .el-form-item__label {
+  width: 20% !important;
+}
+
+.underline-input.health .radio.plus .el-form-item__label {
+  width: 30% !important;
+}
+
+.underline-input.health .radio.normal .el-form-item__label {
+  width: 50% !important;
+}
+
+.underline-input.health .telephone .el-form-item__label {
+  width: 70% !important;
+}
+
+.underline-input .el-form-item .el-form-item__content {
+  width: 60%;
+}
+
+.underline-input .radio .el-form-item__content {
+  width: 80%;
+}
+
+.underline-input .radio.plus .el-form-item__content {
+  width: 70%;
+}
+
+.underline-input.health .radio.normal .el-form-item__content {
+  width: 50%;
+}
+
+.underline-input .radio .el-form-item__content .el-radio,
+.underline-input .measurement .el-form-item__content p {
+  margin-bottom: 0 !important;
+}
+
+.underline-input .measurement .el-form-item__content {
+  display: flex;
+}
+
+.underline-input .el-form-item .el-form-item__content .el-date-editor.el-input,
+.underline-input .el-form-item .el-form-item__content .el-select {
+  width: 100% !important;
+}
+
+.underline-input.top .el-form-item .el-form-item__label {
+  text-align: right;
 }
 
 .underline-input .el-form-item .el-form-item__content input {

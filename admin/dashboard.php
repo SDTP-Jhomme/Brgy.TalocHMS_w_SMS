@@ -44,7 +44,6 @@ $count = $user_row['count'];
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-chart-area me-1"></i>
-                Total Patient Registered
             </div>
             <div class="card-body"><canvas id="myChart" style="width:100%;max-width:600px"></canvas>
 
