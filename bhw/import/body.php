@@ -27,4 +27,12 @@
     $(document).on("click", function() {
         $("#dropdownMenu").hide();
     });
+
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 1) {
+            $('.navbar-fixed').addClass("sticky");
+        } else {
+            $('.navbar-fixed').removeClass("sticky");
+        }
+    });
 </script>

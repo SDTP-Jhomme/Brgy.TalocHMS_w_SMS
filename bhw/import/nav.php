@@ -1,8 +1,8 @@
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow navbar-fixed">
 
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center fixed-logo">
         <div class="mh-auto mw-auto">
-            <img src="../assets/img/logo-new.png" style="height: auto; width: auto; max-width: 70px; max-height: 70px;">
+            <img src="../assets/img/logo-new.png" alt="Logo">
         </div>
         <div class="mh-auto mw-auto">
             <h4 class="m-0 ml-3">Barangay Taloc Online Health Record Management System</h4>
@@ -16,6 +16,7 @@
                 Back To Home
             </a>
         </li>
+
         <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
@@ -28,6 +29,10 @@
                 <a class="dropdown-item" href="./profile">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Settings
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" @click="logout" href="#">

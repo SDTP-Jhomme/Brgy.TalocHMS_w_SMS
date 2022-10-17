@@ -45,7 +45,7 @@
             el: "#app",
             data() {
                 return {
-                    fullscreenLoading: true,
+                    fullscreenLoading: true
                 }
             },
             mounted() {
@@ -74,28 +74,6 @@
                 // *************************
             }
         })
-        var xValues = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-        var yValues =[0];
-        new Chart("myChart", {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    data: [0,0,0,0,00,0,0,0,, 0, 0, 0, 0],
-                    borderColor: "red",
-                    fill: false
-                }, {
-                    data: [0,0,0,0,0, 0, 0, 0],
-                    borderColor: "blue",
-                    fill: false
-                }]
-            },
-            options: {
-                legend: {
-                    display: true
-                }
-            }
-        });
     </script>
 </body>
 

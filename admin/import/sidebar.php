@@ -27,9 +27,13 @@
                         <a class="nav-link" href="./checkup">Individual Checkup</a>
                     </nav>
                 </div>
-                <a class="nav-link" href="./notification">
-                    <div class="sb-nav-link-icon"><i class="fab fa-facebook-messenger"></i></div>
-                    Sms
+                <a class="nav-link" href="#">
+                    <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                    Charts
+                </a>
+                <a class="nav-link" href="#">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Tables
                 </a>
             </div>
         </div>

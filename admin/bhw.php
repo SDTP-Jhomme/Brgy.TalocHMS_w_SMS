@@ -103,10 +103,6 @@
                                             </el-tooltip>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="Status" prop="status">
-                                        <el-switch v-model="status" size="small">
-                                        </el-switch>
-                                    </el-table-column>
                                 </el-table>
                                 <div class="d-flex justify-content-between mt-2">
                                     <el-checkbox v-model="showAllData">Show All</el-checkbox>
@@ -122,7 +118,7 @@
                             <div class="container p-4 d-flex flex-column pe-5">
                                 <el-form :label-position="topLabel" :model="addBhw" :rules="rules" ref="addBhw">
                                     <el-form-item label="Identification Number" prop="identification">
-                                        <el-input v-model="addBhw.identification" id="myinput" OnInput="add_hyphen()" maxlength="12" clearable></el-input>
+                                        <el-input v-model="addBhw.identification" clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="First Name" prop="firstName">
                                         <el-input v-model="addBhw.firstName" clearable></el-input>
@@ -381,8 +377,6 @@
                     searchNull: "",
                     searchName: "",
                     searchID: "",
-                    switchButton: true,
-                    status: true,
                     searchUsername: "",
                     searchBirthday: "",
                     topLabel: "top",
@@ -799,18 +793,6 @@
                 }
             }
         })
-    </script>
-    <script>
-        function add_hyphen() {
-            var input = document.getElementById("myinput");
-            var str = input.value;
-            str = str.replace("-", "");
-            if (str.length > 8) {
-                str = str.substring(0, 3) + "-" + str.substring(0, 3) + "-" + str.substring(7)
-            }
-
-            input.value = str
-        }
     </script>
 </body>
 
