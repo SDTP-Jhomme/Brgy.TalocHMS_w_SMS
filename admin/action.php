@@ -69,7 +69,14 @@ if ($action == 'store') {
     $password = random_password(8);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    $username = "BHW-" . ucfirst($first_name);
+    function rand_username($length = 3)
+    {
+        $str = "123456789";
+        $shuffled = substr(str_shuffle($str), 0, $length);
+        return $shuffled;
+    }
+
+    $username = "BHW-" . ucfirst($first_name .rand_username(3) );
 
     $response = array(
         "first_name" => $first_name,

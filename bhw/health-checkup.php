@@ -180,6 +180,170 @@
                                     <el-input v-model="health.mMidName" clearable></el-input>
                                 </el-form-item>
                             </div>
+                            <div class="w-33 mb-4">
+                                <el-form-item class="radio plus" label="NHTS Member :" prop="nhts">
+                                    <el-radio-group v-model="health.nhts">
+                                        <el-radio label="Yes">Yes</el-radio>
+                                        <el-radio label="No">No</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </div>
+                            <div class="w-33 mb-4">
+                                <el-form-item class="radio normal" label="Pantawid Pamilya Member :" prop="pantawid">
+                                    <el-radio-group v-model="health.pantawid">
+                                        <el-radio label="Yes">Yes</el-radio>
+                                        <el-radio label="No">No</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </div>
+                            <div class="w-33 mb-4">
+                                <el-form-item class="blank" label="If yes, HH no. :" prop="hhNo">
+                                    <el-input v-model="health.hhNo" :disabled="health.pantawid != 'Yes'" id="hhno" OnInput="add_hyphen()" maxlength="14" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item label="Alert Type :" prop="alert">
+                                    <el-select v-model="health.alert" placeholder="Select" clearable>
+                                        <el-option label="Allergy" value="Allergy">
+                                        </el-option>
+                                        <el-option label="Disabilty" value="Disabilty">
+                                        </el-option>
+                                        <el-option label="Drug" value="Drug">
+                                        </el-option>
+                                        <el-option label="Handicap" value="Handicap">
+                                        </el-option>
+                                        <el-option label="Impairmaent" value="Impairmaent">
+                                        </el-option>
+                                        <el-option label="Others" value="Others">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item label="Others :" prop="otherAlert">
+                                    <el-input v-model="health.otherAlert" clearable :disabled="health.alert != 'Others'"></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item class="radio normal" label="Past medical family history :" prop="medicalHistory">
+                                    <el-select v-model="health.medicalHistory" placeholder="Select" clearable>
+                                        <el-option label="HPN" value="HPN">
+                                        </el-option>
+                                        <el-option label="DM" value="DM">
+                                        </el-option>
+                                        <el-option label="Asthma" value="Asthma">
+                                        </el-option>
+                                        <el-option label="Smoker" value="Smoker">
+                                        </el-option>
+                                        <el-option label="Others" value="Others">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item class="blank" label="Others :" prop="otherHistory">
+                                    <el-input v-model="health.otherHistory" :disabled="health.medicalHistory != 'Others'" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-70 mb-4">
+                                <el-form-item class="radio normal" label=" Type of Encounter / (OPD) : (Pls. Check) " prop="encounter">
+                                    <el-radio-group v-model="health.encounter">
+                                        <el-radio label="Consultation">Consultation</el-radio>
+                                        <el-radio label="New Admission">New Admission</el-radio>
+                                        <el-radio label="For follow-up">For follow-up</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </div>
+                            <div class="w-50 mb-4">
+                                <el-form-item label=" Type of Consultation / Purpose of visit : " prop="consultationType">
+                                    <el-select v-model="health.consultationType" placeholder="Select" clearable>
+                                        <el-option label="General" value="General">General</el-option>
+                                        <el-option label="Prental" value="Prental">Prental</el-option>
+                                        <el-option label="Child Immunization" value="Child Immunization">Child Immunization</el-option>
+                                        <el-option label="Others" value="Others">Others</el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item class="blank" label="Others :" prop="otherConsultation">
+                                    <el-input v-model="health.otherConsultation" :disabled="health.consultationType != 'Others'" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item label="Consultaion Date :" prop="appointment">
+                                    <el-input v-model="health.appointment" clearable disabled></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-20 mb-4">
+                                <el-form-item label="Age :" prop="age">
+                                    <el-input v-model="health.age" clearable disabled></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 mb-4">
+                                <el-form-item class="radio normal" label=" Mode of Transaction : (Pls. Check)" prop="transaction">
+                                    <el-radio-group v-model="health.transaction">
+                                        <el-radio label="Walk-in">Walk-in</el-radio>
+                                        <el-radio label="Visited">Visited</el-radio>
+                                        <el-radio label="Referral">Referral</el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                            </div>
+                            <div class="w-60 mb-4">
+                                <el-form-item label="S :" prop="s">
+                                    <el-input v-model="health.s" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-60 mb-4">
+                                <el-form-item label="O :" prop="o">
+                                    <el-input v-model="health.o" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 d-flex justify-content-center mb-4">
+                                <el-form-item class="measurement" label="PR / CR :" prop="pr">
+                                    <el-input v-model="health.pr" clearable></el-input>
+                                    <p>b/min</p>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 d-flex justify-content-center mb-4">
+                                <el-form-item class="measurement" label="RR :" prop="rr">
+                                    <el-input v-model="health.rr" clearable></el-input>
+                                    <p>c/min</p>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 d-flex justify-content-center mb-4">
+                                <el-form-item class="measurement" label="BP :" prop="bp">
+                                    <el-input v-model="health.bp" clearable></el-input>
+                                    <p>mmHg</p>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 d-flex justify-content-center mb-4">
+                                <el-form-item class="measurement" label="Weight :" prop="weight">
+                                    <el-input v-model="health.weight" clearable></el-input>
+                                    <p>kgs/lbs</p>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 d-flex justify-content-center mb-4">
+                                <el-form-item class="measurement" label="Height :" prop="height">
+                                    <el-input v-model="health.height" clearable></el-input>
+                                    <p>cm/ft</p>
+                                </el-form-item>
+                            </div>
+                            <div class="w-45 d-flex justify-content-center mb-4">
+                                <el-form-item class="measurement" label="Temp :" prop="temp">
+                                    <el-input v-model="health.temp" clearable></el-input>
+                                    <p>℃</p>
+                                </el-form-item>
+                            </div>
+                            <div class="w-60 mb-4">
+                                <el-form-item label="A :" prop="a">
+                                    <el-input v-model="health.a" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-60 mb-4">
+                                <el-form-item label="P :" prop="p">
+                                    <el-input v-model="health.p" clearable></el-input>
+                                </el-form-item>
+                            </div>
                         </div>
                     </div>
                 </el-form>

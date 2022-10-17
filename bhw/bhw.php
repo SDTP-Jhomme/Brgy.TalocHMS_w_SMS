@@ -113,7 +113,7 @@
                 <?php include("./health-checkup.php"); ?>
             </el-row>
             <el-row v-if="this.isImmunization" :gutter="30" type="flex" justify="center">
-                Immunization
+                <?php include("./immunization-checkup.php"); ?>
             </el-row>
             <el-row v-if="this.isPregnancy" :gutter="30" type="flex" justify="center">
                 <?php include("./prenatal-checkup.php"); ?>
@@ -141,11 +141,11 @@
             <el-row type="flex" justify="center" v-if="active == 2">
                 <el-button-group v-if="isHealthCheckup">
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submitHealth">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitHealth('health')">Submit</i></el-button>
                 </el-button-group>
                 <el-button-group v-else-if="isImmunization">
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submitImmunization">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitImmunization('immunizationCheckup')">Submit</i></el-button>
                 </el-button-group>
                 <el-button-group v-else>
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>

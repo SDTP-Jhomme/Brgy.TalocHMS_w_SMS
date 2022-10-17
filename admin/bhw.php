@@ -118,7 +118,7 @@
                             <div class="container p-4 d-flex flex-column pe-5">
                                 <el-form :label-position="topLabel" :model="addBhw" :rules="rules" ref="addBhw">
                                     <el-form-item label="Identification Number" prop="identification">
-                                        <el-input v-model="addBhw.identification" clearable></el-input>
+                                        <el-input v-model="addBhw.identification" id="bhwID" OnInput="add_hyphen()" maxlength="12" clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="First Name" prop="firstName">
                                         <el-input v-model="addBhw.firstName" clearable></el-input>
@@ -278,6 +278,14 @@
                             message: 'Identification no. is required!',
                             trigger: 'blur'
                         }, {
+                            pattern: /^[0-9]+(-[0-9]+)+$/,
+                            message: 'Invalid identification number format!',
+                            trigger: 'blur'
+                        }, {
+                            min: 12,
+                            message: 'Identification number should ten(10) digits!',
+                            trigger: 'blur'
+                        }, {
                             validator: validateAddID,
                             trigger: 'blur'
                         }],
@@ -327,7 +335,15 @@
                             message: 'Identification no. is required!',
                             trigger: 'blur'
                         }, {
+                            pattern: /^[0-9]+(-[0-9]+)+$/,
+                            message: 'Invalid identification number format!',
+                            trigger: 'blur'
+                        }, {
                             validator: validateUpdateID,
+                            trigger: 'blur'
+                        }, {
+                            min: 12,
+                            message: 'Identification number should ten(10) digits!',
                             trigger: 'blur'
                         }],
                         firstName: [{
@@ -793,6 +809,18 @@
                 }
             }
         })
+    </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        function add_hyphen() {
+            var input = document.getElementById("bhwID");
+            var str = input.value;
+            str = str.replace("-", "");
+            if (str.length > 9) {
+                str = str.substring(0, 3) + "-" + str.substring(3, 6) + "-" + str.substring(7);
+            }
+            input.value = str
+        }
     </script>
 </body>
 
