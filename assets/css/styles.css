@@ -8075,6 +8075,10 @@ fieldset:disabled .btn {
   width: 33% !important;
 }
 
+.w-35 {
+  width: 35% !important;
+}
+
 .w-40 {
   width: 40% !important;
 }
@@ -8105,6 +8109,10 @@ fieldset:disabled .btn {
 
 .w-80 {
   width: 80% !important;
+}
+
+.w-85 {
+  width: 85% !important;
 }
 
 .w-90 {
@@ -12929,6 +12937,7 @@ nav#sidenavAccordion {
 
 .profile .profile-card img {
   max-width: 120px;
+  width: 100%;
   height: 120px;
   object-fit: cover;
 }
@@ -13085,98 +13094,22 @@ body#page-top {
   border-radius: 10px;
 }
 
-.label-format label {
+.label-format label,
+.alert-label label {
   font-size: 14px;
+  font-weight: 700;
+  color: #606266;
 }
 
-.birth-width .el-date-editor.el-input {
-  width: 100%;
-}
-
-.underline-input {
-  padding: 0 40px;
-}
-
-.underline-input .el-form-item {
-  display: flex !important;
-  align-items: center;
-}
-
-.underline-input .el-form-item .el-form-item__label {
-  width: 40%;
-  text-align: left;
-  margin: 0 !important;
-}
-
-.underline-input.health .el-form-item .el-form-item__label {
-  width: 50% !important;
-}
-
-.underline-input.health .el-form-item.column .el-form-item__label {
-  width: 55% !important;
-}
-
-.underline-input.health .radio .el-form-item__label {
-  width: 20% !important;
-}
-
-.underline-input.health .radio.plus .el-form-item__label {
-  width: 30% !important;
-}
-
-.underline-input.health .radio.normal .el-form-item__label {
-  width: 50% !important;
-}
-
-.underline-input.health .telephone .el-form-item__label {
-  width: 70% !important;
-}
-
-.underline-input .el-form-item .el-form-item__content {
-  width: 60%;
-}
-
-.underline-input .radio .el-form-item__content {
-  width: 80%;
-}
-
-.underline-input .radio.plus .el-form-item__content {
-  width: 70%;
-}
-
-.underline-input.health .radio.normal .el-form-item__content {
-  width: 50%;
-}
-
-.underline-input .radio .el-form-item__content .el-radio,
-.underline-input .measurement .el-form-item__content p {
-  margin-bottom: 0 !important;
-}
-
-.underline-input .measurement .el-form-item__content {
-  display: flex;
-}
-
-.underline-input .el-form-item .el-form-item__content .el-date-editor.el-input,
-.underline-input .el-form-item .el-form-item__content .el-select {
+.underline-input .el-form-item .el-input,
+.underline-input .el-form-item .el-select,
+.body-card-form .el-date-editor {
   width: 100% !important;
 }
 
-.underline-input.top .el-form-item .el-form-item__label {
-  text-align: right;
-}
-
-.underline-input .el-form-item .el-form-item__content input {
-  background-color: transparent !important;
-  border: none !important;
-  border-bottom: 2px solid #eeeeee !important;
-  border-radius: 0px !important;
-  height: 30px !important;
-  transition: all 0.4s ease;
-}
-
-.underline-input .el-form-item .el-form-item__content input:focus,
-.underline-input .el-form-item .el-form-item__content input:active {
-  border-color: #409EFF !important;
-  border-width: 1px !important;
+.underline-input .el-form-item .el-form-item__label {
+  line-height: 24px !important;
+  font-weight: 700;
+  margin-bottom: 0 !important;
+  display: contents;
 }

@@ -111,6 +111,15 @@
                         mLastName: "",
                         mFirstName: "",
                         mMidName: "",
+                        nhts: "",
+                        allergy: "",
+                        disability: "",
+                        drug: "",
+                        handicap: "",
+                        impairment: "",
+                        otherAlert: "",
+                        history: [],
+                        otherHistory: [],
                         age: ""
                     },
                     addRules: {
@@ -262,7 +271,7 @@
                             localStorage.setItem("age", age);
                             this.individual.age = age;
                         } else {
-                            this.$message.error("Please fill in the required informations!");
+                            this.$message.error("Please fill in the required fields!");
                             return false;
                         }
                     })

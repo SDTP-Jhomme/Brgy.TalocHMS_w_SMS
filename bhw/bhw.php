@@ -141,15 +141,15 @@
             <el-row type="flex" justify="center" v-if="active == 2">
                 <el-button-group v-if="isHealthCheckup">
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submitHealth">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitHealth">Submit <i class="el-icon-caret-right"></i></el-button>
                 </el-button-group>
                 <el-button-group v-else-if="isImmunization">
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submitImmunization">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitImmunization">Submit <i class="el-icon-caret-right"></i></el-button>
                 </el-button-group>
                 <el-button-group v-else>
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submitPrenatal('prenatal')">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitPrenatal('prenatal')">Submit <i class="el-icon-caret-right"></i></el-button>
                 </el-button-group>
             </el-row>
         </el-main>
