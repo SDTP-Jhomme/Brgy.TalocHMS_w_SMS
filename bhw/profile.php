@@ -83,6 +83,7 @@
                     newPassErr: "",
                     confirmPassErr: "",
                     errors: true,
+                    viewDialog: false
                 }
             },
             created() {
@@ -177,6 +178,9 @@
                                 }, 500)
                             }
                         })
+                },
+                viewAvatar() {
+                    this.viewDialog = true
                 },
                 removeAvatar() {
                     this.fileImg = null;

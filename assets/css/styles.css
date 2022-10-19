@@ -13020,11 +13020,13 @@ nav#sidenavAccordion {
 
 .avatar-container {
   height: 178px;
+  width: 178px;
   position: relative;
+  border-radius: 50%;
 }
 
 .avatar-container img {
-  border-radius: 5px;
+  object-fit: contain;
 }
 
 .avatar-overlay {
@@ -13041,18 +13043,19 @@ nav#sidenavAccordion {
   opacity: 0.5;
 }
 
-.hover-remove-avatar {
-  position: absolute;
+.hover-remove-avatar,
+.hover-view-avatar {
   font-size: 25px;
   line-height: 178px;
-  left: 0;
-  right: 0;
-  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
   color: #ffffff;
 }
 
-.hover-remove-avatar i {
+.hover-remove-avatar i,
+.hover-view-avatar i {
   cursor: pointer;
+  font-size: 20px;
 }
 
 .topbar .nav-item .nav-link .img-profile {

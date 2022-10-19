@@ -1,9 +1,15 @@
 <div>
     <label class="form-label mb-0" for="">Change Avatar</label>
     <el-row type="flex" v-if="fileImg" justify="center">
-        <div class="mb-3 mt-2 avatar-container d-flex card-overflow-hidden">
+        <p>Preview</p>
+    </el-row>
+    <el-row type="flex" v-if="fileImg" justify="center">
+        <div class="mb-3 mt-2 avatar-container d-flex justify-content-center card-overflow-hidden">
             <img :src="fileUrl" class="avatar">
-            <div class="avatar-overlay">
+            <div class="avatar-overlay d-flex justify-content-center">
+                <span class="hover-view-avatar">
+                    <i class="el-icon-zoom-in" @click="viewAvatar"></i>
+                </span>
                 <span class="hover-remove-avatar">
                     <i class="el-icon-delete" @click="removeAvatar"></i>
                 </span>
@@ -41,4 +47,7 @@
             <input type="text" class="form-control" value="<?php echo $db_gender; ?>" disabled />
         </el-col>
     </el-row>
+    <el-dialog :visible.sync="viewDialog">
+        <img width="100%" :src="fileUrl" alt="">
+    </el-dialog>
 </div>
