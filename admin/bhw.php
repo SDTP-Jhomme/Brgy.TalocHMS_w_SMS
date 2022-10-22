@@ -10,7 +10,7 @@
     if (isset($_SESSION["id"])) {
 
         $id = $_SESSION["id"];
-
+        $time = time();
         $admin_record = mysqli_query($db, "SELECT * FROM admin where id='$id'");
 
         while ($admin_row = mysqli_fetch_assoc($admin_record)) {
@@ -90,7 +90,7 @@
                                             <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="Actions" width="200">
+                                    <el-table-column label="Actions" width="250">
                                         <template slot-scope="scope">
                                             <el-tooltip class="item" effect="dark" content="View" placement="top-start">
                                                 <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)"></el-button>
@@ -98,9 +98,18 @@
                                             <el-tooltip class="item" effect="dark" content="Edit" placement="top-start">
                                                 <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
                                             </el-tooltip>
-                                            <el-tooltip class="item" effect="dark" content="Delete" placement="top-start">
-                                                <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"></el-button>
+                                            <el-tooltip class="item" effect="dark" content="Activate Status" placement="top-start">
+                                                <el-button icon="el-icon-open" size="mini" type="success" @click="handleActive(scope.$index, scope.row)"></el-button>
                                             </el-tooltip>
+                                            <el-tooltip class="item" effect="dark" content="Deactivate Status" placement="top-start">
+                                                <el-button icon="el-icon-turn-off" size="mini" type="danger" @click="handleInactive(scope.$index, scope.row)"></el-button>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column sortable label="Status" prop="status" width="110" column-key="status" :filters="[{text: 'Inactive', value: 'Inactive'}, {text: 'Active', value: 'Active'}]" :filter-method="filterHandler">
+                                        <template slot-scope="scope">
+                                            <el-tag size="small" v-if="scope.row.status == 'Active'" type="success" onLine:>{{ scope.row.status }}</el-tag>
+                                            <el-tag size="small" v-else type="info" showBackOnline:>{{ scope.row.status }}</el-tag>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -386,6 +395,9 @@
                             trigger: 'blur'
                         }],
                     },
+                    message: 'online',
+                    onLine: navigator.onLine,
+                    showBackOnline: false,
                     page: 1,
                     pageSize: 10,
                     showAllData: false,
@@ -467,8 +479,14 @@
             },
             mounted() {
                 setTimeout(() => {
-                    this.fullscreenLoading = false
-                }, 1000)
+                        this.fullscreenLoading = false
+                    }, 1000),
+                    window.addEventListener('online', this.updateOnlineStatus);
+                window.addEventListener('offline', this.updateOnlineStatus);
+            },
+            beforeDestroy() {
+                window.removeEventListener('online', this.updateOnlineStatus);
+                window.removeEventListener('offline', this.updateOnlineStatus);
             },
             watch: {
                 editBhw(value) {
@@ -496,9 +514,23 @@
                     } else {
                         this.pageSize = 10
                     }
+                },
+                onLine(v) {
+                    if (v) {
+                        this.showBackOnline = true;
+                        setTimeout(() => {
+                            this.showBackOnline = false;
+                        }, 1000);
+                    }
                 }
             },
             methods: {
+                updateOnlineStatus(e) {
+                    const {
+                        type
+                    } = e
+                    this.onLine = type === 'online'
+                },
                 // Logout ***********************************************
                 logout() {
                     this.fullscreenLoading = true
@@ -643,7 +675,7 @@
                         firstName: row.first_name,
                         lastName: row.last_name,
                         birthdate: row.birthdate,
-                        gender: row.gender
+                        gender: row.gender,
                     }
                     this.editDialog = true;
                 },
@@ -742,8 +774,8 @@
                             this.loadButton = false;
                         });
                 },
-                handleDelete(index, row) {
-                    this.$confirm('This will permanently delete user ' + row.username + ". Continue?", 'Warning', {
+                handleActive(index, row) {
+                    this.$confirm('This will change user status ' + row.username + ". Continue?", 'Warning', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                             type: "warning"
@@ -751,7 +783,7 @@
                         .then(() => {
                             var id = new FormData();
                             id.append("id", row.id)
-                            axios.post("action.php?action=delete", id)
+                            axios.post("action.php?action=active", id)
                                 .then(response => {
                                     if (response.data) {
                                         this.tableLoad = true
@@ -759,7 +791,34 @@
                                             this.getData();
                                             this.tableLoad = false
                                             this.$message({
-                                                message: 'User deleted successfully!',
+                                                message: 'User status change successfully!',
+                                                type: 'success'
+                                            })
+                                            this.page = 1;
+                                        }, 1500)
+                                    }
+                                })
+                        })
+                        .catch(() => {});
+                },
+                handleInactive(index, row) {
+                    this.$confirm('This will change user status ' + row.username + ". Continue?", 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            var id = new FormData();
+                            id.append("id", row.id)
+                            axios.post("action.php?action=inactive", id)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true
+                                        setTimeout(() => {
+                                            this.getData();
+                                            this.tableLoad = false
+                                            this.$message({
+                                                message: 'User status change successfully!',
                                                 type: 'success'
                                             })
                                             this.page = 1;

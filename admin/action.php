@@ -22,6 +22,7 @@ if ($action == 'fetch') {
             $db_birthdate = $data_row["birthday"];
             $birthdate = date("F d, Y", strtotime($db_birthdate));
             $db_avatar = $data_row["avatar"];
+            $status = $data_row["status"];
 
             $array_data = array(
                 "id" => $data_row["id"],
@@ -32,6 +33,8 @@ if ($action == 'fetch') {
                 "identification" => $data_row["bhw_id"],
                 "first_name" => $data_row["first_name"],
                 "last_name" => $data_row["last_name"],
+                "status" => $data_row["status"],
+                "last_login" => $data_row["last_login"],
                 "avatar" => "../assets/$db_avatar",
             );
 
@@ -76,7 +79,8 @@ if ($action == 'store') {
         return $shuffled;
     }
 
-    $username = "BHW-" . ucfirst($first_name .rand_username(3) );
+    $username = "BHW-" . ucfirst($first_name . rand_username(3));
+    $db_status = "Active";
 
     $response = array(
         "first_name" => $first_name,
@@ -85,11 +89,12 @@ if ($action == 'store') {
         "username" => $username,
         "birthdate" => $birthdate,
         "gender" => $gender,
-        "password" => $password
+        "password" => $password,
+        "status" => $db_status
     );
 
-    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar)
-        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar')");
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$db_status')");
 }
 
 if ($action == 'update') {
@@ -120,11 +125,25 @@ if ($action == 'update') {
     mysqli_query($db, "UPDATE users SET first_name='$new_first_name',last_name='$new_last_name',birthday='$new_birthdate',
         gender='$new_gender',username='$username',bhw_id='$new_identification',avatar='$avatar' WHERE id='$user_id'");
 }
-
-if ($action == 'delete') {
+if ($action == 'active') {
 
     $user_id = $_POST["id"];
-    $response = mysqli_query($db, "DELETE FROM users WHERE id=$user_id");
+    $user_status = $_POST["status"];
+    if ($user_status == 'Active') {
+        $response = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id=$user_id");
+    }else{
+        $response = mysqli_query($db, "UPDATE users SET status='Active' WHERE id=$user_id");
+    }
+}
+if ($action == 'inactive') {
+
+    $user_id = $_POST["id"];
+    $user_status = $_POST["status"];
+    if ($user_status == 'Inactive') {
+        $response = mysqli_query($db, "UPDATE users SET status='Active' WHERE id=$user_id");
+    }else{
+        $response = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id=$user_id");
+    }
 }
 
 if ($action == 'reset') {

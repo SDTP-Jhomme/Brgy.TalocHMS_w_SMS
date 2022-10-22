@@ -9,7 +9,7 @@
                         <div class="d-flex flex-wrap justify-content-between w-50">
                             <div class="w-40">
                                 <el-form-item label="FSN :" prop="fsn">
-                                    <el-input v-model="health.fsn" clearable></el-input>
+                                    <el-input v-model="addPatient.fsn" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-50">

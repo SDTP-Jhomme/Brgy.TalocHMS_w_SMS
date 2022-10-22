@@ -4,22 +4,21 @@
         <div class="body-card-form">
             <h3 class="text-center mb-4">Immunization Checkup Form</h3>
             <el-main>
-                <el-form :model="immunizationCheckup" :rules="immunizationRules" ref="immunizationCheckup">
+                <el-form :model="immunize" :rules="immunizationRules" ref="immunize">
                     <div class="underline-input top d-flex justify-content-end">
                         <div class="d-flex flex-wrap justify-content-between w-50">
                             <div class="w-40">
                                 <el-form-item label="FSN :" prop="fsn">
-                                    <el-input v-model="immunizationCheckup.fsn" clearable></el-input>
+                                    <el-input v-model="addPatient.fsn" clearable disabled></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-50">
                                 <el-form-item label="Child's No. :" prop="childNo">
-                                    <el-input v-model="immunizationCheckup.childNo" clearable></el-input>
+                                    <el-input v-model="immunize.childNo" clearable></el-input>
                                 </el-form-item>
                             </div>
                         </div>
                     </div>
-                    <!-- Patient Information -->
                     <!-- Patient Information -->
                     <div class="label-format d-flex flex-wrap justify-content-evenly">
                         <div class="mb-4" :class="addPatient.middleName && !addPatient.suffix || !addPatient.middleName && addPatient.suffix ? 'w-30' : addPatient.middleName && addPatient.suffix ? 'w-20' : 'w-25'">
@@ -48,6 +47,10 @@
                                 <label class="m-0">Gender</label>
                                 <el-input v-model="addPatient.gender" size="small" clearable disabled></el-input>
                             </div>
+                            <div class="mb-4" :class="!addPatient.middleName && !addPatient.suffix ? 'w-30' : 'w-20'">
+                                <label class="m-0">Phone Number</label>
+                                <el-input v-model="addPatient.phoneNo" size="small" clearable disabled></el-input>
+                            </div>
                         </div>
                     </div>
                     <!-- End -->
@@ -58,62 +61,63 @@
                         <div class="mt-5 d-flex flex-wrap justify-content-between">
                             <div class="w-33 mb-4">
                                 <el-form-item label="Mother Last Name :" prop="mLastName">
-                                    <el-input v-model="immunizationCheckup.mLastName" clearable></el-input>
+                                    <el-input v-model="immunize.mLastName" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-33 mb-4">
                                 <el-form-item label="Mother First Name :" prop="mFirstName">
-                                    <el-input v-model="immunizationCheckup.mFirstName" clearable></el-input>
+                                    <el-input v-model="immunize.mFirstName" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-33 mb-4">
                                 <el-form-item class="column" label="Mother Middle Name :" prop="mMidName">
-                                    <el-input v-model="immunizationCheckup.mMidName" clearable></el-input>
+                                    <el-input v-model="immunize.mMidName" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-33 mb-4">
                                 <el-form-item label="Father Last Name :" prop="fLastName">
-                                    <el-input v-model="immunizationCheckup.fLastName" clearable></el-input>
+                                    <el-input v-model="immunize.fLastName" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-33 mb-4">
                                 <el-form-item label="Father First Name :" prop="fFirstName">
-                                    <el-input v-model="immunizationCheckup.fFirstName" clearable></el-input>
+                                    <el-input v-model="immunize.fFirstName" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-33 mb-4">
                                 <el-form-item class="column" label="Father Middle Name :" prop="fMidName">
-                                    <el-input v-model="immunizationCheckup.fMidName" clearable></el-input>
+                                    <el-input v-model="immunize.fMidName" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-45 mb-4">
                                 <el-form-item label="Purok :" prop="purok">
-                                    <el-input v-model="immunizationCheckup.purok" clearable></el-input>
+                                    <el-input v-model="immunize.purok" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-45 mb-4">
                                 <el-form-item label="Barangay :" prop="barangay">
-                                    <el-input v-model="immunizationCheckup.barangay" clearable></el-input>
+                                    <el-input v-model="immunize.barangay" clearable></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-45 mb-4">
                                 <el-form-item label="Date :" prop="appointment">
-                                    <el-input v-model="immunizationCheckup.appointment" clearable disabled></el-input>
+                                    <el-input v-model="immunize.appointment" clearable disabled></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-20 mb-4">
                                 <el-form-item label="Age :" prop="age">
-                                    <el-input v-model="immunizationCheckup.age" clearable disabled></el-input>
+                                    <el-input v-model="immunize.age" clearable disabled></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-20 mb-4">
                                 <el-form-item label="Temp :" prop="temp">
-                                    <el-input v-model="immunizationCheckup.temp" clearable></el-input>
+                                    <el-input v-model="immunize.temp" clearable></el-input>
+                                    <template slot="suffix">℃</template>
                                 </el-form-item>
                             </div>
-                            <div class="w-20 mb-4">
+                            <div class="w-70 mb-4">
                                 <el-form-item label="Immunization Given :" prop="immunizationGiven">
-                                    <el-input v-model="immunizationCheckup.immunizationGiven" clearable disabled></el-input>
+                                    <el-input v-model="immunize.immunizationGiven" clearable></el-input>
                                 </el-form-item>
                             </div>
                         </div>

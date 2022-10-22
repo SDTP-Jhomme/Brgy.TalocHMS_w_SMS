@@ -13,11 +13,12 @@
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 
-        $user_row = mysqli_fetch_assoc($user_record);
+        while ($user_row = mysqli_fetch_assoc($user_record)) {
 
-        $db_username = $user_row["username"];
-        $db_last_login = $user_row["last_login"];
-        $logged_user = ucfirst($db_username);
+            $db_username = $user_row["username"];
+            $db_last_login = $user_row["last_login"];
+            $logged_user = ucfirst($db_username);
+        }
 
         if ($db_last_login == "") {
             header("Location: ./change-password");
@@ -46,6 +47,16 @@
                     <?php include("./bhw.php"); ?>
                 </div>
                 <!-- /.container-fluid -->
+                <!-- After Add Show Patient Username & Password -->
+                <el-dialog title="New Patient Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
+                    <label>Fsn</label>
+                    <el-input class="mb-2" v-model="newUser.fsn" disabled></el-input>
+                    <label>Password</label>
+                    <el-input class="mb-2" v-model="newUser.password" disabled></el-input>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="closeAddDialog">Close</el-button>
+                    </span>
+                </el-dialog>
 
             </div>
             <!-- End of Main Content -->
@@ -66,19 +77,23 @@
                 return {
                     active: 0,
                     fullscreenLoading: true,
+                    openAddDialog: false,
                     backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
                     avatar: "",
+                    newUser: [],
                     addPatient: {
                         id: 0,
+                        fsn: "",
                         firstName: "",
                         middleName: "",
                         lastName: "",
                         suffix: "",
                         birthDate: "",
                         gender: "",
+                        phoneNo: "",
                     },
                     prenatal: {
                         appointment: "",
@@ -91,7 +106,6 @@
                         presentation: "",
                     },
                     health: {
-                        fsn: "",
                         clinisysFSN: "",
                         civil: "",
                         spouse: "",
@@ -136,8 +150,7 @@
                         a: "",
                         p: "",
                     },
-                    immunizationCheckup:{
-                        fsn: "",
+                    immunize: {
                         childNo: "",
                         mLastName: "",
                         mFirstName: "",
@@ -153,6 +166,11 @@
                         immunizationGiven: "",
                     },
                     addRules: {
+                        fsn: [{
+                            required: true,
+                            message: 'FSN is required!',
+                            trigger: 'blur'
+                        }],
                         firstName: [{
                             required: true,
                             message: 'First name is required!',
@@ -179,6 +197,11 @@
                         gender: [{
                             required: true,
                             message: 'Gender is required!',
+                            trigger: 'blur'
+                        }],
+                        phoneNo: [ {
+                            pattern: /^(09|\+639)\d{9}$/,
+                            message: 'Invalid phone number format!',
                             trigger: 'blur'
                         }],
                     },
@@ -220,11 +243,6 @@
                         }],
                     },
                     healthRules: {
-                        fsn: [{
-                            required: true,
-                            message: 'FSN is required!',
-                            trigger: 'blur'
-                        }],
                         civil: [{
                             required: true,
                             message: 'Civil Status is required!',
@@ -379,39 +397,58 @@
                         }],
                     },
                     immunizationRules: {
-                        fsn: [{
-                            required: true,
-                            message: 'FSN is required!',
-                            trigger: 'blur'
-                        }],
                         mLastName: [{
                             required: true,
                             message: 'Mother last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
                             trigger: 'blur'
                         }],
                         mFirstName: [{
                             required: true,
                             message: 'Mother first name is required!',
                             trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
                         }],
                         mMidName: [{
                             required: true,
                             message: 'Mother middle name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
                             trigger: 'blur'
                         }],
                         fLastName: [{
                             required: true,
                             message: 'Father last name is required!',
                             trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
                         }],
                         fFirstName: [{
                             required: true,
                             message: 'Father first name is required!',
                             trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
                         }],
                         fMidName: [{
                             required: true,
                             message: 'Father middle name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
                             trigger: 'blur'
                         }],
                         purok: [{
@@ -424,19 +461,13 @@
                             message: 'Barangay is required!',
                             trigger: 'blur'
                         }],
-                        appointment: [{
-                            required: true,
-                            message: 'Date is required!',
-                            trigger: 'blur'
-                        }],
-                        age: [{
-                            required: true,
-                            message: 'Age is required!',
-                            trigger: 'blur'
-                        }],
                         temp: [{
                             required: true,
                             message: 'Temperature is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid temperature format!',
                             trigger: 'blur'
                         }],
                         immunizationGiven: [{
@@ -474,7 +505,7 @@
 
                 this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
                 this.health.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
-                this.immunizationCheckup.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
+                this.immunize.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
             },
             methods: {
                 // Logout **********************************************************
@@ -494,6 +525,17 @@
                                 }, 1000)
                             }
                         })
+                },
+                closeAddDialog() {
+                    this.$confirm('Done copying username & password?', 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            this.openAddDialog = false
+                        })
+                        .catch(() => {});
                 },
                 // ******************************************************************
                 fetchAvatar() {
@@ -525,7 +567,7 @@
                             }
                             localStorage.setItem("age", age);
                             this.individual.age = age;
-                            this.immunizationCheckup.age = age;
+                            this.immunize.age = age;
                         } else {
                             this.$message.error("Please fill in the required informations!");
                             return false;
@@ -583,12 +625,68 @@
                         }
                     })
                 },
-                submitImmunization(immunizationCheckup) {
-                    this.$refs[immunizationCheckup].validate((valid) => {
+                getData() {
+                    axios.post("action.php?action=fetch")
+                        .then(response => {
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
+                                this.tableData = response.data
+                            }
+                        })
+                },
+                submitImmunization(immunize) {
+                    this.$refs[immunize].validate((valid) => {
                         if (valid) {
+                            this.loadButton = true;
+                            var newData = new FormData()
+                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("child_no", this.immunize.childNo)
+                            newData.append("first_name", this.addPatient.firstName)
+                            newData.append("middle_name", this.addPatient.middleName)
+                            newData.append("last_name", this.addPatient.lastName)
+                            newData.append("suffix", this.addPatient.suffix)
+                            newData.append("birthdate", this.addPatient.birthDate)
+                            newData.append("gender", this.addPatient.gender)
+                            newData.append("m_lastname", this.immunize.mLastName)
+                            newData.append("m_firstname", this.immunize.mFirstName)
+                            newData.append("m_middlename", this.immunize.mMidName)
+                            newData.append("f_lastname", this.immunize.fLastName)
+                            newData.append("f_firstname", this.immunize.fFirstName)
+                            newData.append("f_middlename", this.immunize.fMidName)
+                            newData.append("purok", this.immunize.purok)
+                            newData.append("barangay", this.immunize.barangay)
+                            newData.append("appointment", this.immunize.appointment)
+                            newData.append("age", this.immunize.age)
+                            newData.append("temp", this.immunize.temp)
+                            newData.append("immunization_given", this.immunize.immunizationGiven)
+                            axios.post("action.php?action=storeImmunization", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'New Patient has been added successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                            this.getData()
+                                            setTimeout(() => {
+                                                this.openAddDialog = true;
+                                            }, 1500)
+                                        }, 1500);
+                                        this.resetFormData();
+                                        this.newUser = response.data;
+                                        this.loadButton = false;
+                                        setTimeout(() => {
+                                            window.location.href = "./"
+                                        }, 1000)
+                                    }
+                                })
                             console.log(this.addPatient, "healthcheck")
                         } else {
-
+                            this.$message.error("Cannot submit the form. Please check the error(s).")
+                            return false;
                         }
                     })
                     console.log(this.addPatient, "immunization")
@@ -601,7 +699,15 @@
 
                         }
                     })
-                }
+                },
+                resetForm(addPatient) {
+                    this.$refs[addPatient].resetFields();
+                    this.$refs[immunize].resetFields();
+                },
+                resetFormData() {
+                    this.addPatient = []
+                    this.immunize = []
+                },
             }
         })
     </script>

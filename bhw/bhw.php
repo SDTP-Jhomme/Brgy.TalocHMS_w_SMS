@@ -51,6 +51,18 @@
                             </div>
                         </el-form-item>
                     </el-col>
+                    <el-col :span="2">
+                        <el-form-item prop="fsn">
+                            <label class="m-0"><span class="text-danger">*</span>FSN</label>
+                            <el-input v-model="addPatient.fsn" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="phoneNo">
+                            <label class="m-0"><span class="text-danger">*</span>Mobile Number</label>
+                            <el-input v-model="addPatient.phoneNo" id="phone" maxlength="11" placeholder="09*********" OnInput="add_hyphen()" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
                 </el-row>
             </el-form>
             <el-divider></el-divider>
@@ -145,7 +157,7 @@
                 </el-button-group>
                 <el-button-group v-else-if="isImmunization">
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="submitImmunization('immunizationCheckup')">Submit</i></el-button>
+                    <el-button type="primary" size="small" plain @click="submitImmunization('immunize')">Submit</i></el-button>
                 </el-button-group>
                 <el-button-group v-else>
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
@@ -155,3 +167,14 @@
         </el-main>
     </el-container>
 </div>
+<script>
+    function add_hyphen() {
+        var input = document.getElementById("phone");
+        var str = input.value;
+        str = str.replace("-", "");
+        if (str.length > 10) {
+            str = str.substring(0, 4) + "-" + str.substring(4, 11) + "-" + str.substring(10);
+        }
+        input.value = str
+    }
+</script>
