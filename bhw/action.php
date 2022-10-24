@@ -93,7 +93,7 @@ if ($action == 'storeImmunization') {
         return $shuffled;
     }
 
-    $username = "PAATIENT-" . ucfirst($first_name . rand_username(3));
+    $username = "PATIENT-" . ucfirst($first_name . rand_username(3));
     $year = date("Y");
     $month = date("M");
     $mother_name = $m_firstname . " " . $m_middlename . " " . $m_lastname;
@@ -125,21 +125,9 @@ if ($action == 'storeImmunization') {
 
     $immunize_sql = mysqli_query($db, "INSERT INTO immunization(fsn,child_no,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,mother_name,father_name,purok,barangay,appointment,age,temp,immunization_given,phone_number,month,year)
         VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$mother_name','$father_name','$purok','$barangay','$appointment','$age','$temp','$immunization_given','$phone_number','$month','$year')");
-    $fsn = $_POST["fsn"];
-    $child_no = $_POST["child_no"];
-    $first_name = $_POST["first_name"];
-    $middle_name = $_POST["middle_name"];
-    $last_name = $_POST["last_name"];
-    $suffix = $_POST["suffix"];
-    $birthdate = $_POST["birthdate"];
-    $gender = $_POST["gender"];
-    $phone_number = $_POST["phone_number"];
-    if ($gender == "Male") {
-        $avatar = "avatar/default.png";
-    } else {
-        $avatar = "avatar/default-woman.png";
-    }
-    $patient_sql = mysqli_query($db, "INSERT INTO patient SELECT fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number FROM immunization");
+
+    $patient_sql = mysqli_query($db, "INSERT INTO patient (fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year) 
+     VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$month','$year') SELECT (fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year) FROM immunization WHERE fsn >= 1");
 }
 
 if ($action == 'change_password') {

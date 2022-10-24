@@ -80,6 +80,8 @@ if ($action == 'store') {
     }
 
     $username = "BHW-" . ucfirst($first_name . rand_username(3));
+    $year = date("Y");
+    $month = date("M");
     $db_status = "Active";
 
     $response = array(
@@ -93,8 +95,8 @@ if ($action == 'store') {
         "status" => $db_status
     );
 
-    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status)
-        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$db_status')");
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status,month,year)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$db_status','$month','$year')");
 }
 
 if ($action == 'update') {

@@ -60,7 +60,7 @@
                     <el-col :span="4">
                         <el-form-item prop="phoneNo">
                             <label class="m-0"><span class="text-danger">*</span>Mobile Number</label>
-                            <el-input v-model="addPatient.phoneNo" id="phone" maxlength="11" placeholder="09*********" OnInput="add_hyphen()" clearable></el-input>
+                            <el-input v-model="addPatient.phoneNo" id="phone" maxlength="11" placeholder="09*********" clearable></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -167,14 +167,3 @@
         </el-main>
     </el-container>
 </div>
-<script>
-    function add_hyphen() {
-        var input = document.getElementById("phone");
-        var str = input.value;
-        str = str.replace("-", "");
-        if (str.length > 10) {
-            str = str.substring(0, 4) + "-" + str.substring(4, 11) + "-" + str.substring(10);
-        }
-        input.value = str
-    }
-</script>

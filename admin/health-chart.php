@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Prenatal Patients Edit Form</title>
+    <title>Admin | Immunization Patients Information</title>
     <?php
 
     include("./import/head.php");
@@ -33,19 +33,19 @@
             <div id="layoutSidenav_content">
                 <main>
                     <el-container>
-                        <el-header class="mt-4" height="40">
-                            <div class="container p-0">
-                                <el-row :gutter="20">
-                                    <div class="d-flex justify-content-between">
-                                        <el-col :span="12">
-                                            <h3 class="m-0">Edit Immunization Form</h3>
-                                        </el-col>
-                                        <el-link class="fs-6 pe-5" href="./immunization" icon="el-icon-back" type="primary" :underline="false">Back</el-link>
+                        <el-main>
+                            <div class="col-xl-9 mt-3">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-hand-holding-medical"></i>
+                                        Individual Treatment Chart
                                     </div>
-                                </el-row>
+                                    <div class="card-body">
+                                        <?php include("checkup-chart.php"); ?>
+                                    </div>
+                                </div>
                             </div>
-                        </el-header>
-                        <el-main></el-main>
+                        </el-main>
                     </el-container>
                 </main>
                 <?php include("./import/footer.php"); ?>
@@ -85,7 +85,6 @@
                             }
                         })
                 },
-                // ******************************************************************
             }
         })
     </script>

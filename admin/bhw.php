@@ -106,11 +106,16 @@
                                             </el-tooltip>
                                         </template>
                                     </el-table-column>
+                                    <!-- <el-table-column sortable label="Status" prop="status" width="110" column-key="status" :filters="[{text: 'Online', value: 'Online'}, {text: 'Offline', value: 'Offline'}]" :filter-method="filterHandler">
+                                        <template slot-scope="scope">
+                                            <el-tag size="small" type="success" id="status">{{ scope.row.status }}</el-tag>
+                                        </template>
+                                    </el-table-column> -->
                                     <el-table-column sortable label="Status" prop="status" width="110" column-key="status" :filters="[{text: 'Inactive', value: 'Inactive'}, {text: 'Active', value: 'Active'}]" :filter-method="filterHandler">
                                         <template slot-scope="scope">
                                             <el-tag size="small" v-if="scope.row.status == 'Active'" type="success" onLine:>{{ scope.row.status }}</el-tag>
                                             <el-tag size="small" v-else type="info" showBackOnline:>{{ scope.row.status }}</el-tag>
-                                        </template>
+                                        </template> 
                                     </el-table-column>
                                 </el-table>
                                 <div class="d-flex justify-content-between mt-2">
@@ -395,8 +400,7 @@
                             trigger: 'blur'
                         }],
                     },
-                    message: 'online',
-                    onLine: navigator.onLine,
+                    isOnLine: navigator.onLine,
                     showBackOnline: false,
                     page: 1,
                     pageSize: 10,
@@ -481,12 +485,12 @@
                 setTimeout(() => {
                         this.fullscreenLoading = false
                     }, 1000),
-                    window.addEventListener('online', this.updateOnlineStatus);
-                window.addEventListener('offline', this.updateOnlineStatus);
-            },
-            beforeDestroy() {
-                window.removeEventListener('online', this.updateOnlineStatus);
-                window.removeEventListener('offline', this.updateOnlineStatus);
+                    window.addEventListener('online', () => {
+                        this.isOnLine = true
+                    });
+                window.addEventListener('offline', () => {
+                    this.isOnLine = false
+                });
             },
             watch: {
                 editBhw(value) {
@@ -528,8 +532,8 @@
                 updateOnlineStatus(e) {
                     const {
                         type
-                    } = e
-                    this.onLine = type === 'online'
+                    } = e;
+                    this.onLine = type === 'online';
                 },
                 // Logout ***********************************************
                 logout() {

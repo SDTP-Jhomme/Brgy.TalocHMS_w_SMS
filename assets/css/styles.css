@@ -13180,6 +13180,7 @@ body#page-top {
   border-color: #409EFF !important;
   border-width: 1px !important;
 }
+
 /* regitered */
 .icon-box-registered {
   padding: 60px 30px;
@@ -13243,6 +13244,7 @@ body#page-top {
 .icon-box-registered:hover .icon-registered {
   color: #fff;
 }
+
 /* end registered */
 /* approved */
 .icon-box-approved {
@@ -13307,6 +13309,7 @@ body#page-top {
 .icon-box-approved:hover .icon-approved {
   color: #fff;
 }
+
 /* end approved */
 /* declined */
 .icon-box-declined {
@@ -13371,6 +13374,7 @@ body#page-top {
 .icon-box-declined:hover .icon-declined {
   color: #fff;
 }
+
 /* end declined */
 /* pending */
 .icon-box-pending {
@@ -13435,4 +13439,67 @@ body#page-top {
 .icon-box-pending:hover .icon-pending {
   color: #fff;
 }
+
 /* end pending */
+#status.online {
+  color: #198754;
+}
+
+#status.online {
+  color: #6c757d;
+  text-decoration-color: #6c757d;
+}
+
+.today {
+  width: 100%;
+  -webkit-box-shadow: 0px 15px 30px -16px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 15px 30px -16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 15px 30px -16px rgba(0, 0, 0, 0.3);
+}
+
+.today-piece {
+  border-radius: 0.25rem;
+  padding: 1.6rem;
+  font-size: 1.25em;
+  text-align: center;
+  background: white;
+}
+
+.top {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.middle {
+  border-radius: 0;
+}
+
+.bottom {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.day,
+.year {
+  font-size: 0.65em;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: white;
+  background: #52de97;
+}
+
+.month {
+  padding-top: 1.75rem;
+  padding-bottom: 0;
+  font-size: 1.5em;
+  font-weight: 200;
+}
+
+.date {
+  padding-top: 0;
+  padding-bottom: 1.75rem;
+  font-size: 3em;
+  font-weight: 100;
+  color: #000;
+}
