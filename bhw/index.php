@@ -49,15 +49,14 @@
                 <!-- /.container-fluid -->
                 <!-- After Add Show Patient Username & Password -->
                 <el-dialog title="New Patient Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
-                    <label>Fsn</label>
-                    <el-input class="mb-2" v-model="newUser.fsn" disabled></el-input>
-                    <label>Password</label>
-                    <el-input class="mb-2" v-model="newUser.password" disabled></el-input>
+                    <label class="text-primary">Username</label>
+                    <el-input class="mb-2 text-dark" v-model="newUser.username" disabled></el-input>
+                    <label class="text-primary">Password</label>
+                    <el-input class="mb-2 text-dark" v-model="newUser.password" disabled></el-input>
                     <span slot="footer" class="dialog-footer">
                         <el-button type="primary" @click="closeAddDialog">Close</el-button>
                     </span>
                 </el-dialog>
-
             </div>
             <!-- End of Main Content -->
             <!-- Footer -->
@@ -96,9 +95,20 @@
                         phoneNo: "",
                     },
                     prenatal: {
+                        spouseFname: "",
+                        spouseLname: "",
+                        purok: "",
+                        barangay: "",
+                        gp: "",
+                        lmp: "",
+                        edc: "",
+                        ttStatus: "",
                         appointment: "",
                         dateVisit: "",
                         weight: "",
+                        cr: "",
+                        bp: "",
+                        temp: "",
                         blood: "",
                         aog: "",
                         height: "",
@@ -113,7 +123,6 @@
                         employment: "",
                         occupation: "",
                         religion: "",
-                        telephone: "",
                         street: "",
                         purok: "",
                         barangay: "",
@@ -199,13 +208,41 @@
                             message: 'Gender is required!',
                             trigger: 'blur'
                         }],
-                        phoneNo: [ {
+                        phoneNo: [{
                             pattern: /^(09|\+639)\d{9}$/,
                             message: 'Invalid phone number format!',
                             trigger: 'blur'
                         }],
                     },
                     prenatalRules: {
+                        spouseFname: [{
+                            required: true,
+                            message: 'First name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        spouseLname: [{
+                            required: true,
+                            message: 'Last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid last name format!',
+                            trigger: 'blur'
+                        }],
+                        purok: [{
+                            required: true,
+                            message: 'Purok is required!',
+                            trigger: 'blur'
+                        }],
+                        barangay: [{
+                            required: true,
+                            message: 'Barangay is required!',
+                            trigger: 'blur'
+                        }],
                         dateVisit: [{
                             required: true,
                             message: 'Date is required!',
@@ -261,11 +298,6 @@
                         religion: [{
                             required: true,
                             message: 'Religion is required!',
-                            trigger: 'blur'
-                        }],
-                        telephone: [{
-                            required: true,
-                            message: 'Telephone is required!',
                             trigger: 'blur'
                         }],
                         street: [{
@@ -548,9 +580,48 @@
                             }
                         })
                 },
+                getData() {
+                    axios.post("action.php?action=fetch")
+                        .then(response => {
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
+                                this.tableData = response.data
+                            }
+                        })
+                },
                 proceed(addPatient) {
                     this.$refs[addPatient].validate((valid) => {
                         if (valid) {
+                            this.loadButton = true;
+                            var newData = new FormData()
+                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("first_name", this.addPatient.firstName)
+                            newData.append("middle_name", this.addPatient.middleName)
+                            newData.append("last_name", this.addPatient.lastName)
+                            newData.append("suffix", this.addPatient.suffix)
+                            newData.append("gender", this.addPatient.gender)
+                            newData.append("birthdate", this.addPatient.birthDate)
+                            newData.append("phone_number", this.addPatient.phoneNo)
+                            axios.post("action.php?action=store", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'New Patient has been added successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                            this.getData()
+                                            setTimeout(() => {
+                                                this.openAddDialog = true;
+                                            }, 1500)
+                                        }, 1500);
+                                        this.newUser = response.data;
+                                        this.loadButton = false;
+                                    }
+                                })
                             this.active++;
                             localStorage.setItem("active", this.active)
                             localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
@@ -566,7 +637,7 @@
                                 age--;
                             }
                             localStorage.setItem("age", age);
-                            this.individual.age = age;
+                            this.health.age = age;
                             this.immunize.age = age;
                         } else {
                             this.$message.error("Please fill in the required informations!");
@@ -619,21 +690,78 @@
                 submitHealth(health) {
                     this.$refs[health].validate((valid) => {
                         if (valid) {
+                            this.loadButton = true;
+                            var newData = new FormData()
+                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("clinisys", this.health.clinisysFSN)
+                            newData.append("last_name", this.addPatient.lastName)
+                            newData.append("first_name", this.addPatient.firstName)
+                            newData.append("middle_name", this.addPatient.middleName)
+                            newData.append("suffix", this.addPatient.suffix)
+                            newData.append("birthdate", this.addPatient.birthDate)
+                            newData.append("gender", this.addPatient.gender)
+                            newData.append("civil", this.health.civil)
+                            newData.append("spouse", this.health.spouse)
+                            newData.append("educ_attainment", this.health.education)
+                            newData.append("employment_status", this.health.employment)
+                            newData.append("occupation", this.health.occupation)
+                            newData.append("religion", this.health.religion)
+                            newData.append("telephone", this.addPatient.phoneNo)
+                            newData.append("street", this.health.street)
+                            newData.append("purok", this.health.purok)
+                            newData.append("barangay", this.health.barangay)
+                            newData.append("blood_type", this.health.blood)
+                            newData.append("family_member", this.health.member)
+                            newData.append("other_member", this.health.otherMember)
+                            newData.append("philhealth_type", this.health.phlType)
+                            newData.append("philhealth_no", this.health.philhealth)
+                            newData.append("m_lastname", this.health.mLastName)
+                            newData.append("m_firstname", this.health.mFirstName)
+                            newData.append("m_middlename", this.health.mMidName)
+                            newData.append("nhts", this.health.nhts)
+                            newData.append("pantawid_member", this.health.pantawid)
+                            newData.append("hh_no", this.health.hhNo)
+                            newData.append("alert_type", this.health.alertType)
+                            newData.append("other_alert", this.health.otherAlert)
+                            newData.append("medical_history", this.health.medicalHistory)
+                            newData.append("other_history", this.health.otherHistory)
+                            newData.append("encounter_type", this.health.encounterType)
+                            newData.append("consultation_type", this.health.consultationType)
+                            newData.append("consultation_date", this.health.appointment)
+                            newData.append("age", this.health.age)
+                            newData.append("transaction_mode", this.health.transaction)
+                            newData.append("s", this.health.s)
+                            newData.append("o", this.health.o)
+                            newData.append("pr", this.health.pr)
+                            newData.append("rr", this.health.rr)
+                            newData.append("bp", this.health.bp)
+                            newData.append("weight", this.health.weight)
+                            newData.append("height", this.health.height)
+                            newData.append("temp", this.health.temp)
+                            newData.append("a", this.health.a)
+                            newData.append("p", this.health.p)
+                            axios.post("store-action.php?action=storeHealth", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'New individual treatment form has been added successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                            this.getData();
+                                        }, 1500);
+                                        this.newUser = response.data;
+                                        this.loadButton = false
+                                    }
+                                })
                             console.log(this.addPatient, "healthcheck")
                         } else {
-
+                            this.$message.error("Cannot submit the form. Please check the error(s).")
+                            return false;
                         }
                     })
-                },
-                getData() {
-                    axios.post("action.php?action=fetch")
-                        .then(response => {
-                            if (response.data.error) {
-                                this.tableData = []
-                            } else {
-                                this.tableData = response.data
-                            }
-                        })
                 },
                 submitImmunization(immunize) {
                     this.$refs[immunize].validate((valid) => {
@@ -660,30 +788,22 @@
                             newData.append("age", this.immunize.age)
                             newData.append("temp", this.immunize.temp)
                             newData.append("immunization_given", this.immunize.immunizationGiven)
-                            axios.post("action.php?action=storeImmunization", newData)
+                            axios.post("store-action.php?action=storeImmunization", newData)
                                 .then(response => {
                                     if (response.data) {
                                         this.tableLoad = true;
                                         setTimeout(() => {
                                             this.$message({
-                                                message: 'New Patient has been added successfully!',
+                                                message: 'New immunization form has been added successfully!',
                                                 type: 'success'
                                             });
                                             this.tableLoad = false;
-                                            this.getData()
-                                            setTimeout(() => {
-                                                this.openAddDialog = true;
-                                            }, 1500)
+                                            this.getData();
                                         }, 1500);
-                                        this.resetFormData();
                                         this.newUser = response.data;
-                                        this.loadButton = false;
-                                        setTimeout(() => {
-                                            window.location.href = "./"
-                                        }, 1000)
+                                        this.loadButton = true;
                                     }
                                 })
-                            console.log(this.addPatient, "healthcheck")
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -694,9 +814,53 @@
                 submitPrenatal(prenatal) {
                     this.$refs[prenatal].validate((valid) => {
                         if (valid) {
+                            this.loadButton = true;
+                            var newData = new FormData()
+                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("first_name", this.addPatient.firstName)
+                            newData.append("middle_name", this.addPatient.middleName)
+                            newData.append("last_name", this.addPatient.lastName)
+                            newData.append("birthdate", this.addPatient.birthDate)
+                            newData.append("gender", this.addPatient.gender)
+                            newData.append("spouse_lastname", this.prenatal.spouseLname)
+                            newData.append("spouse_firstname", this.prenatal.spouseFname)
+                            newData.append("purok", this.prenatal.purok)
+                            newData.append("barangay", this.prenatal.barangay)
+                            newData.append("gp", this.prenatal.gp)
+                            newData.append("lmp", this.prenatal.lmp)
+                            newData.append("edc", this.prenatal.edc)
+                            newData.append("tt_status", this.prenatal.ttStatus)
+                            newData.append("appointment", this.prenatal.appointment)
+                            newData.append("date_visit", this.prenatal.dateVisit)
+                            newData.append("weight", this.prenatal.weight)
+                            newData.append("bp", this.prenatal.bp)
+                            newData.append("cr", this.prenatal.cr)
+                            newData.append("rr", this.prenatal.rr)
+                            newData.append("temp", this.prenatal.temp)
+                            newData.append("aog", this.prenatal.aog)
+                            newData.append("height", this.prenatal.height)
+                            newData.append("fhb", this.prenatal.fhb)
+                            newData.append("presentation", this.prenatal.presentation)
+                            axios.post("store-action.php?action=storePrenatal", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'New maternity form has been added successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                            this.getData();
+                                        }, 1500);
+                                        this.newUser = response.data;
+                                        this.loadButton = false
+                                    }
+                                })
                             console.log(this.addPatient, "pregnancy")
                         } else {
-
+                            this.$message.error("Cannot submit the form. Please check the error(s).")
+                            return false;
                         }
                     })
                 },

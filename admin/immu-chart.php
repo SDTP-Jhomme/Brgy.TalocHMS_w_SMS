@@ -37,13 +37,13 @@ $year = date("Y");
 
             var chart = new CanvasJS.Chart("formChart", {
                 theme: "light1", // "light2", "dark1", "dark2"
-                animationEnabled: false, // change to true		
+                animationEnabled: true, // change to true		
                 title: {
                     text: "Total Immunization <?php echo $year ?>"
                 },
                 data: [{
                     // Change type to "bar", "area", "spline", "pie",etc.
-                    type: "column",
+                    type: "splineArea",
                     dataPoints: [{
                             label: "January",
                             y: <?php echo $jan['total'] ?>

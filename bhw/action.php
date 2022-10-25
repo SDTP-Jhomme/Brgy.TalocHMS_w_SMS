@@ -16,25 +16,23 @@ if ($action == 'fetch') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM patient ORDER BY fsn");
+    $data = mysqli_query($db, "SELECT * FROM `patient` ORDER BY `patient_id` DESC");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname = $data_row["first_name"] . " " . $data_row["last_name"];
+            $fullname = ucfirst($data_row["first_name"]) . " " .substr(ucfirst($data_row["middle_name"]),0,1) . " " . ucfirst($data_row["last_name"]);
             $db_birthdate = $data_row["birthday"];
             $birthdate = date("F d, Y", strtotime($db_birthdate));
             $db_avatar = $data_row["avatar"];
 
             $array_data = array(
                 "id" => $data_row["id"],
-                "username" => $data_row["username"],
                 "name" => $fullname,
                 "birthdate" => $birthdate,
                 "gender" => $data_row["gender"],
                 "fsn" => $data_row["fsn"],
-                "first_name" => $data_row["first_name"],
-                "last_name" => $data_row["last_name"],
+                "phone_number" => $data_row["phone_number"],
                 "avatar" => "../assets/$db_avatar",
             );
 
@@ -47,29 +45,15 @@ if ($action == 'fetch') {
         $response["message"] = "Table is empty!";
     }
 }
-
-if ($action == 'storeImmunization') {
+if ($action == 'store') {
 
     $fsn = $_POST["fsn"];
-    $child_no = $_POST["child_no"];
     $first_name = $_POST["first_name"];
     $middle_name = $_POST["middle_name"];
     $last_name = $_POST["last_name"];
     $suffix = $_POST["suffix"];
     $birthdate = $_POST["birthdate"];
     $gender = $_POST["gender"];
-    $m_lastname = $_POST["m_lastname"];
-    $m_firstname = $_POST["m_firstname"];
-    $m_middlename = $_POST["m_middlename"];
-    $f_lastname = $_POST["f_lastname"];
-    $f_firstname = $_POST["f_firstname"];
-    $f_middlename = $_POST["f_middlename"];
-    $purok = $_POST["purok"];
-    $barangay = $_POST["barangay"];
-    $appontment = $_POST["appontment"];
-    $age = $_POST["age"];
-    $temp = $_POST["age"];
-    $immunization_given = $_POST["immunization_given"];
     $phone_number = $_POST["phone_number"];
 
     if ($gender == "Male") {
@@ -84,50 +68,30 @@ if ($action == 'storeImmunization') {
         $shuffled = substr(str_shuffle($str), 0, $length);
         return $shuffled;
     }
+
     $password = random_password(8);
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    function rand_username($length = 3)
-    {
-        $str = "123456789";
-        $shuffled = substr(str_shuffle($str), 0, $length);
-        return $shuffled;
-    }
 
-    $username = "PATIENT-" . ucfirst($first_name . rand_username(3));
+    $username = "PATIENT-" . ucfirst($first_name);
     $year = date("Y");
     $month = date("M");
-    $mother_name = $m_firstname . " " . $m_middlename . " " . $m_lastname;
-    $father_name = $f_firstname . " " . $f_middlename . " " . $f_lastname;
+    $db_status = "Active";
 
     $response = array(
-        "fsn" => $first_name,
-        "child_no" => $first_name,
+        "fsn" => $fsn,
         "first_name" => $first_name,
-        "middle_name" => $middle_name,
         "last_name" => $last_name,
+        "middle_name" => $middle_name,
         "suffix" => $suffix,
+        "username" => $username,
         "birthdate" => $birthdate,
         "gender" => $gender,
-        "username" => $username,
-        "password" => $password,
-        "avatar" => $avatar,
-        "password" => $password,
-        "mother_name" => $mother_name,
-        "father_name" => $father_name,
-        "purok" => $purok,
-        "barangay" => $barangay,
-        "appointment" => $appointment,
-        "age" => $age,
-        "temp" => $temp,
-        "immunization_given" => $immunization_given,
         "phone_number" => $phone_number,
+        "password" => $password,
     );
 
-    $immunize_sql = mysqli_query($db, "INSERT INTO immunization(fsn,child_no,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,mother_name,father_name,purok,barangay,appointment,age,temp,immunization_given,phone_number,month,year)
-        VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$mother_name','$father_name','$purok','$barangay','$appointment','$age','$temp','$immunization_given','$phone_number','$month','$year')");
-
-    $patient_sql = mysqli_query($db, "INSERT INTO patient (fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year) 
-     VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$month','$year') SELECT (fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year) FROM immunization WHERE fsn >= 1");
+    mysqli_query($db, "INSERT INTO patient(fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year)
+        VALUES('$fsn','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$month','$year')");
 }
 
 if ($action == 'change_password') {

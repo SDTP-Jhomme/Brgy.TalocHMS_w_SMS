@@ -60,7 +60,7 @@
 
                                         <div class="text-center">
                                             <img src="./assets/img/logo-new.png" style="width: 185px;" alt="logo">
-                                            <h4 class="mt-2 mb-4 pb-1">BHW Login</h4>
+                                            <h4 class="mt-2 mb-4 pb-1">User Login</h4>
                                         </div>
 
                                         <label class="form-label" for="username">Username</label>
@@ -98,10 +98,8 @@
                                 </div>
                                 <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
                                     <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                                        <h4 class="mb-4">We are more than just a company</h4>
-                                        <p class="small mb-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                                        <h4 class="mb-4">Barangay Taloc Online Health Record Management System with Sms Notification</h4>
+                                        <p class="small mb-0">Bachelor of Science in Information System - Bago City College <?php echo date("Y")?></p>
                                     </div>
                                 </div>
                             </div>

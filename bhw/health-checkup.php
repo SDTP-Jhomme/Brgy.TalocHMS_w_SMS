@@ -9,7 +9,7 @@
                         <div class="d-flex flex-wrap justify-content-between w-50">
                             <div class="w-40">
                                 <el-form-item label="FSN :" prop="fsn">
-                                    <el-input v-model="addPatient.fsn" clearable></el-input>
+                                    <el-input v-model="addPatient.fsn" clearable disabled></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-50">
@@ -112,8 +112,8 @@
                                 </el-form-item>
                             </div>
                             <div class="w-45 mb-4">
-                                <el-form-item class="telephone" label="Telephone (Mobile/Landline/Email) :" prop="telephone">
-                                    <el-input v-model="health.telephone" clearable></el-input>
+                                <el-form-item class="telephone" label="Telephone (Mobile/Landline/Email) :" prop="phoneNo">
+                                    <el-input v-model="addPatient.phoneNo" clearable disabled></el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-45 mb-4">

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Prenatal Patients Information</title>
+    <title>Admin | Maternal</title>
     <?php
 
     include("./import/head.php");
@@ -10,7 +10,7 @@
     if (isset($_SESSION["id"])) {
 
         $id = $_SESSION["id"];
-
+        $time = time();
         $admin_record = mysqli_query($db, "SELECT * FROM admin where id='$id'");
 
         while ($admin_row = mysqli_fetch_assoc($admin_record)) {
@@ -35,31 +35,26 @@
                     <el-container>
                         <el-header class="mt-4" height="40">
                             <div class="container p-0">
-                                <el-row :gutter="20">
-                                    <el-col :span="12">
-                                        <el-button @click="editForm" type="success" size="small" icon="el-icon-document">Edit Form</el-button>
-                                    </el-col>
-                                </el-row>
                             </div>
                         </el-header>
                         <el-main>
                             <div class="container border rounded p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <p class="mb-0">Prenatal Patient Table</p>
+                                    <p class="mb-0 fw-bold">Maternal Record</p>
                                     <div class="d-flex">
                                         <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
                                             <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
                                             </el-option>
                                         </el-select>
                                         <div class="ps-2">
-                                            <div v-if="searchValue == 'identification'">
-                                                <el-input v-model="searchID" size="mini" placeholder="Type to search..." clearable />
+                                            <div v-if="searchValue == 'fsn'">
+                                                <el-input v-model="searchFsn" size="mini" placeholder="Type to search..." clearable />
                                             </div>
                                             <div v-else-if="searchValue == 'name'">
                                                 <el-input v-model="searchName" size="mini" placeholder="Type to search..." clearable />
                                             </div>
-                                            <div v-else-if="searchValue == 'username'">
-                                                <el-input v-model="searchUsername" size="mini" placeholder="Type to search..." clearable />
+                                            <div v-else-if="searchValue == 'address'">
+                                                <el-input v-model="searchAddress" size="mini" placeholder="Type to search..." clearable />
                                             </div>
                                             <div v-else-if="searchValue == 'birthdate'">
                                                 <el-input v-model="searchBirthday" size="mini" placeholder="Type to search..." clearable />
@@ -70,8 +65,64 @@
                                         </div>
                                     </div>
                                 </div>
+                                <el-table v-if="this.tableData" :data="usersTable" border style="width: 100%" height="400" v-loading="tableLoad" @selection-change="handleSelectionChange" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                    <el-table-column type="selection" width="55">
+                                    </el-table-column>
+                                    <el-table-column fixed label="No." type="index" width="50">
+                                    </el-table-column>
+                                    <el-table-column sortable prop="fsn" label="FSN" width="100">
+                                    </el-table-column>
+                                    <el-table-column sortable prop="name" label="Name">
+                                    </el-table-column>
+                                    <el-table-column sortable prop="address" label="Address">
+                                    </el-table-column>
+                                    <el-table-column sortable prop="birthdate" label="Birthday">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Gender" prop="gender" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                        <template slot-scope="scope">
+                                            <el-tag size="small" v-if="scope.row.gender == 'Male'">{{ scope.row.gender }}</el-tag>
+                                            <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column fixed="right" label="Action" width="120">
+                                        <template slot-scope="scope">
+                                            <el-tooltip class="item" effect="dark" content="View" placement="top-start">
+                                                <el-button icon="el-icon-view" size="mini" type="primary" @click="handleView(scope.$index, scope.row)">View Detail</el-button>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
                             </div>
+                            <!-- View Dialog -->
+                            <el-dialog :visible.sync="viewDialog" width="35%" :before-close="closeViewDialog">
+                                <template #title>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fs-5">User {{ viewImmunization.username }}</div>
+                                        <div class="pe-4">
+                                            <el-avatar :size="70" :src="viewImmunization.avatar"></el-avatar>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="container">
+                                    <div class="">
+                                        <el-descriptions direction="horizontal" :column="1" border>
+                                            <el-descriptions-item label="Identification Number">{{ viewImmunization.fsn }}</el-descriptions-item>
+                                            <el-descriptions-item label="Name">{{ viewImmunization.name }}</el-descriptions-item>
+                                            <el-descriptions-item label="Birthday">{{ viewImmunization.birthdate }}</el-descriptions-item>
+                                            <el-descriptions-item label="Gender">
+                                                <el-tag v-if="viewImmunization.gender == 'Male'">{{ viewImmunization.gender }}</el-tag>
+                                                <el-tag v-else type="danger">{{ viewImmunization.gender }}</el-tag>
+                                            </el-descriptions-item>
+                                        </el-descriptions>
+                                    </div>
+                                </div>
+                                <span slot="footer" class="dialog-footer">
+                                    <el-button type="primary" @click="closeViewDialog">Close</el-button>
+                                </span>
+                            </el-dialog>
                         </el-main>
+
+                        <!----------------------------------------------------------------------------------- End of Modals/Drawers ----------------------------------------------------------------------------------->
                     </el-container>
                 </main>
                 <?php include("./import/footer.php"); ?>
@@ -84,205 +135,25 @@
         new Vue({
             el: "#app",
             data() {
-                const validateAddID = (rule, value, callback) => {
-                    if (this.checkIdentification.includes(value.trim())) {
-                        callback(new Error('Identification no. already exist!'));
-                    } else {
-                        callback();
-                    }
-                };
-                const validateUpdateID = (rule, value, callback) => {
-                    if (localStorage.getItem("identification") != value) {
-                        if (this.checkIdentification.includes(value.trim())) {
-                            callback(new Error('Identification no. already exist!'));
-                        } else {
-                            callback();
-                        }
-                    } else {
-                        callback();
-                    }
-                };
-                const validateBirthdate = (rule, value, callback) => {
-                    var today = new Date();
-                    var birthDate = new Date(value);
-                    var age = today.getFullYear() - birthDate.getFullYear();
-                    var m = today.getMonth() - birthDate.getMonth();
-                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-                    if (age < 18) {
-                        callback(new Error('Age should atleast eightteen(18)!'));
-                    } else {
-                        callback();
-                    }
-                };
                 return {
-                    rules: {
-                        identification: [{
-                            required: true,
-                            message: 'Identification no. is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[0-9]+(-[0-9]+)+$/,
-                            message: 'Invalid identification number format!',
-                            trigger: 'blur'
-                        }, {
-                            min: 12,
-                            message: 'Identification number should ten(10) digits!',
-                            trigger: 'blur'
-                        }, {
-                            validator: validateAddID,
-                            trigger: 'blur'
-                        }],
-                        firstName: [{
-                            required: true,
-                            message: 'First name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }, {
-                            min: 2,
-                            message: 'First name should atleast two(2) characters!',
-                            trigger: 'blur'
-                        }],
-                        lastName: [{
-                            required: true,
-                            message: 'Last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }, {
-                            min: 2,
-                            message: 'Last name should atleast two(2) characters!',
-                            trigger: 'blur'
-                        }],
-                        birthdate: [{
-                            required: true,
-                            message: 'Birthday is required!',
-                            trigger: 'blur'
-                        }, {
-                            validator: validateBirthdate,
-                            trigger: 'blur'
-                        }],
-                        gender: [{
-                            required: true,
-                            message: 'Gender is required!',
-                            trigger: 'blur'
-                        }],
-                    },
-                    editRules: {
-                        identification: [{
-                            required: true,
-                            message: 'Identification no. is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[0-9]+(-[0-9]+)+$/,
-                            message: 'Invalid identification number format!',
-                            trigger: 'blur'
-                        }, {
-                            validator: validateUpdateID,
-                            trigger: 'blur'
-                        }, {
-                            min: 12,
-                            message: 'Identification number should ten(10) digits!',
-                            trigger: 'blur'
-                        }],
-                        firstName: [{
-                            required: true,
-                            message: 'First name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }, {
-                            min: 2,
-                            message: 'First name should atleast two(2) characters!',
-                            trigger: 'blur'
-                        }],
-                        lastName: [{
-                            required: true,
-                            message: 'Last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }, {
-                            min: 2,
-                            message: 'Last name should atleast two(2) characters!',
-                            trigger: 'blur'
-                        }],
-                        birthdate: [{
-                            required: true,
-                            message: 'Birthday is required!',
-                            trigger: 'blur'
-                        }, {
-                            validator: validateBirthdate,
-                            trigger: 'blur'
-                        }],
-                        gender: [{
-                            required: true,
-                            message: 'Gender is required!',
-                            trigger: 'blur'
-                        }],
-                    },
-                    message: 'online',
-                    onLine: navigator.onLine,
-                    showBackOnline: false,
-                    page: 1,
-                    pageSize: 10,
-                    showAllData: false,
+                    tableData: [],
+                    tableLoad: false,
+                    fullscreenLoading: true,
+                    viewImmunization: [],
+                    viewDialog: false,
                     searchValue: "",
                     searchNull: "",
                     searchName: "",
-                    searchID: "",
-                    searchUsername: "",
+                    searchFsn: "",
+                    searchAddress: "",
                     searchBirthday: "",
-                    topLabel: "top",
-                    leftLabel: "left",
-                    tableLoad: false,
-                    openAddDialog: false,
-                    openResetDialog: false,
-                    openAddDrawer: false,
-                    loadButton: false,
-                    editDialog: false,
-                    viewDialog: false,
-                    multipleSelection: [],
-                    fullscreenLoading: true,
-                    tableData: [],
-                    multiID: [],
-                    newUser: [],
-                    resetUser: [],
-                    checkIdentification: [],
-                    editBhw: [],
-                    viewBhw: [],
-                    addBhw: {
-                        identification: "",
-                        firstName: "",
-                        lastName: "",
-                        birthdate: "",
-                        gender: "",
-                    },
-                    updateBhw: {
-                        id: 0,
-                        username: "",
-                        identification: "",
-                        firstName: "",
-                        lastName: "",
-                        birthdate: "",
-                        gender: "",
-                    },
+
                     options: [{
-                        value: 'identification',
-                        label: 'Identification No.'
+                        value: 'fsn',
+                        label: 'FSN'
                     }, {
-                        value: 'username',
-                        label: 'Username'
+                        value: 'address',
+                        label: 'Address'
                     }, {
                         value: 'name',
                         label: 'Name'
@@ -292,6 +163,22 @@
                     }]
                 }
             },
+            mounted() {
+                setTimeout(() => {
+                    this.fullscreenLoading = false
+                }, 1000)
+            },
+            watch: {
+                searchValue(value) {
+                    if (value == "" || value == "fsn" || value == "name" || value == "address" || value == "birthdate") {
+                        this.searchNull = '';
+                        this.searchFsn = '';
+                        this.searchName = '';
+                        this.searchAddress = '';
+                        this.searchBirthday = '';
+                    }
+                },
+            },
             computed: {
                 usersTable() {
                     return this.tableData
@@ -299,10 +186,10 @@
                             return data.name.toLowerCase().includes(this.searchName.toLowerCase());
                         })
                         .filter((data) => {
-                            return data.identification.toLowerCase().includes(this.searchID.toLowerCase());
+                            return data.fsn.toLowerCase().includes(this.searchFsn.toLowerCase());
                         })
                         .filter((data) => {
-                            return data.username.toLowerCase().includes(this.searchUsername.toLowerCase());
+                            return data.address.toLowerCase().includes(this.searchFsn.toLowerCase());
                         })
                         .filter((data) => {
                             return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
@@ -310,62 +197,40 @@
                         .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
                 }
             },
-            created() {
-                this.getData()
-            },
-            mounted() {
-                setTimeout(() => {
-                        this.fullscreenLoading = false
-                    }, 1000),
-                    window.addEventListener('online', this.updateOnlineStatus);
-                window.addEventListener('offline', this.updateOnlineStatus);
-            },
-            beforeDestroy() {
-                window.removeEventListener('online', this.updateOnlineStatus);
-                window.removeEventListener('offline', this.updateOnlineStatus);
-            },
-            watch: {
-                editBhw(value) {
-                    this.updateBhw.id = value.id ? value.id : "";
-                    this.updateBhw.username = value.username ? value.username : "";
-                    this.updateBhw.identification = value.identification ? value.identification : "";
-                    this.updateBhw.firstName = value.firstName ? value.firstName : "";
-                    this.updateBhw.lastName = value.lastName ? value.lastName : "";
-                    this.updateBhw.birthdate = value.birthdate ? value.birthdate : "";
-                    this.updateBhw.gender = value.gender ? value.gender : "";
-                },
-                searchValue(value) {
-                    if (value == "" || value == "identification" || value == "name" || value == "username" || value == "birthdate") {
-                        this.searchNull = '';
-                        this.searchID = '';
-                        this.searchName = '';
-                        this.searchUsername = '';
-                        this.searchBirthday = '';
-                    }
-                },
-                showAllData(value) {
-                    if (value == true) {
-                        this.page = 1;
-                        this.pageSize = this.tableData.length
-                    } else {
-                        this.pageSize = 10
-                    }
-                },
-                onLine(v) {
-                    if (v) {
-                        this.showBackOnline = true;
-                        setTimeout(() => {
-                            this.showBackOnline = false;
-                        }, 1000);
-                    }
-                }
-            },
             methods: {
-                updateOnlineStatus(e) {
-                    const {
-                        type
-                    } = e
-                    this.onLine = type === 'online'
+                changeColumn(selected) {
+                    this.searchNull = ""
+                    this.searchName = ""
+                    this.searchFsn = ""
+                    this.searchAddress = ""
+                    this.searchBirthday = ""
+                },
+                closeViewDialog() {
+                    this.viewDialog = false;
+                },
+                handleClick() {
+                    console.log('click');
+                },
+                handleView(index, row) {
+                    this.viewImmunization = row;
+                    this.viewDialog = true;
+                },
+                getData() {
+                    axios.post("../bhw/store-action.php?action=fetchImmunization")
+                        .then(response => {
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
+                                this.tableData = response.data
+                            }
+                        })
+                },
+                created() {
+                    this.getData()
+                },
+                filterHandler(value, row, column) {
+                    const property = column['property'];
+                    return row[property] === value;
                 },
                 // Logout ***********************************************
                 logout() {
@@ -384,327 +249,10 @@
                             }
                         })
                 },
-                // ******************************************************
                 handleSelectionChange(val) {
                     this.multiID = Object.values(val).map(i => i.id)
                 },
-                filterHandler(value, row, column) {
-                    const property = column['property'];
-                    return row[property] === value;
-                },
-                closeAddDrawer() {
-                    this.$confirm('Are you sure you want to cancel adding new BHW?', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                        })
-                        .then(() => {
-                            this.openAddDrawer = false
-                        })
-                        .catch(() => {});
-                },
-                closeAddDialog() {
-                    this.$confirm('Done copying username & password?', 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            this.openAddDialog = false
-                        })
-                        .catch(() => {});
-                },
-                closeViewDialog() {
-                    this.viewDialog = false;
-                },
-                closeEditDialog(editBhw) {
-                    this.$confirm('Are you sure you want to cancel updating BHW?', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                        })
-                        .then(() => {
-                            this.editDialog = false
-                            this.$refs[editBhw].resetFields();
-                            localStorage.removeItem("identification")
-                        })
-                        .catch(() => {});
-                },
-                closeResetDialog() {
-                    this.$confirm('Done copying new password?', 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            this.openResetDialog = false
-                        })
-                        .catch(() => {});
-                },
-                setPage(value) {
-                    this.page = value
-                },
-                getData() {
-                    axios.post("action.php?action=fetch")
-                        .then(response => {
-                            if (response.data.error) {
-                                this.tableData = []
-                            } else {
-                                this.tableData = response.data
-                                this.checkIdentification = response.data.map(res => res.identification)
-                            }
-                        })
-                },
-                addUser(addBhw) {
-                    this.$refs[addBhw].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            this.openAddDrawer = false;
-                            const birthday = this.addBhw.birthdate;
-                            const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
-                            var newData = new FormData()
-                            newData.append("identification", this.addBhw.identification)
-                            newData.append("first_name", this.addBhw.firstName)
-                            newData.append("last_name", this.addBhw.lastName)
-                            newData.append("birthdate", birthdayFormat)
-                            newData.append("gender", this.addBhw.gender)
-                            axios.post("action.php?action=store", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New BHW has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData()
-                                            setTimeout(() => {
-                                                this.openAddDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.resetFormData();
-                                        this.newUser = response.data;
-                                        this.loadButton = false;
-                                    }
-                                })
-                        } else {
-                            this.$message.error("Cannot submit the form. Please check the error(s).")
-                            return false;
-                        }
-                    });
-                },
-                resetForm(addBhw) {
-                    this.$refs[addBhw].resetFields();
-                },
-                resetFormData() {
-                    this.addBhw = []
-                },
-                handleView(index, row) {
-                    this.viewBhw = row;
-                    this.viewDialog = true;
-                },
-                handleEdit(index, row) {
-                    localStorage.setItem("identification", row.identification)
-                    this.editBhw = {
-                        id: row.id,
-                        username: row.username,
-                        identification: row.identification,
-                        firstName: row.first_name,
-                        lastName: row.last_name,
-                        birthdate: row.birthdate,
-                        gender: row.gender,
-                    }
-                    this.editDialog = true;
-                },
-                updateUser(updateBhw) {
-                    this.$refs[updateBhw].validate((valid) => {
-                        if (valid) {
-                            if (this.editBhw.identification != this.updateBhw.identification || this.editBhw.firstName != this.updateBhw.firstName || this.editBhw.lastName != this.updateBhw.lastName || this.editBhw.birthdate != this.updateBhw.birthdate || this.editBhw.gender != this.updateBhw.gender) {
-                                this.loadButton = true;
-                                this.$confirm('This will update user ' + this.editBhw.username + '. Continue?', {
-                                        confirmButtonText: 'Confirm',
-                                        cancelButtonText: 'Cancel',
-                                    })
-                                    .then(() => {
-                                        const birthday = new Date(Date.parse(this.updateBhw.birthdate));
-                                        const birthdayFormat = birthday.getFullYear() + "-" + ((birthday.getMonth() + 1) > 9 ? '' : '0') + (birthday.getMonth() + 1) + "-" + (birthday.getDate() > 9 ? '' : '0') + birthday.getDate();
-                                        this.editDialog = false;
-                                        var updateData = new FormData()
-                                        updateData.append("id", this.updateBhw.id)
-                                        updateData.append("identification", this.updateBhw.identification)
-                                        updateData.append("first_name", this.updateBhw.firstName)
-                                        updateData.append("last_name", this.updateBhw.lastName)
-                                        updateData.append("birthdate", birthdayFormat)
-                                        updateData.append("gender", this.updateBhw.gender)
-                                        axios.post("action.php?action=update", updateData)
-                                            .then(response => {
-                                                if (response.data) {
-                                                    this.loadButton = false;
-                                                    this.tableLoad = true;
-                                                    setTimeout(() => {
-                                                        this.tableLoad = false;
-                                                        this.getData();
-                                                        this.$message({
-                                                            message: 'BHW has been updated successfully!',
-                                                            type: 'success'
-                                                        });
-                                                    }, 1500)
-                                                }
-                                            })
-                                        localStorage.removeItem("identification")
-                                    })
-                                    .catch(() => {
-                                        this.loadButton = false;
-                                    });
-                            } else {
-                                this.$confirm('No changes made. Cancel editing user?', {
-                                        confirmButtonText: 'Yes',
-                                        cancelButtonText: 'No',
-                                    })
-                                    .then(() => {
-                                        this.editDialog = false
-                                        localStorage.removeItem("identification")
-                                    })
-                                    .catch(() => {
-                                        this.editDialog = true
-                                    })
-                            }
-                        } else {
-                            this.$message.error("Cannot submit the form. Please check the error(s).")
-                            return false;
-                        }
-                    });
-                },
-                resetPassword() {
-                    this.loadButton = true;
-                    this.$confirm('This will reset user ' + this.editBhw.username + "'s password. Continue?", 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            this.editDialog = false;
-                            var data = new FormData();
-                            data.append("id", this.editBhw.id)
-                            data.append("username", this.editBhw.username)
-                            axios.post("action.php?action=reset", data)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        localStorage.removeItem("identification")
-                                        setTimeout(() => {
-                                            this.tableLoad = false;
-                                            this.$message({
-                                                message: 'Password has been reset successfully!',
-                                                type: 'success'
-                                            });
-                                            setTimeout(() => {
-                                                this.openResetDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.resetUser = response.data;
-                                        this.loadButton = false;
-                                    }
-                                })
-                        })
-                        .catch(() => {
-                            this.loadButton = false;
-                        });
-                },
-                handleActive(index, row) {
-                    this.$confirm('This will change user status ' + row.username + ". Continue?", 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            var id = new FormData();
-                            id.append("id", row.id)
-                            axios.post("action.php?action=active", id)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true
-                                        setTimeout(() => {
-                                            this.getData();
-                                            this.tableLoad = false
-                                            this.$message({
-                                                message: 'User status change successfully!',
-                                                type: 'success'
-                                            })
-                                            this.page = 1;
-                                        }, 1500)
-                                    }
-                                })
-                        })
-                        .catch(() => {});
-                },
-                handleInactive(index, row) {
-                    this.$confirm('This will change user status ' + row.username + ". Continue?", 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            var id = new FormData();
-                            id.append("id", row.id)
-                            axios.post("action.php?action=inactive", id)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true
-                                        setTimeout(() => {
-                                            this.getData();
-                                            this.tableLoad = false
-                                            this.$message({
-                                                message: 'User status change successfully!',
-                                                type: 'success'
-                                            })
-                                            this.page = 1;
-                                        }, 1500)
-                                    }
-                                })
-                        })
-                        .catch(() => {});
-                },
-                bulkDelete() {
-                    if (Object.keys(this.multiID).length === 0) {
-                        this.$message.error("Please select aleast one(1) user to delete!")
-                    } else {
-                        this.$confirm('This will permanently delete all selected users. Continue?', "Warning", {
-                                confirmButtonText: 'Yes',
-                                cancelButtonText: 'No',
-                                type: "warning"
-                            })
-                            .then(() => {
-                                var ids = new FormData()
-                                ids.append("user_ids", this.multiID)
-                                axios.post("action.php?action=bulk_delete", ids)
-                                    .then(response => {
-                                        if (response.data) {
-                                            this.tableLoad = true;
-                                            setTimeout(() => {
-                                                this.getData()
-                                                this.tableLoad = false;
-                                                this.$message({
-                                                    message: 'Selected users has been deleted successfully!',
-                                                    type: 'success'
-                                                });
-                                                this.page = 1;
-                                            }, 1500);
-                                        }
-                                    })
-                            })
-                            .catch(() => {});
-                    }
-                },
-                changeColumn(selected) {
-                    this.searchNull = ""
-                    this.searchName = ""
-                    this.searchID = ""
-                    this.searchUsername = ""
-                    this.searchBirthday = ""
-                },
-                editForm() {
-                    window.location.href = "prenatal-edit-form"
-                }
+                // ******************************************************
             }
         })
     </script>
