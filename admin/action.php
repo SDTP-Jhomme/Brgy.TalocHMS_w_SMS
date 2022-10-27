@@ -13,7 +13,7 @@ if ($action == 'fetch') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM users ORDER BY bhw_id");
+    $data = mysqli_query($db, "SELECT * FROM users ORDER BY bhw_id DESC");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
@@ -118,6 +118,7 @@ if ($action == 'store') {
     $year = date("Y");
     $month = date("M");
     $db_status = "Active";
+    $type = "BHW";
 
     $response = array(
         "first_name" => $first_name,
@@ -127,11 +128,12 @@ if ($action == 'store') {
         "birthdate" => $birthdate,
         "gender" => $gender,
         "password" => $password,
-        "status" => $db_status
+        "status" => $db_status,
+        "type" => $type
     );
 
-    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status,month,year)
-        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$db_status','$month','$year')");
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status,month,year,type)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$db_status','$month','$year','$type')");
 }
 
 if ($action == 'update') {
@@ -164,23 +166,16 @@ if ($action == 'update') {
 }
 if ($action == 'active') {
 
-    $user_id = $_POST["id"];
-    $user_status = $_POST["status"];
-    if ($user_status == 'Active') {
-        $response = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id=$user_id");
-    }else{
-        $response = mysqli_query($db, "UPDATE users SET status='Active' WHERE id=$user_id");
-    }
+
+    $array_id = $_POST["user_ids"];
+
+    $deactive_array_query = mysqli_query($db, "UPDATE users SET status='Active' WHERE id IN($array_id)");
 }
 if ($action == 'inactive') {
 
-    $user_id = $_POST["id"];
-    $user_status = $_POST["status"];
-    if ($user_status == 'Inactive') {
-        $response = mysqli_query($db, "UPDATE users SET status='Active' WHERE id=$user_id");
-    }else{
-        $response = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id=$user_id");
-    }
+    $array_id = $_POST["user_ids"];
+
+    $deactive_array_query = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id IN($array_id)");
 }
 
 if ($action == 'reset') {

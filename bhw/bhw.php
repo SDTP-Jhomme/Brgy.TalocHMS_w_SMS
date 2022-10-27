@@ -51,7 +51,7 @@
                             </div>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="2">
+                    <el-col :span="4">
                         <el-form-item prop="fsn">
                             <label class="m-0"><span class="text-danger">*</span>FSN</label>
                             <el-input v-model="addPatient.fsn" clearable></el-input>

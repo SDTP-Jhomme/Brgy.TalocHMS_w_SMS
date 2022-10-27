@@ -12,19 +12,20 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if ($action == 'fetch') {
+if ($action == 'fetchImmunization') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM `patient` ORDER BY `patient_id` DESC");
+    $data = mysqli_query($db, "SELECT * FROM immunization ORDER BY fsn");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname = ucfirst($data_row["first_name"]) . " " .substr(ucfirst($data_row["middle_name"]),0,1) . " " . ucfirst($data_row["last_name"]);
+            $fullname = $data_row["first_name"] . " " . $data_row["last_name"];
             $db_birthdate = $data_row["birthday"];
             $birthdate = date("F d, Y", strtotime($db_birthdate));
             $db_avatar = $data_row["avatar"];
+            $address = $data_row["purok"];
 
             $array_data = array(
                 "id" => $data_row["id"],
@@ -32,7 +33,9 @@ if ($action == 'fetch') {
                 "birthdate" => $birthdate,
                 "gender" => $data_row["gender"],
                 "fsn" => $data_row["fsn"],
-                "phone_number" => $data_row["phone_number"],
+                "address" => $data_row["purok"],
+                "first_name" => $data_row["first_name"],
+                "last_name" => $data_row["last_name"],
                 "avatar" => "../assets/$db_avatar",
             );
 
@@ -76,6 +79,7 @@ if ($action == 'store') {
     $year = date("Y");
     $month = date("M");
     $db_status = "Active";
+    $type = "PATIENT";
 
     $response = array(
         "fsn" => $fsn,
@@ -88,10 +92,11 @@ if ($action == 'store') {
         "gender" => $gender,
         "phone_number" => $phone_number,
         "password" => $password,
+        "type" => $type,
     );
 
-    mysqli_query($db, "INSERT INTO patient(fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year)
-        VALUES('$fsn','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$month','$year')");
+    mysqli_query($db, "INSERT INTO patient(fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year,type)
+        VALUES('$fsn','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$month','$year','$type')");
 }
 
 if ($action == 'change_password') {

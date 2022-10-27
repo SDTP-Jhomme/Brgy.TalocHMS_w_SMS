@@ -12,3 +12,4 @@
 <script src="../assets/js/axios.min.js"></script>
 <!-- import Font Awesome -->
 <script defer src="../assets/js/fontawesome.js"></script>
+<script src="../assets/js/jquery.min.js"></script>

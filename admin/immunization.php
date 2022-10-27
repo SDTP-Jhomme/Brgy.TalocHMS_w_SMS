@@ -92,6 +92,11 @@
                                         </template>
                                     </el-table-column>
                                 </el-table>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <el-checkbox v-model="showAllData">Show All</el-checkbox>
+                                    <el-pagination :current-page.sync="page" :pager-count="5" :page-size="this.pageSize" background layout="prev, pager, next" :total="this.tableData.length" @current-change="setPage">
+                                    </el-pagination>
+                                </div>
                             </div>
                             <!-- View Dialog -->
                             <el-dialog :visible.sync="viewDialog" width="35%" :before-close="closeViewDialog">
@@ -141,6 +146,9 @@
                     fullscreenLoading: true,
                     viewImmunization: [],
                     viewDialog: false,
+                    showAllData: false,
+                    page: 1,
+                    pageSize: 10,
                     searchValue: "",
                     searchNull: "",
                     searchName: "",
@@ -164,6 +172,17 @@
                 }
             },
             methods: {
+                setPage(value) {
+                    this.page = value
+                },
+                showAllData(value) {
+                    if (value == true) {
+                        this.page = 1;
+                        this.pageSize = this.tableData.length
+                    } else {
+                        this.pageSize = 10
+                    }
+                },
                 changeColumn(selected) {
                     this.searchNull = ""
                     this.searchName = ""
@@ -182,7 +201,7 @@
                     this.viewDialog = true;
                 },
                 getData() {
-                    axios.post("action.php?action=fetchImmunization")
+                    axios.post("../bhw/action.php?action=fetchImmunization")
                         .then(response => {
                             if (response.data.error) {
                                 this.tableData = []
@@ -246,10 +265,10 @@
                             return data.fsn.toLowerCase().includes(this.searchFsn.toLowerCase());
                         })
                         .filter((data) => {
-                            return data.address.toLowerCase().includes(this.searchFsn.toLowerCase());
+                            return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
                         })
                         .filter((data) => {
-                            return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
+                            return data.address.toLowerCase().includes(this.searchAddress.toLowerCase());
                         })
                         .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
                 }

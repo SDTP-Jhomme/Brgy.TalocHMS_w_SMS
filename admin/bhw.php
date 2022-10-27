@@ -37,8 +37,12 @@
                             <div class="container p-0">
                                 <el-row :gutter="20">
                                     <el-col :span="12">
-                                        <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
+                                        <el-button type="primary" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
                                         <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
+                                        <el-button-group>
+                                            <el-button icon="el-icon-open" size="small" type="success" plain @click="handleActive()">Activate</el-button>
+                                            <el-button icon="el-icon-turn-off" size="small" type="info" plain @click="handleInactive()">Deactivate</el-button>
+                                        </el-button-group>
                                     </el-col>
                                 </el-row>
                             </div>
@@ -90,7 +94,7 @@
                                             <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="Actions" width="250">
+                                    <el-table-column label="Actions" width="150">
                                         <template slot-scope="scope">
                                             <el-tooltip class="item" effect="dark" content="View" placement="top-start">
                                                 <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)"></el-button>
@@ -98,24 +102,13 @@
                                             <el-tooltip class="item" effect="dark" content="Edit" placement="top-start">
                                                 <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
                                             </el-tooltip>
-                                            <el-tooltip class="item" effect="dark" content="Activate Status" placement="top-start">
-                                                <el-button icon="el-icon-open" size="mini" type="success" @click="handleActive(scope.$index, scope.row)"></el-button>
-                                            </el-tooltip>
-                                            <el-tooltip class="item" effect="dark" content="Deactivate Status" placement="top-start">
-                                                <el-button icon="el-icon-turn-off" size="mini" type="danger" @click="handleInactive(scope.$index, scope.row)"></el-button>
-                                            </el-tooltip>
                                         </template>
                                     </el-table-column>
-                                    <!-- <el-table-column sortable label="Status" prop="status" width="110" column-key="status" :filters="[{text: 'Online', value: 'Online'}, {text: 'Offline', value: 'Offline'}]" :filter-method="filterHandler">
-                                        <template slot-scope="scope">
-                                            <el-tag size="small" type="success" id="status">{{ scope.row.status }}</el-tag>
-                                        </template>
-                                    </el-table-column> -->
                                     <el-table-column sortable label="Status" prop="status" width="110" column-key="status" :filters="[{text: 'Inactive', value: 'Inactive'}, {text: 'Active', value: 'Active'}]" :filter-method="filterHandler">
                                         <template slot-scope="scope">
                                             <el-tag size="small" v-if="scope.row.status == 'Active'" type="success" onLine:>{{ scope.row.status }}</el-tag>
                                             <el-tag size="small" v-else type="info" showBackOnline:>{{ scope.row.status }}</el-tag>
-                                        </template> 
+                                        </template>
                                     </el-table-column>
                                 </el-table>
                                 <div class="d-flex justify-content-between mt-2">
@@ -132,7 +125,7 @@
                             <div class="container p-4 d-flex flex-column pe-5">
                                 <el-form :label-position="topLabel" :model="addBhw" :rules="rules" ref="addBhw">
                                     <el-form-item label="Identification Number" prop="identification">
-                                        <el-input v-model="addBhw.identification" id="bhwID" OnInput="add_hyphen()" maxlength="12" clearable></el-input>
+                                        <el-input v-model="addBhw.identification" maxlength="12" id="bhwID" onKeyup="addDashes(this)" clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="First Name" prop="firstName">
                                         <el-input v-model="addBhw.firstName" clearable></el-input>
@@ -400,8 +393,7 @@
                             trigger: 'blur'
                         }],
                     },
-                    isOnLine: navigator.onLine,
-                    showBackOnline: false,
+                    isActive: false,
                     page: 1,
                     pageSize: 10,
                     showAllData: false,
@@ -529,11 +521,8 @@
                 }
             },
             methods: {
-                updateOnlineStatus(e) {
-                    const {
-                        type
-                    } = e;
-                    this.onLine = type === 'online';
+                toggle() {
+                    this.isActive = this.isActive ? false : true;
                 },
                 // Logout ***********************************************
                 logout() {
@@ -778,59 +767,67 @@
                             this.loadButton = false;
                         });
                 },
-                handleActive(index, row) {
-                    this.$confirm('This will change user status ' + row.username + ". Continue?", 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            var id = new FormData();
-                            id.append("id", row.id)
-                            axios.post("action.php?action=active", id)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true
-                                        setTimeout(() => {
-                                            this.getData();
-                                            this.tableLoad = false
-                                            this.$message({
-                                                message: 'User status change successfully!',
-                                                type: 'success'
-                                            })
-                                            this.page = 1;
-                                        }, 1500)
-                                    }
-                                })
-                        })
-                        .catch(() => {});
+                handleActive() {
+                    if (Object.keys(this.multiID).length === 0) {
+                        this.$message.error("Please select aleast one(1) user to activate!")
+                    } else {
+                        this.$confirm('This will activate all selected users status . Continue?', 'Warning', {
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+                                type: "warning"
+                            })
+                            .then(() => {
+                                var ids = new FormData();
+                                ids.append("user_ids", this.multiID)
+                                axios.post("action.php?action=active", ids)
+                                    .then(response => {
+                                        if (response.data) {
+                                            this.tableLoad = true
+                                            setTimeout(() => {
+                                                this.getData();
+                                                this.tableLoad = false
+                                                this.$message({
+                                                    message: 'Activate status successfully!',
+                                                    type: 'success'
+                                                })
+                                                this.page = 1;
+                                            }, 1500)
+                                        }
+                                    })
+                            })
+                            .catch(() => {});
+                    }
                 },
-                handleInactive(index, row) {
-                    this.$confirm('This will change user status ' + row.username + ". Continue?", 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            var id = new FormData();
-                            id.append("id", row.id)
-                            axios.post("action.php?action=inactive", id)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true
-                                        setTimeout(() => {
-                                            this.getData();
-                                            this.tableLoad = false
-                                            this.$message({
-                                                message: 'User status change successfully!',
-                                                type: 'success'
-                                            })
-                                            this.page = 1;
-                                        }, 1500)
-                                    }
-                                })
-                        })
-                        .catch(() => {});
+                handleInactive() {
+                    if (Object.keys(this.multiID).length === 0) {
+                        this.$message.error("Please select aleast one(1) user to deactivate!")
+                    } else {
+                        this.$confirm('This will deactivate all selected users status . Continue?', 'Warning', {
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+                                type: "warning"
+                            })
+                            .then(() => {
+                                var ids = new FormData();
+                                ids.append("user_ids", this.multiID)
+                                axios.post("action.php?action=inactive", ids)
+                                    .then(response => {
+                                        if (response.data) {
+                                            this.tableLoad = true
+                                            setTimeout(() => {
+                                                this.getData();
+                                                this.tableLoad = false
+                                                this.$message({
+                                                    message: 'Deactivate status successfully!',
+                                                    type: 'success'
+                                                })
+                                                this.page = 1;
+                                            }, 1500)
+                                        }
+                                    })
+                            })
+                            .catch(() => {});
+                    }
                 },
                 bulkDelete() {
                     if (Object.keys(this.multiID).length === 0) {
@@ -873,16 +870,17 @@
             }
         })
     </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
-        function add_hyphen() {
-            var input = document.getElementById("bhwID");
-            var str = input.value;
-            str = str.replace("-", "");
-            if (str.length > 9) {
-                str = str.substring(0, 3) + "-" + str.substring(3, 6) + "-" + str.substring(7);
-            }
-            input.value = str
+        window.addDashes = function addDashes(f) {
+            var r = /(\D+)/g,
+                npa = '',
+                nxx = '',
+                last4 = '';
+            f.value = f.value.replace(r, '');
+            npa = f.value.substr(0, 3);
+            nxx = f.value.substr(3, 3);
+            last4 = f.value.substr(6, 4);
+            f.value = npa + '-' + nxx + '-' + last4;
         }
     </script>
 </body>
