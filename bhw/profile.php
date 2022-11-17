@@ -7,9 +7,9 @@
 
     include("./import/head.php");
 
-    if (isset($_SESSION["user_id"])) {
+    if (isset($_SESSION["id"])) {
 
-        $id = $_SESSION["user_id"];
+        $id = $_SESSION["id"];
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 
@@ -29,7 +29,7 @@
         }
     } else {
 
-        header("Location: ../../capstone-new");
+        header("Location: ./login");
         die();
     } ?>
 </head>

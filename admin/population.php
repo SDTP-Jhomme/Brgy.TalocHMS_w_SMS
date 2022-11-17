@@ -64,7 +64,7 @@ $individual_treatment = $count_health->fetch_array();
 </head>
 
 <body>
-    <div id="populationChart" style="height: 370px; width: 100%;"></div>
+    <div id="populationChart" style="height: 300px; width: 95%;"></div>
     <script src="../assets/js/jquery.canvasjs.min.js"> </script>
 </body>
 

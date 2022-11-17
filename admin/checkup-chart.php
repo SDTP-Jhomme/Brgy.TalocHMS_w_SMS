@@ -39,7 +39,7 @@ $year = date("Y");
                 theme: "light1", // "light2", "dark1", "dark2"
                 animationEnabled: true, // change to true		
                 title: {
-                    text: "Total Individual Treatment <?php echo $year ?>"
+                    text: "Monthly Individual Treatment <?php echo $year ?>"
                 },
                 data: [{
                     // Change type to "bar", "area", "spline", "pie",etc.
@@ -102,7 +102,7 @@ $year = date("Y");
 </head>
 
 <body>
-    <div id="formChart" style="height: 370px; width: 100%;"></div>
+    <div id="formChart" style="height: 370px; width: 95%;"></div>
     <script src="../assets/js/jquery.canvasjs.min.js"> </script>
 </body>
 

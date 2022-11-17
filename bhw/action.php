@@ -12,30 +12,32 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if ($action == 'fetchImmunization') {
-
+if ($action == 'fetch') {
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM immunization ORDER BY fsn");
+    $data = mysqli_query($db, "SELECT * FROM patient ORDER BY fsn ");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname = $data_row["first_name"] . " " . $data_row["last_name"];
-            $db_birthdate = $data_row["birthday"];
+            $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]);
+            $db_birthdate = $data_row["birthdate"];
             $birthdate = date("F d, Y", strtotime($db_birthdate));
             $db_avatar = $data_row["avatar"];
-            $address = $data_row["purok"];
+            $date = $data_row["month"] . " " . $data_row["day"] . ", " . $data_row["year"];
 
             $array_data = array(
                 "id" => $data_row["id"],
+                "username" => $data_row["username"],
                 "name" => $fullname,
+                "date" => $date,
                 "birthdate" => $birthdate,
                 "gender" => $data_row["gender"],
                 "fsn" => $data_row["fsn"],
-                "address" => $data_row["purok"],
                 "first_name" => $data_row["first_name"],
                 "last_name" => $data_row["last_name"],
+                "phone_number" => $data_row["phone_number"],
+                "last_login" => $data_row["last_login"],
                 "avatar" => "../assets/$db_avatar",
             );
 
@@ -76,6 +78,7 @@ if ($action == 'store') {
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
     $username = "PATIENT-" . ucfirst($first_name);
+    $day = date("d");
     $year = date("Y");
     $month = date("M");
     $db_status = "Active";
@@ -92,13 +95,55 @@ if ($action == 'store') {
         "gender" => $gender,
         "phone_number" => $phone_number,
         "password" => $password,
-        "type" => $type,
     );
 
-    mysqli_query($db, "INSERT INTO patient(fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,month,year,type)
-        VALUES('$fsn','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$month','$year','$type')");
+    mysqli_query($db, "INSERT INTO patient(fsn,first_name,middle_name,last_name,suffix,birthdate,gender,username,password,avatar,phone_number,day,month,year)
+        VALUES('$fsn','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$username','$hashed_password','$avatar','$phone_number','$day','$month','$year')");
 }
 
+if ($action == 'sent_message') {
+
+    $array_id = $_POST["user_ids"];
+    $contact = $_POST['contact'];
+    $appointment = $_POST['appointments'];
+    $message = $_POST['message'];
+    $apicodeBulk = "PR-SAMPLE123456_ABCDE";
+    $password = "	123456789ABCD";
+
+    $send = new ItexMoController();
+
+    $send->itexmo($contact, $message, $appointment, $apicodeBulk, $password);
+
+    if ($send == false) {
+        header("Location: ./");
+        $response["error"] = true;
+        $response["message"] = "Message not sent!";
+    } elseif ($send == true) {
+        header("Location: ./");
+        $response["error"] = true;
+        $response["message"] = "Message sent!";
+    } else {
+        header("Location: ./");
+        $response["error"] = true;
+        $response["message"] = "Something went wrong!";
+    }
+    class ItexMoController
+    {
+
+        function itexmo($contact, $message, $apicode, $password)
+        {
+
+            $ch = curl_init();
+            $itexmo = array('1' => $contact, '2' => $message, '3' => $apicode, 'password' => $password);
+            curl_setopt($ch, CURLOPT_URL, "https://www.itexmo.com/php_api/api.php");
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($itexmo));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            return curl_exec($ch);
+            curl_close($ch);
+        }
+    }
+}
 if ($action == 'change_password') {
 
     $user_id = $_POST["id"];
@@ -109,7 +154,7 @@ if ($action == 'change_password') {
 
     if ($response) {
         session_start();
-        unset($_SESSION["user_id"]);
+        unset($_SESSION["bhw_id"]);
     }
 }
 

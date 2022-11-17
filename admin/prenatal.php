@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Maternity</title>
+    <title>Admin | Dashboard</title>
     <?php
 
     include("./import/head.php");
@@ -34,13 +34,16 @@
                 <main>
                     <el-container>
                         <el-header class="mt-4" height="40">
-                            <div class="container p-0">
+                            <h1 class="mt-4">Prenatal Table</h1>
+                            <div class="card mb-4">
+                                <div class="card-body text-primary">
+                                    Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
+                                </div>
                             </div>
                         </el-header>
                         <el-main>
                             <div class="container border rounded p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <p class="mb-0 fw-bold">Maternity Record</p>
                                     <div class="d-flex">
                                         <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
                                             <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
@@ -48,13 +51,10 @@
                                         </el-select>
                                         <div class="ps-2">
                                             <div v-if="searchValue == 'fsn'">
-                                                <el-input v-model="searchFsn" size="mini" placeholder="Type to search..." clearable />
+                                                <el-input v-model="searchID" size="mini" placeholder="Type to search..." clearable />
                                             </div>
                                             <div v-else-if="searchValue == 'name'">
                                                 <el-input v-model="searchName" size="mini" placeholder="Type to search..." clearable />
-                                            </div>
-                                            <div v-else-if="searchValue == 'address'">
-                                                <el-input v-model="searchAddress" size="mini" placeholder="Type to search..." clearable />
                                             </div>
                                             <div v-else-if="searchValue == 'birthdate'">
                                                 <el-input v-model="searchBirthday" size="mini" placeholder="Type to search..." clearable />
@@ -65,29 +65,36 @@
                                         </div>
                                     </div>
                                 </div>
-                                <el-table v-if="this.tableData" :data="usersTable" border style="width: 100%" height="400" v-loading="tableLoad" @selection-change="handleSelectionChange" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
-                                    <el-table-column fixed label="No." type="index" width="50">
+                                    <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable prop="fsn" label="FSN" width="100">
+                                    <el-table-column sortable label="FSN No." prop="fsn">
                                     </el-table-column>
-                                    <el-table-column sortable prop="name" label="Name">
+                                    <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>
-                                    <el-table-column sortable prop="address" label="Address">
+                                    <el-table-column sortable label="Name" width="200" prop="name">
                                     </el-table-column>
-                                    <el-table-column sortable prop="birthdate" label="Birthday">
+                                    <el-table-column sortable label="Birthday" width="200" prop="birthdate">
                                     </el-table-column>
-                                    <el-table-column sortable label="Gender" prop="gender" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                    <el-table-column sortable label="Purok" prop="address">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Phone No." prop="phone_number">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Gender" prop="gender" width="110" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
                                         <template slot-scope="scope">
                                             <el-tag size="small" v-if="scope.row.gender == 'Male'">{{ scope.row.gender }}</el-tag>
                                             <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column fixed="right" label="Action" width="120">
+                                    <el-table-column label="Actions" width="200">
                                         <template slot-scope="scope">
-                                            <el-tooltip class="item" effect="dark" content="View" placement="top-start">
-                                                <el-button icon="el-icon-view" size="mini" type="primary" @click="handleView(scope.$index, scope.row)">View Detail</el-button>
+                                            <el-tooltip class="item" effect="dark" content="View Details" placement="top-start">
+                                                <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)">View Details</el-button>
+                                            </el-tooltip>
+                                            <el-tooltip class="item" effect="dark" content="Update Phone No." placement="top-start">
+                                                <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
                                             </el-tooltip>
                                         </template>
                                     </el-table-column>
@@ -98,35 +105,164 @@
                                     </el-pagination>
                                 </div>
                             </div>
-                            <!-- View Dialog -->
-                            <el-dialog :visible.sync="viewDialog" width="35%" :before-close="closeViewDialog">
-                                <template #title>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="fs-5">User {{ viewImmunization.username }}</div>
-                                        <div class="pe-4">
-                                            <el-avatar :size="70" :src="viewImmunization.avatar"></el-avatar>
-                                        </div>
-                                    </div>
-                                </template>
-                                <div class="container">
-                                    <div class="">
-                                        <el-descriptions direction="horizontal" :column="1" border>
-                                            <el-descriptions-item label="Identification Number">{{ viewImmunization.fsn }}</el-descriptions-item>
-                                            <el-descriptions-item label="Name">{{ viewImmunization.name }}</el-descriptions-item>
-                                            <el-descriptions-item label="Birthday">{{ viewImmunization.birthdate }}</el-descriptions-item>
-                                            <el-descriptions-item label="Gender">
-                                                <el-tag v-if="viewImmunization.gender == 'Male'">{{ viewImmunization.gender }}</el-tag>
-                                                <el-tag v-else type="danger">{{ viewImmunization.gender }}</el-tag>
-                                            </el-descriptions-item>
-                                        </el-descriptions>
-                                    </div>
-                                </div>
-                                <span slot="footer" class="dialog-footer">
-                                    <el-button type="primary" @click="closeViewDialog">Close</el-button>
-                                </span>
-                            </el-dialog>
                         </el-main>
 
+                        <!----------------------------------------------------------------------------------- Modals/Drawers ----------------------------------------------------------------------------------->
+                        <!-- Reset Password Dialog -->
+                        <el-dialog title="BHW Username and New Password" :visible.sync="openResetDialog" width="30%" :before-close="closeResetDialog">
+                            <label>Username</label>
+                            <el-input class="mb-2" v-model="resetUser.username" disabled></el-input>
+                            <label>New Password</label>
+                            <el-input class="mb-2" v-model="resetUser.password" disabled></el-input>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="closeResetDialog">Close</el-button>
+                            </span>
+                        </el-dialog>
+
+                        <!-- View Dialog -->
+                        <el-dialog :visible.sync="viewDialog" width="70%" :before-close="closeViewDialog">
+                            <template #title>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="pe-4">
+                                        <el-avatar :size="70" :src="viewPrenatal.avatar"></el-avatar>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="container">
+                                <div class="" id="printThis">
+                                    <div class="row d-flex py-2 justify-content-between" style="border-bottom: 5px solid black;">
+                                        <div class="col-sm-4 ms-5">
+                                            <h4 class="fw-bolder font-arial">City Health Office</h4>
+                                            <h4 style="font-family:'Times New Roman', Times, serif;">Bago City, Negros Occidental</h4>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <img class="img-fluid" src="../assets/img/bcc-Logo.png" style="width:22% ;" alt="Bago City Logo">
+                                            <img src="../assets/img/city-health.png" style="width:20% ;" alt="Bago City Health Logo">
+                                            <img src="../assets/img/sun-logo.png" style="width:20% ;" alt="Sun">
+                                        </div>
+                                    </div>
+                                    <div class="my-3">
+                                        <h4 class="fw-bold text-center mb-4" style="font-family:'Times New Roman', Times, serif;">Maternal Record</h4>
+                                    </div>
+                                    <div style="font-family:'Times New Roman', Times, serif;">
+                                        <div class="mx-5 fs-5">
+                                            <div style="border-bottom:3px solid black ;">
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-auto">
+                                                        <label>Name: <span class="border-bottom-1 border-dark">{{viewPrenatal.name}}</span></label>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <label>FSN: <span class="border-bottom border-dark px-4">{{viewPrenatal.fsn}}</span></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-auto">
+                                                        <label>Date of Birth: <span class="border-bottom-1 border-dark">{{viewPrenatal.birthdate}}</span></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-auto">
+                                                        <label>Name of spouse: <span class="border-bottom-1 border-dark">{{viewPrenatal.spouse}}</span></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-auto">
+                                                        <label>Address (Purok): <span class="border-bottom-1 border-dark">{{viewPrenatal.address}}</span></label>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <label>Barangay: <span class="border-bottom-1 border-dark">{{viewPrenatal.birthdate}}</span></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-auto">
+                                                        <label> <span class="fw-bold">PRE-NATAL</span> : GP <span class="border-bottom-1 border-dark">{{viewPrenatal.gp}}</span></label>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <label>LMP: <span class="border-bottom-1 border-dark">{{viewPrenatal.lmp}}</span></label>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-flex justify-content-md-between mb-3">
+                                                    <div class="col-auto">
+                                                        <label>EDC: <span class="border-bottom-1 border-dark">{{viewPrenatal.edc}}</span></label>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <label>T.T. Status: <span class="border-bottom-1 border-dark">{{viewPrenatal.tt_status}}</span></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>Date of Pre-natal Visit: <span class="border-bottom-1 border-dark">{{viewPrenatal.date_visit}}</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>Weight: <span class="border-bottom-1 border-dark">{{viewPrenatal.weight}}</span></label>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label>BP: <span class="border-bottom-1 border-dark">{{viewPrenatal.bp}}</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>CR: <span class="border-bottom-1 border-dark">{{viewPrenatal.cr}}</span></label>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label>RR: <span class="border-bottom-1 border-dark">{{viewPrenatal.rr}}</span></label>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label>Temp: <span class="border-bottom-1 border-dark">{{viewPrenatal.temp}}</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>AOG: <span class="border-bottom-1 border-dark">{{viewPrenatal.aog}}</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>Fundic Height: <span class="border-bottom-1 border-dark">{{viewPrenatal.fundic_height}}</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>FHB: <span class="border-bottom-1 border-dark">{{viewPrenatal.fhb}}</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="row d-flex justify-content-md-between">
+                                                <div class="col-auto">
+                                                    <label>Presentation: <span class="border-bottom-1 border-dark">{{viewPrenatal.presentation}}</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" icon="el-icon-printer" id="Print">Print</el-button>
+                                <el-button type="info" @click="closeViewDialog">Close</el-button>
+                            </span>
+                        </el-dialog>
+
+                        <!-- Edit Dialog -->
+                        <el-dialog :visible.sync="editDialog" width="40%" :before-close="closeEditDialog">
+                            <template #title>
+                                Edit User {{ editContact.username }}
+                            </template>
+                            <el-descriptions direction="horizontal" class="mb-4" :column="1" border>
+                                <el-descriptions-item label="FSN">{{ editContact.fsn }}</el-descriptions-item>
+                            </el-descriptions>
+                            <el-form :label-position="leftLabel" label-width="160px" :model="updateContact" :rules="editRules" ref="updateContact">
+                                <el-form-item label="Phone Number" prop="phone_number">
+                                    <el-input v-model="updateContact.phone_number" maxlength="11" clearable show-phone_number></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button :loading="loadButton" @click="closeEditDialog('updateContact')">Cancel</el-button>
+                                <el-button :loading="loadButton" type="warning" @click="resetPassword">Reset Password</el-button>
+                                <el-button :loading="loadButton" type="primary" @click="updateUser('updateContact')">Update</el-button>
+                            </span>
+                        </el-dialog>
                         <!----------------------------------------------------------------------------------- End of Modals/Drawers ----------------------------------------------------------------------------------->
                     </el-container>
                 </main>
@@ -141,27 +277,51 @@
             el: "#app",
             data() {
                 return {
-                    tableData: [],
-                    tableLoad: false,
-                    fullscreenLoading: true,
-                    viewImmunization: [],
-                    viewDialog: false,
-                    showAllData: false,
+                    editRules: {
+                        phone_number: [{
+                            required: true,
+                            message: 'Phone no. is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^(09|\+639)\d{9}$/,
+                            message: 'Invalid phone number format!',
+                            trigger: 'blur'
+                        }, {
+                            min: 11,
+                            message: 'Phone number should eleven(11) digits!',
+                            trigger: 'blur'
+                        }],
+                    },
                     page: 1,
                     pageSize: 10,
+                    showAllData: false,
                     searchValue: "",
                     searchNull: "",
                     searchName: "",
-                    searchFsn: "",
-                    searchAddress: "",
+                    searchID: "",
                     searchBirthday: "",
-
+                    topLabel: "top",
+                    leftLabel: "left",
+                    tableLoad: false,
+                    openResetDialog: false,
+                    loadButton: false,
+                    editDialog: false,
+                    viewDialog: false,
+                    multipleSelection: [],
+                    fullscreenLoading: true,
+                    tableData: [],
+                    multiID: [],
+                    resetUser: [],
+                    checkIdentification: [],
+                    editContact: [],
+                    viewPrenatal: [],
+                    updateContact: {
+                        id: 0,
+                        phone_number: "",
+                    },
                     options: [{
                         value: 'fsn',
-                        label: 'FSN'
-                    }, {
-                        value: 'address',
-                        label: 'Address'
+                        label: 'FSN No.'
                     }, {
                         value: 'name',
                         label: 'Name'
@@ -171,9 +331,42 @@
                     }]
                 }
             },
-            methods: {
-                setPage(value) {
-                    this.page = value
+            computed: {
+                usersTable() {
+                    return this.tableData
+                        .filter((data) => {
+                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.fsn.toLowerCase().includes(this.searchID.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
+                        })
+                        .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+                }
+            },
+            created() {
+                this.getData()
+            },
+            mounted() {
+                setTimeout(() => {
+                    this.fullscreenLoading = false
+                }, 1000)
+            },
+            watch: {
+                editContact(value) {
+                    this.updateContact.id = value.id ? value.id : "";
+                    this.updateContact.phone_number = value.phone_number ? value.phone_number : "";
+                    this.updateContact.fsn = value.fsn ? value.fsn : "";
+                },
+                searchValue(value) {
+                    if (value == "" || value == "fsn" || value == "name" || value == "birthdate") {
+                        this.searchNull = '';
+                        this.searchID = '';
+                        this.searchName = '';
+                        this.searchBirthday = '';
+                    }
                 },
                 showAllData(value) {
                     if (value == true) {
@@ -183,40 +376,8 @@
                         this.pageSize = 10
                     }
                 },
-                changeColumn(selected) {
-                    this.searchNull = ""
-                    this.searchName = ""
-                    this.searchFsn = ""
-                    this.searchAddress = ""
-                    this.searchBirthday = ""
-                },
-                closeViewDialog() {
-                    this.viewDialog = false;
-                },
-                handleClick() {
-                    console.log('click');
-                },
-                handleView(index, row) {
-                    this.viewImmunization = row;
-                    this.viewDialog = true;
-                },
-                getData() {
-                    axios.post("../bhw/action.php?action=fetchImmunization")
-                        .then(response => {
-                            if (response.data.error) {
-                                this.tableData = []
-                            } else {
-                                this.tableData = response.data
-                            }
-                        })
-                },
-                created() {
-                    this.getData()
-                },
-                filterHandler(value, row, column) {
-                    const property = column['property'];
-                    return row[property] === value;
-                },
+            },
+            methods: {
                 // Logout ***********************************************
                 logout() {
                     this.fullscreenLoading = true
@@ -234,46 +395,187 @@
                             }
                         })
                 },
+                // ******************************************************
                 handleSelectionChange(val) {
                     this.multiID = Object.values(val).map(i => i.id)
                 },
-                // ******************************************************
-            },
-            mounted() {
-                setTimeout(() => {
-                    this.fullscreenLoading = false
-                }, 1000)
-            },
-            watch: {
-                searchValue(value) {
-                    if (value == "" || value == "fsn" || value == "name" || value == "address" || value == "birthdate") {
-                        this.searchNull = '';
-                        this.searchFsn = '';
-                        this.searchName = '';
-                        this.searchAddress = '';
-                        this.searchBirthday = '';
-                    }
+                filterHandler(value, row, column) {
+                    const property = column['property'];
+                    return row[property] === value;
                 },
-            },
-            computed: {
-                usersTable() {
-                    return this.tableData
-                        .filter((data) => {
-                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
+                closeViewDialog() {
+                    this.viewDialog = false;
+                },
+                closeEditDialog(editContact) {
+                    this.$confirm('Are you sure you want to cancel updating BHW?', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
                         })
-                        .filter((data) => {
-                            return data.fsn.toLowerCase().includes(this.searchFsn.toLowerCase());
+                        .then(() => {
+                            this.editDialog = false
+                            this.$refs[editContact].resetFields();
+                            localStorage.removeItem("fsn")
                         })
-                        .filter((data) => {
-                            return data.birthdate.toLowerCase().includes(this.searchBirthday.toLowerCase());
+                        .catch(() => {});
+                },
+                closeResetDialog() {
+                    this.$confirm('Done copying new password?', 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
                         })
-                        .filter((data) => {
-                            return data.address.toLowerCase().includes(this.searchAddress.toLowerCase());
+                        .then(() => {
+                            this.openResetDialog = false
                         })
-                        .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+                        .catch(() => {});
+                },
+                setPage(value) {
+                    this.page = value
+                },
+                getData() {
+                    axios.post("action.php?action=fetch_prenatal")
+                        .then(response => {
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
+                                this.tableData = response.data
+                                this.checkIdentification = response.data.map(res => res.fsn)
+                            }
+                        })
+                },
+                handleView(index, row) {
+                    this.viewPrenatal = row;
+                    this.viewDialog = true;
+                },
+                handleEdit(index, row) {
+                    localStorage.setItem("fsn", row.fsn)
+                    this.editContact = {
+                        id: row.id,
+                        phone_number: row.phone_number,
+                        fsn: row.fsn,
+                        username: row.username,
+                        firstName: row.first_name,
+                    }
+                    this.editDialog = true;
+                },
+                updateUser(updateContact) {
+                    this.$refs[updateContact].validate((valid) => {
+                        if (valid) {
+                            if (this.editContact.phone_number != this.updateContact.phone_number) {
+                                this.loadButton = true;
+                                this.$confirm('This will update user ' + this.editContact.firstName + '. Continue?', {
+                                        confirmButtonText: 'Confirm',
+                                        cancelButtonText: 'Cancel',
+                                    })
+                                    .then(() => {
+                                        this.editDialog = false;
+                                        var updateData = new FormData()
+                                        updateData.append("id", this.updateContact.id)
+                                        updateData.append("phone_number", this.updateContact.phone_number)
+                                        axios.post("action.php?action=update_contact", updateData)
+                                            .then(response => {
+                                                if (response.data) {
+                                                    this.loadButton = false;
+                                                    this.tableLoad = true;
+                                                    setTimeout(() => {
+                                                        this.tableLoad = false;
+                                                        this.getData();
+                                                        this.$message({
+                                                            message: 'Phone no. has been updated successfully!',
+                                                            type: 'success'
+                                                        });
+                                                    }, 1500)
+                                                }
+                                            })
+                                        localStorage.removeItem("fsn")
+                                    })
+                                    .catch(() => {
+                                        this.loadButton = false;
+                                    });
+                            } else {
+                                this.$confirm('No changes made. Cancel editing user?', {
+                                        confirmButtonText: 'Yes',
+                                        cancelButtonText: 'No',
+                                    })
+                                    .then(() => {
+                                        this.editDialog = false
+                                        localStorage.removeItem("fsn")
+                                    })
+                                    .catch(() => {
+                                        this.editDialog = true
+                                    })
+                            }
+                        } else {
+                            this.$message.error("Cannot submit the form. Please check the error(s).")
+                            return false;
+                        }
+                    });
+                },
+                resetPassword() {
+                    this.loadButton = true;
+                    this.$confirm('This will reset user ' + this.editContact.username + "'s password. Continue?", 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            this.editDialog = false;
+                            var data = new FormData();
+                            data.append("id", this.editContact.id)
+                            data.append("username", this.editContact.username)
+                            axios.post("action.php?action=reset", data)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        localStorage.removeItem("fsn")
+                                        setTimeout(() => {
+                                            this.tableLoad = false;
+                                            this.$message({
+                                                message: 'Password has been reset successfully!',
+                                                type: 'success'
+                                            });
+                                            setTimeout(() => {
+                                                this.openResetDialog = true;
+                                            }, 1500)
+                                        }, 1500);
+                                        this.resetUser = response.data;
+                                        this.loadButton = false;
+                                    }
+                                })
+                        })
+                        .catch(() => {
+                            this.loadButton = false;
+                        });
+                },
+                changeColumn(selected) {
+                    this.searchNull = ""
+                    this.searchName = ""
+                    this.searchID = ""
+                    this.searchBirthday = ""
                 }
-            },
+            }
         })
+    </script>
+    <script>
+        document.getElementById("Print").onclick = function() {
+            printElement(document.getElementById("printThis"));
+        };
+
+        function printElement(elem) {
+            var domClone = elem.cloneNode(true);
+
+            var $printSection = document.getElementById("printSection");
+
+            if (!$printSection) {
+                var $printSection = document.createElement("div");
+                $printSection.id = "printSection";
+                document.body.appendChild($printSection);
+            }
+
+            $printSection.innerHTML = "";
+            $printSection.appendChild(domClone);
+            window.print();
+        }
     </script>
 </body>
 

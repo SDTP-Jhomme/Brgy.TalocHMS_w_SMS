@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | SMS Appointments</title>
+    <title>Admin | Sms Notification</title>
     <?php
 
     include("./import/head.php");
@@ -10,7 +10,7 @@
     if (isset($_SESSION["id"])) {
 
         $id = $_SESSION["id"];
-
+        $time = time();
         $admin_record = mysqli_query($db, "SELECT * FROM admin where id='$id'");
 
         while ($admin_row = mysqli_fetch_assoc($admin_record)) {
@@ -33,44 +33,170 @@
             <div id="layoutSidenav_content">
                 <main>
                     <el-container>
-                        <el-main>
-                            <el-header>
-                                <h4>Appointments</h4>
-                            </el-header>
-                            <div>
-                                <el-divider></el-divider>
+                        <el-header class="mt-4" height="40">
+                            <h1 class="mt-4">Send SMS</h1>
+                            <div class="card mb-4">
+                                <div class="card-body text-primary">
+                                    Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
+                                </div>
                             </div>
-                            <el-form :model="addSms" :rules="smsRules" ref="addSms">
-                                <div class="underline-input top d-flex justify-content-start">
-                                    <div class="w-40">
-                                        <el-form-item label="To :" prop="contact">
-                                            <el-input v-model="addSms.contact" type="tel" maxlength='11' clearable></el-input>
-                                        </el-form-item>
-                                    </div>
-                                    <div class="w-40">
-                                        <el-tooltip class="item" effect="dark" content="Send" placement="top-start">
-                                            <el-button type="white" @click="addUser('addSms')" size="small" icon="el-icon-position">Send</el-button>
-                                        </el-tooltip>
-                                    </div>
-                                    <div class="w-30 mb-4">
-                                        <el-form-item label="Appointment" prop="appointment">
-                                            <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
-                                            </el-date-picker>
-                                        </el-form-item>
+                            <div class="container p-0">
+                                <el-row :gutter="20">
+                                    <el-col :span="12">
+                                        <el-button icon="el-icon-position" size="mini" type="danger" @click="handleSms()">Text Blast</el-button>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                        </el-header>
+                        <el-main>
+                            <div class="container border rounded p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex">
+                                        <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
+                                            <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
+                                            </el-option>
+                                        </el-select>
+                                        <div class="ps-2">
+                                            <div v-if="searchValue == 'fsn'">
+                                                <el-input v-model="searchID" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-else-if="searchValue == 'name'">
+                                                <el-input v-model="searchName" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-else-if="searchValue == 'phone_number'">
+                                                <el-input v-model="searchContact" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                            <div v-else>
+                                                <el-input v-model="searchNull" size="mini" placeholder="Type to search..." clearable />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <el-divider></el-divider>
+                                <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                    <el-table-column type="selection" width="55">
+                                    </el-table-column>
+                                    <el-table-column label="No." type="index" width="50">
+                                    </el-table-column>
+                                    <el-table-column sortable label="FSN No." prop="fsn">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Date Visited" prop="date">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Name" width="220" prop="name">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Phone No." prop="phone_number">
+                                    </el-table-column>
+                                    <el-table-column sortable label="Gender" prop="gender" width="110" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                        <template slot-scope="scope">
+                                            <el-tag size="small" v-if="scope.row.gender == 'Male'">{{ scope.row.gender }}</el-tag>
+                                            <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="Actions" width="150">
+                                        <template slot-scope="scope">
+                                            <el-tooltip class="item" effect="dark" content="Send Message" placement="top-start">
+                                                <el-button icon="el-icon-position" size="mini" type="success" @click="handleView(scope.$index, scope.row)">Send Sms</el-button>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <el-checkbox v-model="showAllData">Show All</el-checkbox>
+                                    <el-pagination :current-page.sync="page" :pager-count="5" :page-size="this.pageSize" background layout="prev, pager, next" :total="this.tableData.length" @current-change="setPage">
+                                    </el-pagination>
                                 </div>
-                                <div class="underline-input top d-flex justify-content-start">
-                                    <div class="w-80">
-                                        <el-form-item label="Message :" prop="message">
-                                            <el-input v-model="addSms.message" type="textarea" placeholder="Message here" clearable></el-input>
-                                        </el-form-item>
-                                    </div>
-                                </div>
-                            </el-form>
+                            </div>
                         </el-main>
+
+                        <!----------------------------------------------------------------------------------- Modals/Drawers ----------------------------------------------------------------------------------->
+                        <!-- View Dialog -->
+                        <el-dialog :visible.sync="viewDialog" width="70%" :before-close="closeViewDialog">
+                            <template #title>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="fs-5">User {{ viewPatient.name }}</div>
+                                    <div class="pe-4">
+                                        <el-avatar :size="70" :src="viewPatient.avatar"></el-avatar>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="container">
+                                <el-form :model="addSms" :rules="smsRules" ref="addSms">
+                                    <div class="row underline-input">
+                                        <div class="col-8">
+                                            <el-header>
+                                                <h4>Appointments</h4>
+                                            </el-header>
+                                        </div>
+                                        <div class="col-auto">
+                                            <el-form-item class="" label="Send To :" prop="phone_number">
+                                                <el-input v-model="viewPatient.phone_number" clearable disabled></el-input>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <el-divider></el-divider>
+                                    </div>
+                                    <div class="row underline-input">
+                                        <div class="col-7">
+                                            <el-form-item label="Event Date(s) / Appointment(s)" prop="appointment">
+                                                <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
+                                                </el-date-picker>
+                                            </el-form-item>
+                                        </div>
+                                        <div class="col-5">
+                                            <el-form-item label="Message :" prop="message">
+                                                <el-input v-model="addSms.message" type="textarea" placeholder="Message here" clearable></el-input>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <el-divider></el-divider>
+                                    </div>
+                                </el-form>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="addUser('addSms')" size="small" icon="el-icon-position">Send</el-button>
+                                <el-button :loading="loadButton" @click="closeViewDialog('addSms')">Cancel</el-button>
+                            </span>
+                        </el-dialog>
+
+                        <!-- bulksend -->
+                        <el-dialog :visible.sync="smsDialog" width="70%" :before-close="closeSmsDialog">
+                            <div class="container">
+                                <el-form :model="addSms" :rules="smsRules" ref="addSms">
+                                    <div class="row underline-input">
+                                        <div class="col-8">
+                                            <el-header>
+                                                <h4>Health Center Event(s)</h4>
+                                            </el-header>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <el-divider></el-divider>
+                                    </div>
+                                    <div class="row underline-input">
+                                        <div class="col-7">
+                                            <el-form-item label="Event Date(s) / Appointment(s)" prop="appointment">
+                                                <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
+                                                </el-date-picker>
+                                            </el-form-item>
+                                        </div>
+                                        <div class="col-5">
+                                            <el-form-item label="Message :" prop="message">
+                                                <el-input v-model="addSms.message" type="textarea" placeholder="Message here" clearable></el-input>
+                                            </el-form-item>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <el-divider></el-divider>
+                                    </div>
+                                </el-form>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="sendSms('addSms')" size="small" icon="el-icon-position">Send</el-button>
+                                <el-button :loading="loadButton" @click="closeViewDialog('addSms')">Cancel</el-button>
+                            </span>
+                        </el-dialog>
+                        <!----------------------------------------------------------------------------------- End of Modals/Drawers ----------------------------------------------------------------------------------->
                     </el-container>
                 </main>
                 <?php include("./import/footer.php"); ?>
@@ -84,27 +210,18 @@
             el: "#app",
             data() {
                 return {
-                    fullscreenLoading: true,
                     addSms: {
-                        contact: "",
+                        multiID: [],
+                        phone_number: "",
                         message: "",
                         appointment: "",
                     },
                     smsRules: {
-                        contact: [{
-                            pattern: /^[0-9]*$/,
-                            message: 'Invalid mobile number format!',
-                            trigger: 'blur'
-                        }, {
-                            max: 11,
-                            message: 'Phone number must eleven(11) digits!',
-                            trigger: 'blur'
-                        }],
                         message: [{
                             required: true,
                             message: 'Message is required!',
                             trigger: 'blur'
-                        },{
+                        }, {
                             min: 2,
                             message: 'Message should atleast two(2) characters!',
                             trigger: 'blur'
@@ -114,17 +231,81 @@
                             message: 'Appointment is required!',
                             trigger: 'blur'
                         }],
-                    }
-
+                    },
+                    page: 1,
+                    pageSize: 10,
+                    showAllData: false,
+                    searchValue: "",
+                    searchNull: "",
+                    searchName: "",
+                    searchID: "",
+                    searchContact: "",
+                    topLabel: "top",
+                    leftLabel: "left",
+                    tableLoad: false,
+                    loadButton: false,
+                    viewDialog: false,
+                    smsDialog: false,
+                    multipleSelection: [],
+                    fullscreenLoading: true,
+                    tableData: [],
+                    checkIdentification: [],
+                    viewPatient: [],
+                    options: [{
+                        value: 'fsn',
+                        label: 'FSN No.'
+                    }, {
+                        value: 'name',
+                        label: 'Name'
+                    }, {
+                        value: 'phone_number',
+                        label: 'Phone No.'
+                    }, ]
                 }
+            },
+            computed: {
+                usersTable() {
+                    return this.tableData
+                        .filter((data) => {
+                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.fsn.toLowerCase().includes(this.searchID.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.phone_number.toLowerCase().includes(this.searchContact.toLowerCase());
+                        })
+                        .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+                }
+            },
+            created() {
+                this.getData()
             },
             mounted() {
                 setTimeout(() => {
                     this.fullscreenLoading = false
                 }, 1000)
             },
+            watch: {
+                searchValue(value) {
+                    if (value == "" || value == "fsn" || value == "name" || value == "phone_number") {
+                        this.searchNull = '';
+                        this.searchID = '';
+                        this.searchName = '';
+                        this.searchContact = '';
+                    }
+                },
+                showAllData(value) {
+                    if (value == true) {
+                        this.page = 1;
+                        this.pageSize = this.tableData.length
+                    } else {
+                        this.pageSize = 10
+                    }
+                },
+            },
             methods: {
-                // Logout **********************************************************
+                // Logout ***********************************************
                 logout() {
                     this.fullscreenLoading = true
                     axios.post("auth.php?action=logout")
@@ -141,18 +322,74 @@
                             }
                         })
                 },
+                // ******************************************************
+                handleSelectionChange(val) {
+                    this.addSms.multiID = Object.values(val).map(i => i.phone_number)
+                },
+                filterHandler(value, row, column) {
+                    const property = column['property'];
+                    return row[property] === value;
+                },
+                closeSmsDialog() {
+                    this.smsDialog = false;
+                },
+                closeViewDialog() {
+                    this.viewDialog = false;
+                },
+                closeSmsDialog(addSms) {
+                    this.$confirm('Are you sure you want to cancel send message?', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                        })
+                        .then(() => {
+                            this.smsDialog = false
+                            this.$refs[addSms].resetFields();
+                            localStorage.removeItem("fsn")
+                        })
+                        .catch(() => {});
+                },
+                closeViewDialog(addSms) {
+                    this.$confirm('Are you sure you want to cancel send message?', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                        })
+                        .then(() => {
+                            this.viewDialog = false
+                            this.$refs[addSms].resetFields();
+                            localStorage.removeItem("fsn")
+                        })
+                        .catch(() => {});
+                },
+                setPage(value) {
+                    this.page = value
+                },
+                getData() {
+                    axios.post("sms-action.php?action=fetch_patient")
+                        .then(response => {
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
+                                this.tableData = response.data
+                                this.checkIdentification = response.data.map(res => res.fsn)
+                            }
+                        })
+                },
+                handleView(index, row) {
+                    this.viewPatient = row;
+                    this.viewDialog = true;
+                },
                 addUser(addSms) {
                     this.$refs[addSms].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
-                            this.openAddDrawer = false;
                             var newData = new FormData()
-                            newData.append("contact", this.addSms.contact)
+                            newData.append("contact", this.addSms.phone_number)
                             newData.append("message", this.addSms.message)
                             newData.append("appointment", this.addSms.appointment)
-                            axios.post("sms-action.php?action=store", newData)
+                            axios.post("sms-action.php?action=sent_message", newData)
                                 .then(response => {
                                     if (response.data) {
+                                        this.loadButton = false;
                                         this.tableLoad = true;
                                         setTimeout(() => {
                                             this.$message({
@@ -162,8 +399,8 @@
                                             this.tableLoad = false;
                                         }, 1500);
                                         this.resetFormData();
-                                        this.newUser = response.data;
                                         this.loadButton = false;
+                                        this.viewDialog = false;
                                     }
                                 })
                         } else {
@@ -175,6 +412,51 @@
                 resetFormData() {
                     this.addSms = []
                 },
+                handleSms() {
+                    if (Object.keys(this.addSms.multiID).length === 0) {
+                        this.$message.error("Please select aleast one(1) user to send message!")
+                    } else {
+                        this.smsDialog = true
+                    }
+                },
+                sendSms(addSms) {
+                    this.$refs[addSms].validate((valid) => {
+                        if (valid) {
+                            this.loadButton = true;
+                            var newData = new FormData()
+                            newData.append("user_ids", this.addSms.multiID)
+                            newData.append("contact", this.addSms.phone_number)
+                            newData.append("message", this.addSms.message)
+                            newData.append("appointment", this.addSms.appointment)
+                            axios.post("sms-action.php?action=sent_message", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.loadButton = false;
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'Message sent successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                        }, 1500);
+                                        this.resetFormData();
+                                        this.loadButton = false;
+                                        this.smsDialog = false;
+                                    }
+                                })
+                        } else {
+                            this.$message.error("Cannot submit the message. Please check the error(s).")
+                            return false;
+                        }
+                    });
+                },
+                changeColumn(selected) {
+                    this.searchNull = ""
+                    this.searchName = ""
+                    this.searchID = ""
+                    this.searchContact = ""
+                }
             }
         })
     </script>

@@ -47,11 +47,15 @@
                     <div class="sb-nav-link-icon"><i class="fab fa-facebook-messenger"></i></div>
                     Sms Notification
                 </a>
+                <a class="nav-link" href="./accomplishment">
+                    <div class="sb-nav-link-icon"><i class="fas fa-file-export"></i></div>
+                    Monthly Report
+                </a>
             </div>
         </div>
         <div class="sb-sidenav-footer">
             <div class="small">Logged in as:</div>
-            <?php echo $logged_admin ?>
+            <?php echo $logged_admin?>
         </div>
     </nav>
 </div>

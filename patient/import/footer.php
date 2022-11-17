@@ -1,0 +1,8 @@
+<footer class="py-4 bg-light mt-auto">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between small">
+            <div class="text-muted">Copyright &copy; Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?></div>
+            <div><a href="../about">About</a> | All Rigths Reserved</div>
+        </div>
+    </div>
+</footer>

@@ -10,17 +10,17 @@
 
         $id = $_SESSION["user_id"];
 
-        $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
+        $user_record = mysqli_query($db, "SELECT * FROM patient where id='$id'");
         $user_row = mysqli_fetch_assoc($user_record);
         $db_last_login = $user_row["last_login"];
 
         if ($db_last_login) {
 
-            header("Location: ./bhw");
+            header("Location: ./patient");
             die();
         } else {
 
-            header("Location: ./bhw/change-password");
+            header("Location: ./patient/change-password");
             die();
         }
     }
@@ -51,7 +51,7 @@
     <div id="app">
         <section class="h-100 gradient-form" style="background-color: #eee;">
             <div class="container py-5 h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="row d-flex justify-content-center align-items-center g-0 h-100">
                     <div class="col-xl-10">
                         <div class="card rounded-3 text-black">
                             <div class="row g-0">
@@ -163,7 +163,7 @@
                                 this.userErr = response.data.userErr
                                 this.passErr = response.data.passErr
                             } else if (response.data === "") {
-                                window.location.href = "./bhw/change-password"
+                                window.location.href = "./patient/change-password"
                             } else {
                                 this.$notify({
                                     title: 'Success',
@@ -171,7 +171,7 @@
                                     type: 'success'
                                 });
                                 setTimeout(() => {
-                                    window.location.href = "./bhw"
+                                    window.location.href = "./patient"
                                 }, 1000)
                             }
                         })

@@ -34,15 +34,18 @@
                 <main>
                     <el-container>
                         <el-main>
-                            <div class="col-xl-9 mt-3">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-hand-holding-medical"></i>
-                                        Individual Treatment Chart
-                                    </div>
-                                    <div class="card-body">
-                                        <?php include("checkup-chart.php"); ?>
-                                    </div>
+                            <h1 class="mt-4">
+                                <i class="fas fa-file-medical-alt"></i>
+                                Individual Treatment Chart
+                            </h1>
+                            <div class="card mb-4">
+                                <div class="card-body text-primary">
+                                    Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
+                                </div>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <?php include("checkup-chart.php"); ?>
                                 </div>
                             </div>
                         </el-main>

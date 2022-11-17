@@ -12,42 +12,6 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if ($action == 'fetchImmunization') {
-
-    $user_data = array();
-
-    $data = mysqli_query($db, "SELECT * FROM immunization ORDER BY fsn");
-
-    if (mysqli_num_rows($data) > 0) {
-        while ($data_row = mysqli_fetch_assoc($data)) {
-
-            $fullname = $data_row["first_name"] . " " . $data_row["last_name"];
-            $db_birthdate = $data_row["birthday"];
-            $birthdate = date("F d, Y", strtotime($db_birthdate));
-            $db_avatar = $data_row["avatar"];
-            $address = $data_row["purok"];
-
-            $array_data = array(
-                "id" => $data_row["id"],
-                "name" => $fullname,
-                "birthdate" => $birthdate,
-                "gender" => $data_row["gender"],
-                "fsn" => $data_row["fsn"],
-                "address" => $data_row["purok"],
-                "first_name" => $data_row["first_name"],
-                "last_name" => $data_row["last_name"],
-                "avatar" => "../assets/$db_avatar",
-            );
-
-            array_push($user_data, $array_data);
-            $response = $user_data;
-        }
-    } else {
-
-        $response["error"] = true;
-        $response["message"] = "Table is empty!";
-    }
-}
 if ($action == 'storeImmunization') {
 
     $fsn = $_POST["fsn"];
@@ -68,13 +32,15 @@ if ($action == 'storeImmunization') {
     $barangay = $_POST["barangay"];
     $appointment = $_POST["appointment"];
     $age = $_POST["age"];
+    $weight =$_POST["weight"];
     $temp = $_POST["temp"];
     $immunization_given = $_POST["immunization_given"];
 
+    $day = date("d");
     $year = date("Y");
     $month = date("M");
-    $mother_name = $m_firstname . " " . $m_middlename . " " . $m_lastname;
-    $father_name = $f_firstname . " " . $f_middlename . " " . $f_lastname;
+    $mother_name = ucfirst($m_firstname) . " " . substr(ucfirst($m_middlename),0,1) . ". " . ucfirst($m_lastname);
+    $father_name = ucfirst($f_firstname) . " " . substr(ucfirst($f_middlename),0,1) . ". " . ucfirst($f_lastname);
 
     $response = array(
         "fsn" => $fsn,
@@ -91,12 +57,14 @@ if ($action == 'storeImmunization') {
         "barangay" => $barangay,
         "appointment" => $appointment,
         "age" => $age,
+        "weight" => $weight,
         "temp" => $temp,
         "immunization_given" => $immunization_given,
     );
 
-    $immunize_sql = mysqli_query($db, "INSERT INTO immunization(fsn,child_no,first_name,middle_name,last_name,suffix,birthdate,gender,mother_name,father_name,purok,barangay,appointment,age,temp,immunization_given,month,year)
-        VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$mother_name','$father_name','$purok','$barangay','$appointment','$age','$temp','$immunization_given','$month','$year')");
+    $immunize_sql = mysqli_query($db, "INSERT INTO immunization(fsn,child_no,first_name,middle_name,last_name,suffix,birthdate,gender,mother_name,father_name,purok,barangay,appointment,age,weight,temp,immunization_given,day,month,year)
+        VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$mother_name','$father_name','$purok','$barangay','$appointment','$age','$weight',    
+        '$temp','$immunization_given','$day','$month','$year')");
 }
 
 if ($action == 'storeHealth') {
@@ -150,9 +118,9 @@ if ($action == 'storeHealth') {
     $a = $_POST["a"];
     $p = $_POST["p"];
 
+    $day = date("d");
     $year = date("Y");
     $month = date("M");
-    $mother_name = $m_firstname . " " . $m_middlename . " " . $m_lastname;
 
     $response = array(
         "fsn" => $fsn,
@@ -178,6 +146,9 @@ if ($action == 'storeHealth') {
         "other_member" => $other_member,
         "philhealth_type" => $philhealth_type,
         "philhealth_no" => $philhealth_no,
+        "m_lastname" => $m_lastname,
+        "m_firstname" => $m_firstname,
+        "m_middlename" => $m_middlename,
         "mother_name" => $mother_name,
         "nhts" => $nhts,
         "pantawid_member" => $pantawid_member,
@@ -205,11 +176,11 @@ if ($action == 'storeHealth') {
     );
 
     $health_sql = mysqli_query($db, "INSERT INTO individual_treatment(fsn,clinisys,last_name,first_name,middle_name,suffix,birthdate,gender,civil_status,spouse,educ_attainment,employment_status,occupation,religion,telephone,
-    street,purok,barangay,blood_type,family_member,other_member,philhealth_type,philhealth_no,mother_name,nhts,pantawid_member,hh_no,alert_type,other_alert,medical_history,other_history,
-    encounter_type,consultation_type,consultation_date,age,transaction_mode,s,o,pr,rr,bp,weight,height,temp,a,p,month,year)
+    street,purok,barangay,blood_type,family_member,other_member,philhealth_type,philhealth_no,m_lastname,m_firstname,m_middlename,nhts,pantawid_member,hh_no,alert_type,other_alert,medical_history,other_history,
+    encounter_type,consultation_type,consultation_date,age,transaction_mode,s,o,pr,rr,bp,weight,height,temp,a,p,day,month,year)
         VALUES('$fsn','$clinisys','$last_name','$first_name','$middle_name','$suffix','$birthdate','$gender','$civil_status','$spouse','$educ_attainment','$employment_status','$occupation','$religion','$telephone',
-        '$street','$purok','$barangay','$blood_type','$family_member','$other_member','$philhealth_type','$philhealth_no','$mother_name','$nhts','$pantawid_member','$hh_no','$alert_type','$other_alert','$medical_history','$other_history',
-        '$encounter_type','$consultation_type','$consultation_date','$age','$transaction_mode','$s','$o','$pr','$rr','$bp','$weight','$height','$temp','$a','$p','$month','$year')");
+        '$street','$purok','$barangay','$blood_type','$family_member','$other_member','$philhealth_type','$philhealth_no','$m_lastname','$m_firstname','$m_middlename','$nhts','$pantawid_member','$hh_no','$alert_type','$other_alert','$medical_history','$other_history',
+        '$encounter_type','$consultation_type','$consultation_date','$age','$transaction_mode','$s','$o','$pr','$rr','$bp','$weight','$height','$temp','$a','$p','$day','$month','$year')");
 }
 
 if ($action == 'storePrenatal') {
@@ -240,9 +211,10 @@ if ($action == 'storePrenatal') {
     $fhb = $_POST["fhb"];
     $presentation = $_POST["presentation"];
 
+    $day = date("d");
     $year = date("Y");
     $month = date("M");
-    $spouse_name = $spouse_firstname . " " . $spouse_lastname;
+    $spouse_name = ucfirst($spouse_firstname) . " " . ucfirst($spouse_lastname);
 
     $response = array(
         "fsn" => $fsn,
@@ -271,7 +243,7 @@ if ($action == 'storePrenatal') {
         "presentation" => $presentation,
     );
 
-    $prenatal_sql = mysqli_query($db, "INSERT INTO prenatal(fsn,first_name,middle_name,last_name,birthdate,gender,spouse_name,purok,barangay,appointment,date_visit,weight,bp,cr,rr,temp,aog,fundic_height,fhb,presentation,month,year)
-        VALUES('$fsn','$first_name','$middle_name','$last_name','$birthdate','$gender','$spouse_name','$purok','$barangay','$appointment','$date_visit','$weight','$bp','$cr','$rr','$temp','$aog','$fundic_height','$fhb','$presentation','$month','$year')");
+    $prenatal_sql = mysqli_query($db, "INSERT INTO prenatal(fsn,first_name,middle_name,last_name,birthdate,gender,spouse_name,purok,barangay,gp,lmp,edc,tt_status,appointment,date_visit,weight,bp,cr,rr,temp,aog,fundic_height,fhb,presentation,day,month,year)
+        VALUES('$fsn','$first_name','$middle_name','$last_name','$birthdate','$gender','$spouse_name','$purok','$barangay','$gp','$lmp','$edc','$tt_status','$appointment','$date_visit','$weight','$bp','$cr','$rr','$temp','$aog','$fundic_height','$fhb','$presentation','$day','$month','$year')");
 }
 echo json_encode($response);

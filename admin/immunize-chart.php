@@ -34,15 +34,18 @@
                 <main>
                     <el-container>
                         <el-main>
-                            <div class="col-xl-9 mt-3">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-syringe"></i>
-                                        Immunization Chart
-                                    </div>
-                                    <div class="card-body">
-                                        <?php include("immu-chart.php"); ?>
-                                    </div>
+                            <h1 class="mt-4">
+                                <i class="fas fa-syringe"></i>
+                                Immunization Chart
+                            </h1>
+                            <div class="card mb-4">
+                                <div class="card-body text-primary">
+                                    Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
+                                </div>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <?php include("immu-chart.php"); ?>
                                 </div>
                             </div>
                         </el-main>

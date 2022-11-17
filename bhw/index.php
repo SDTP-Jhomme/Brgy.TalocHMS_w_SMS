@@ -7,9 +7,9 @@
 
     include("./import/head.php");
 
-    if (isset($_SESSION["user_id"])) {
+    if (isset($_SESSION["id"])) {
 
-        $id = $_SESSION["user_id"];
+        $id = $_SESSION["id"];
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 
@@ -21,11 +21,11 @@
         }
 
         if ($db_last_login == "") {
-            header("Location: ./change-password");
+            header("Location: ../bhw/change-password");
         }
     } else {
 
-        header("Location: ../../capstone-new");
+        header("Location: ../bhw/login");
         die();
     } ?>
 </head>
@@ -72,8 +72,12 @@
         new Vue({
             el: "#app",
             data() {
-                const dateToday = new Date();
                 return {
+                    page: 1,
+                    pageSize: 10,
+                    showAllData: false,
+                    tableLoad: false,
+                    tableData: [],
                     active: 0,
                     fullscreenLoading: true,
                     openAddDialog: false,
@@ -82,7 +86,27 @@
                     isImmunization: false,
                     isPregnancy: false,
                     avatar: "",
+                    checkIdentification: [],
+                    searchValue: "",
+                    searchNull: "",
+                    searchName: "",
+                    searchID: "",
+                    searchContact: "",
+                    options: [{
+                        value: 'fsn',
+                        label: 'FSN No.'
+                    }, {
+                        value: 'name',
+                        label: 'Name'
+                    }, {
+                        value: 'phone_number',
+                        label: 'Phone No.'
+                    }],
                     newUser: [],
+                    addSms: {
+                        message: "",
+                        appointment: "",
+                    },
                     addPatient: {
                         id: 0,
                         fsn: "",
@@ -174,6 +198,22 @@
                         temp: "",
                         immunizationGiven: "",
                     },
+                    smsRules: {
+                        message: [{
+                            required: true,
+                            message: 'Message is required!',
+                            trigger: 'blur'
+                        }, {
+                            min: 2,
+                            message: 'Message should atleast two(2) characters!',
+                            trigger: 'blur'
+                        }],
+                        appointment: [{
+                            required: true,
+                            message: 'Appointment is required!',
+                            trigger: 'blur'
+                        }],
+                    },
                     addRules: {
                         fsn: [{
                             required: true,
@@ -209,6 +249,10 @@
                             trigger: 'blur'
                         }],
                         phoneNo: [{
+                            required: true,
+                            message: 'Phone number is required!',
+                            trigger: 'blur'
+                        }, {
                             pattern: /^(09|\+639)\d{9}$/,
                             message: 'Invalid phone number format!',
                             trigger: 'blur'
@@ -216,19 +260,11 @@
                     },
                     prenatalRules: {
                         spouseFname: [{
-                            required: true,
-                            message: 'First name is required!',
-                            trigger: 'blur'
-                        }, {
                             pattern: /^[a-zA-Z ]*$/,
                             message: 'Invalid first name format!',
                             trigger: 'blur'
                         }],
                         spouseLname: [{
-                            required: true,
-                            message: 'Last name is required!',
-                            trigger: 'blur'
-                        }, {
                             pattern: /^[a-zA-Z ]*$/,
                             message: 'Invalid last name format!',
                             trigger: 'blur'
@@ -248,34 +284,39 @@
                             message: 'Date is required!',
                             trigger: 'blur'
                         }],
+                        cr: [{
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid pulse rate (PR) format!',
+                            trigger: 'blur'
+                        }],
+                        rr: [{
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid respiratory rate (RR) format!',
+                            trigger: 'blur'
+                        }],
+                        bp: [{
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid blood pressure (BP) format!',
+                            trigger: 'blur'
+                        }],
                         weight: [{
-                            required: true,
-                            message: 'Weight is required!',
-                            trigger: 'blur'
-                        }],
-                        blood: [{
-                            required: true,
-                            message: 'Blood type is required!',
-                            trigger: 'blur'
-                        }],
-                        aog: [{
-                            required: true,
-                            message: 'AOG is required!',
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid weight format!',
                             trigger: 'blur'
                         }],
                         height: [{
-                            required: true,
-                            message: 'Height is required!',
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid fundic height format!',
                             trigger: 'blur'
                         }],
-                        fhb: [{
-                            required: true,
-                            message: 'FHB is required!',
+                        temp: [{
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid temperature format!',
                             trigger: 'blur'
                         }],
-                        presentation: [{
-                            required: true,
-                            message: 'Presentation is required!',
+                        aog: [{
+                            pattern: /^[\.0-9]*$/,
+                            message: 'Invalid aog format!',
                             trigger: 'blur'
                         }],
                     },
@@ -315,11 +356,6 @@
                             message: 'Barangay is required!',
                             trigger: 'blur'
                         }],
-                        blood: [{
-                            required: true,
-                            message: 'Blood type is required!',
-                            trigger: 'blur'
-                        }],
                         member: [{
                             required: true,
                             message: 'Family member is required!',
@@ -344,22 +380,8 @@
                             trigger: 'blur'
                         }],
                         mMidName: [{
-                            required: true,
-                            message: 'Mother middle name is required!',
-                            trigger: 'blur'
-                        }, {
                             pattern: /^[a-zA-Z ]*$/,
                             message: 'Invalid middle name format!',
-                            trigger: 'blur'
-                        }],
-                        nhts: [{
-                            required: true,
-                            message: 'NHTS is required!',
-                            trigger: 'blur'
-                        }],
-                        pantawid: [{
-                            required: true,
-                            message: 'Pantawid pamilya member is required!',
                             trigger: 'blur'
                         }],
                         alert: [{
@@ -448,10 +470,6 @@
                             trigger: 'blur'
                         }],
                         mMidName: [{
-                            required: true,
-                            message: 'Mother middle name is required!',
-                            trigger: 'blur'
-                        }, {
                             pattern: /^[a-zA-Z- ]*$/,
                             message: 'Invalid first name format!',
                             trigger: 'blur'
@@ -475,10 +493,6 @@
                             trigger: 'blur'
                         }],
                         fMidName: [{
-                            required: true,
-                            message: 'Father middle name is required!',
-                            trigger: 'blur'
-                        }, {
                             pattern: /^[a-zA-Z- ]*$/,
                             message: 'Invalid first name format!',
                             trigger: 'blur'
@@ -494,17 +508,8 @@
                             trigger: 'blur'
                         }],
                         temp: [{
-                            required: true,
-                            message: 'Temperature is required!',
-                            trigger: 'blur'
-                        }, {
                             pattern: /^[\.0-9]*$/,
                             message: 'Invalid temperature format!',
-                            trigger: 'blur'
-                        }],
-                        immunizationGiven: [{
-                            required: true,
-                            message: 'Immunization Given is required!',
                             trigger: 'blur'
                         }],
                     },
@@ -512,6 +517,7 @@
             },
             created() {
                 this.fetchAvatar()
+                this.getData()
             },
             mounted() {
                 setTimeout(() => {
@@ -524,7 +530,9 @@
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
 
                 this.health.age = localStorage.age ? localStorage.age : 0
+                this.immunize.age = localStorage.age ? localStorage.age : 0
 
+                
                 const today = new Date();
                 const options = {
                     year: 'numeric',
@@ -539,11 +547,47 @@
                 this.health.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
                 this.immunize.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
             },
+            watch: {
+                searchValue(value) {
+                    if (value == "" || value == "fsn" || value == "name" || value == "phone_number") {
+                        this.searchNull = '';
+                        this.searchID = '';
+                        this.searchName = '';
+                        this.searchContact = '';
+                    }
+                },
+                showAllData(value) {
+                    if (value == true) {
+                        this.page = 1;
+                        this.pageSize = this.tableData.length
+                    } else {
+                        this.pageSize = 10
+                    }
+                },
+            },
+            computed: {
+                usersTable() {
+                    return this.tableData
+                        .filter((data) => {
+                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.first_name.toLowerCase().includes(this.searchName.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.fsn.toLowerCase().includes(this.searchID.toLowerCase());
+                        })
+                        .filter((data) => {
+                            return data.phone_number.toLowerCase().includes(this.searchContact.toLowerCase());
+                        })
+                        .slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page)
+                }
+            },
             methods: {
                 // Logout **********************************************************
                 logout() {
                     this.fullscreenLoading = true
-                    axios.post("../auth.php?action=logout")
+                    axios.post("auth.php?action=logout")
                         .then(response => {
                             if (response.data.message) {
                                 localStorage.clear();
@@ -553,7 +597,7 @@
                                     type: 'success'
                                 });
                                 setTimeout(() => {
-                                    window.location.href = "../../capstone-new"
+                                    window.location.href = "login"
                                 }, 1000)
                             }
                         })
@@ -587,13 +631,67 @@
                                 this.tableData = []
                             } else {
                                 this.tableData = response.data
+                                this.checkIdentification = response.data.map(res => res.fsn)
                             }
                         })
+                },
+                changeColumn(selected) {
+                    this.searchNull = ""
+                    this.searchName = ""
+                    this.searchID = ""
+                    this.searchContact = ""
+                },
+                setPage(value) {
+                    this.page = value
+                },
+                handleSelectionChange(val) {
+                    this.multiID = Object.values(val).map(i => i.id)
+                },
+                filterHandler(value, row, column) {
+                    const property = column['property'];
+                    return row[property] === value;
+                },
+                addUser(addSms) {
+                    this.$refs[addSms].validate((valid) => {
+                        if (valid) {
+                            this.loadButton = true;
+                            this.openAddDrawer = false;
+                            var newData = new FormData()
+                            newData.append("contact", this.addPatient.phoneNo)
+                            newData.append("message", this.addSms.message)
+                            newData.append("appointment", this.addSms.appointment)
+                            axios.post("action.php?action=sent_message", newData)
+                                .then(response => {
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'Message sent successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                        }, 1500);
+                                        this.resetFormData();
+                                        this.newUser = response.data;
+                                        this.loadButton = false;
+                                    }
+                                })
+                            if (this.active++ > 2) this.active = 0;
+                            this.loadButton = true;
+                        } else {
+                            this.$message.error("Cannot submit the message. Please check the error(s).")
+                            return false;
+                        }
+                    });
+                },
+                resetFormData() {
+                    this.addSms = []
                 },
                 proceed(addPatient) {
                     this.$refs[addPatient].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
+                            this.tableLoad = true;
                             var newData = new FormData()
                             newData.append("fsn", this.addPatient.fsn)
                             newData.append("first_name", this.addPatient.firstName)
@@ -721,11 +819,11 @@
                             newData.append("nhts", this.health.nhts)
                             newData.append("pantawid_member", this.health.pantawid)
                             newData.append("hh_no", this.health.hhNo)
-                            newData.append("alert_type", this.health.alertType)
+                            newData.append("alert_type", this.health.alert)
                             newData.append("other_alert", this.health.otherAlert)
                             newData.append("medical_history", this.health.medicalHistory)
                             newData.append("other_history", this.health.otherHistory)
-                            newData.append("encounter_type", this.health.encounterType)
+                            newData.append("encounter_type", this.health.encounter)
                             newData.append("consultation_type", this.health.consultationType)
                             newData.append("consultation_date", this.health.appointment)
                             newData.append("age", this.health.age)
@@ -756,6 +854,8 @@
                                         this.loadButton = false
                                     }
                                 })
+                            this.active++;
+                            localStorage.setItem("active", this.active)
                             console.log(this.addPatient, "healthcheck")
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
@@ -786,6 +886,7 @@
                             newData.append("barangay", this.immunize.barangay)
                             newData.append("appointment", this.immunize.appointment)
                             newData.append("age", this.immunize.age)
+                            newData.append("weight", this.immunize.weight)
                             newData.append("temp", this.immunize.temp)
                             newData.append("immunization_given", this.immunize.immunizationGiven)
                             axios.post("store-action.php?action=storeImmunization", newData)
@@ -804,6 +905,8 @@
                                         this.loadButton = true;
                                     }
                                 })
+                            this.active++;
+                            localStorage.setItem("active", this.active)
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -831,7 +934,7 @@
                             newData.append("edc", this.prenatal.edc)
                             newData.append("tt_status", this.prenatal.ttStatus)
                             newData.append("appointment", this.prenatal.appointment)
-                            newData.append("date_visit", this.prenatal.dateVisit)
+                            newData.append("date_visit", this.prenatal.appointment)
                             newData.append("weight", this.prenatal.weight)
                             newData.append("bp", this.prenatal.bp)
                             newData.append("cr", this.prenatal.cr)
@@ -857,7 +960,10 @@
                                         this.loadButton = false
                                     }
                                 })
+                            this.active++;
+                            localStorage.setItem("active", this.active)
                             console.log(this.addPatient, "pregnancy")
+
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -866,11 +972,9 @@
                 },
                 resetForm(addPatient) {
                     this.$refs[addPatient].resetFields();
-                    this.$refs[immunize].resetFields();
                 },
                 resetFormData() {
                     this.addPatient = []
-                    this.immunize = []
                 },
             }
         })

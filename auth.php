@@ -16,7 +16,7 @@ if ($action == 'login') {
 
     $username = $_POST["username"];
     $password = $_POST["password"];
-    $check_user = mysqli_query($db, "SELECT * FROM users WHERE username='$username'");
+    $check_user = mysqli_query($db, "SELECT * FROM patient WHERE username='$username'");
     $check_user_row = mysqli_num_rows($check_user);
 
     if (empty($username)) {
@@ -59,7 +59,7 @@ if ($action == 'login') {
                     session_start();
                     $_SESSION["user_id"] = $db_id;
 
-                    mysqli_query($db, "UPDATE users SET last_login='$date_now' WHERE id='$db_id'");
+                    mysqli_query($db, "UPDATE patient SET last_login='$date_now' WHERE id='$db_id'");
                 } else {
                     
                     session_start();

@@ -13,3 +13,5 @@
 <!-- import Font Awesome -->
 <script defer src="../assets/js/fontawesome.js"></script>
 <script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/datatables.js"></script>
+<script src="../assets/js/datatables-simple-demo.js"></script>

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Dashboard</title>
+    <title>Admin | BHWs Table</title>
     <?php
 
     include("./import/head.php");
@@ -38,11 +38,7 @@
                                 <el-row :gutter="20">
                                     <el-col :span="12">
                                         <el-button type="primary" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
-                                        <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
-                                        <el-button-group>
-                                            <el-button icon="el-icon-open" size="small" type="success" plain @click="handleActive()">Activate</el-button>
-                                            <el-button icon="el-icon-turn-off" size="small" type="info" plain @click="handleInactive()">Deactivate</el-button>
-                                        </el-button-group>
+                                        <el-button icon="el-icon-turn-off" size="small" type="info" @click="handleInactive()">Deactivate BHW</el-button>
                                     </el-col>
                                 </el-row>
                             </div>
@@ -475,14 +471,8 @@
             },
             mounted() {
                 setTimeout(() => {
-                        this.fullscreenLoading = false
-                    }, 1000),
-                    window.addEventListener('online', () => {
-                        this.isOnLine = true
-                    });
-                window.addEventListener('offline', () => {
-                    this.isOnLine = false
-                });
+                    this.fullscreenLoading = false
+                }, 1000)
             },
             watch: {
                 editBhw(value) {
@@ -511,19 +501,8 @@
                         this.pageSize = 10
                     }
                 },
-                onLine(v) {
-                    if (v) {
-                        this.showBackOnline = true;
-                        setTimeout(() => {
-                            this.showBackOnline = false;
-                        }, 1000);
-                    }
-                }
             },
             methods: {
-                toggle() {
-                    this.isActive = this.isActive ? false : true;
-                },
                 // Logout ***********************************************
                 logout() {
                     this.fullscreenLoading = true
@@ -767,37 +746,6 @@
                             this.loadButton = false;
                         });
                 },
-                handleActive() {
-                    if (Object.keys(this.multiID).length === 0) {
-                        this.$message.error("Please select aleast one(1) user to activate!")
-                    } else {
-                        this.$confirm('This will activate all selected users status . Continue?', 'Warning', {
-                                confirmButtonText: 'Yes',
-                                cancelButtonText: 'No',
-                                type: "warning"
-                            })
-                            .then(() => {
-                                var ids = new FormData();
-                                ids.append("user_ids", this.multiID)
-                                axios.post("action.php?action=active", ids)
-                                    .then(response => {
-                                        if (response.data) {
-                                            this.tableLoad = true
-                                            setTimeout(() => {
-                                                this.getData();
-                                                this.tableLoad = false
-                                                this.$message({
-                                                    message: 'Activate status successfully!',
-                                                    type: 'success'
-                                                })
-                                                this.page = 1;
-                                            }, 1500)
-                                        }
-                                    })
-                            })
-                            .catch(() => {});
-                    }
-                },
                 handleInactive() {
                     if (Object.keys(this.multiID).length === 0) {
                         this.$message.error("Please select aleast one(1) user to deactivate!")
@@ -823,37 +771,6 @@
                                                 })
                                                 this.page = 1;
                                             }, 1500)
-                                        }
-                                    })
-                            })
-                            .catch(() => {});
-                    }
-                },
-                bulkDelete() {
-                    if (Object.keys(this.multiID).length === 0) {
-                        this.$message.error("Please select aleast one(1) user to delete!")
-                    } else {
-                        this.$confirm('This will permanently delete all selected users. Continue?', "Warning", {
-                                confirmButtonText: 'Yes',
-                                cancelButtonText: 'No',
-                                type: "warning"
-                            })
-                            .then(() => {
-                                var ids = new FormData()
-                                ids.append("user_ids", this.multiID)
-                                axios.post("action.php?action=bulk_delete", ids)
-                                    .then(response => {
-                                        if (response.data) {
-                                            this.tableLoad = true;
-                                            setTimeout(() => {
-                                                this.getData()
-                                                this.tableLoad = false;
-                                                this.$message({
-                                                    message: 'Selected users has been deleted successfully!',
-                                                    type: 'success'
-                                                });
-                                                this.page = 1;
-                                            }, 1500);
                                         }
                                     })
                             })
