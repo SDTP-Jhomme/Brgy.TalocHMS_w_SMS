@@ -76,4 +76,13 @@ if ($action == "fetch_avatar") {
     $response = $user_row["avatar"];
 }
 
+if ($action == "fetch_status") {
+
+    $user_id = $_POST["id"];
+    $user_record = mysqli_query($db, "SELECT * FROM users where id='$user_id'");
+    $user_row = mysqli_fetch_assoc($user_record);
+
+    $response = $user_row["status"];
+}
+
 echo json_encode($response);

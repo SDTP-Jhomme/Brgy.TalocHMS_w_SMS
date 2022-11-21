@@ -184,6 +184,7 @@
             },
             created() {
                 this.fetchAvatar()
+                this.checkStatus()
 
                 this.checkupType = localStorage.checkupType ? localStorage.checkupType : ""
             },
@@ -218,6 +219,28 @@
                         })
                 },
                 // ******************************************************************
+                checkStatus() {
+                    const fetchStatus = new FormData();
+                    fetchStatus.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_status", fetchStatus)
+                        .then(response => {
+                            if (response.data == "Inactive") {
+                                axios.post("../auth.php?action=logout")
+                                    .then(response => {
+                                        if (response.data.message) {
+                                            localStorage.clear();
+                                            this.$notify.error({
+                                                title: 'Error',
+                                                message: 'Status is inactive!',
+                                            });
+                                            setTimeout(() => {
+                                                window.location.href = "../../capstone-new"
+                                            }, 1000)
+                                        }
+                                    })
+                            }
+                        })
+                },
                 fetchAvatar() {
                     const fetchAvatar = new FormData();
                     fetchAvatar.append("id", <?php echo $id; ?>)
