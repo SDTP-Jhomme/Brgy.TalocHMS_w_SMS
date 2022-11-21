@@ -69,7 +69,7 @@
             data() {
                 return {
                     fullscreenLoading: true,
-                    backToHome: false,
+                    backToHome: true,
                     fileImg: null,
                     fileUrl: null,
                     avatar: "",
@@ -95,7 +95,6 @@
                 }, 1000)
                 if (window.location.pathname != "/caps/capstone-new/bhw/") {
                     localStorage.clear()
-                    this.backToHome = true;
                 }
             },
             methods: {

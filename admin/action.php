@@ -32,6 +32,7 @@ if ($action == 'fetch') {
                 "identification" => $data_row["bhw_id"],
                 "first_name" => $data_row["first_name"],
                 "last_name" => $data_row["last_name"],
+                "status" => $data_row["status"],
                 "avatar" => "../assets/$db_avatar",
             );
 
@@ -81,8 +82,8 @@ if ($action == 'store') {
         "password" => $password
     );
 
-    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar)
-        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar')");
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','Active')");
 }
 
 if ($action == 'update') {
@@ -114,6 +115,18 @@ if ($action == 'update') {
         gender='$new_gender',username='$username',bhw_id='$new_identification',avatar='$avatar' WHERE id='$user_id'");
 }
 
+if ($action == 'update_status') {
+
+    $user_id = $_POST["id"];
+    $new_status = $_POST["status"];
+
+    $response = array(
+        "status" => $new_status,
+    );
+
+    mysqli_query($db, "UPDATE users SET status='$new_status' WHERE id='$user_id'");
+}
+
 if ($action == 'delete') {
 
     $user_id = $_POST["id"];
@@ -142,7 +155,27 @@ if ($action == 'reset') {
     mysqli_query($db, "UPDATE users SET password='$hashed_password',last_login=null WHERE id='$user_id'");
 }
 
+if ($action == 'bulk_status') {
+
+    $change_status_array_query = "";
+    $array_id = $_POST["user_ids"];
+    $status = $_POST["status"];
+
+    if ($status == "activate") {
+        $change_status_array_query = mysqli_query($db, "UPDATE users SET status='Active' WHERE id IN($array_id)");
+    } else {
+        $change_status_array_query = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id IN($array_id)");
+    }
+
+
+
+    if ($change_status_array_query) {
+        $response["message"] = "User status has been updated!";
+    }
+}
+
 if ($action == 'bulk_delete') {
+
     $array_id = $_POST["user_ids"];
 
     $delete_array_query = mysqli_query($db, "DELETE FROM users WHERE id IN($array_id)");

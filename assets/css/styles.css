@@ -13066,7 +13066,7 @@ nav#sidenavAccordion {
   position: fixed !important;
   width: 100%;
   top: 0;
-  z-index: 1;
+  z-index: 3000;
   transition: all 0.4s ease;
 }
 
@@ -13115,4 +13115,9 @@ body#page-top {
   font-weight: 700;
   margin-bottom: 0 !important;
   display: contents;
+}
+
+.el-message,
+.el-notification {
+  z-index: 3001 !important;
 }

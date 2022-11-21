@@ -6,6 +6,7 @@
     <?php
     include("./database/database.php");
 
+    session_start();
     if (isset($_SESSION["user_id"])) {
 
         $id = $_SESSION["user_id"];
@@ -161,6 +162,7 @@
                     data.append("password", this.password)
                     axios.post("auth.php?action=login", data)
                         .then(response => {
+                            localStorage.clear()
                             if (response.data.error) {
                                 this.userErr = response.data.userErr
                                 this.passErr = response.data.passErr

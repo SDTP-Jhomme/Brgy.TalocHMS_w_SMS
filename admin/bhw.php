@@ -37,8 +37,11 @@
                             <div class="container p-0">
                                 <el-row :gutter="20">
                                     <el-col :span="12">
-                                        <el-button type="success" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
-                                        <el-button type="danger" @click="bulkDelete" size="small" icon="el-icon-delete-solid">Bulk Delete</el-button>
+                                        <el-button type="primary" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
+                                        <el-button-group>
+                                            <el-button type="success" @click="changeStatus('activate')" size="small" icon="el-icon-open">Activate</el-button>
+                                            <el-button type="danger" @click="changeStatus('deactivate')" size="small" icon="el-icon-turn-off">Deactivate</el-button>
+                                        </el-button-group>
                                     </el-col>
                                 </el-row>
                             </div>
@@ -71,6 +74,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Table -->
                                 <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
@@ -90,16 +94,21 @@
                                             <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="Actions" width="200">
+                                    <el-table-column label="Status" prop="status" width="150" column-key="status">
+                                        <template slot-scope="scope">
+                                            <el-tooltip class="item" effect="dark" :content="scope.row.status == 'Active' ? 'Deactivate' : 'Activate'" placement="top-start">
+                                                <el-switch v-model="scope.row.status" @change="handleSwitch(scope.row)" active-value="Active" inactive-value="Inactive" active-color="#13ce66" :active-text="scope.row.status == 'Active' ? 'Active' : 'Inactive'">
+                                                </el-switch>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="Actions">
                                         <template slot-scope="scope">
                                             <el-tooltip class="item" effect="dark" content="View" placement="top-start">
                                                 <el-button icon="el-icon-view" size="mini" type="warning" @click="handleView(scope.$index, scope.row)"></el-button>
                                             </el-tooltip>
                                             <el-tooltip class="item" effect="dark" content="Edit" placement="top-start">
                                                 <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)"></el-button>
-                                            </el-tooltip>
-                                            <el-tooltip class="item" effect="dark" content="Delete" placement="top-start">
-                                                <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"></el-button>
                                             </el-tooltip>
                                         </template>
                                     </el-table-column>
@@ -185,6 +194,10 @@
                                         <el-descriptions-item label="Gender">
                                             <el-tag v-if="viewBhw.gender == 'Male'">{{ viewBhw.gender }}</el-tag>
                                             <el-tag v-else type="danger">{{ viewBhw.gender }}</el-tag>
+                                        </el-descriptions-item>
+                                        <el-descriptions-item label="Status">
+                                            <el-tag v-if="viewBhw.status == 'Active'" type="success">{{ viewBhw.status }}</el-tag>
+                                            <el-tag v-else type="info">{{ viewBhw.status }}</el-tag>
                                         </el-descriptions-item>
                                     </el-descriptions>
                                 </div>
@@ -388,6 +401,7 @@
                     loadButton: false,
                     editDialog: false,
                     viewDialog: false,
+                    switch: false,
                     multipleSelection: [],
                     fullscreenLoading: true,
                     tableData: [],
@@ -634,7 +648,7 @@
                 updateUser(updateBhw) {
                     this.$refs[updateBhw].validate((valid) => {
                         if (valid) {
-                            if (this.editBhw.identification != this.updateBhw.identification || this.editBhw.firstName != this.updateBhw.firstName || this.editBhw.lastName != this.updateBhw.lastName || this.editBhw.birthdate != this.updateBhw.birthdate || this.editBhw.gender != this.updateBhw.gender) {
+                            if (JSON.stringify(this.editBhw) != JSON.stringify(this.updateBhw)) {
                                 this.loadButton = true;
                                 this.$confirm('This will update user ' + this.editBhw.username + '. Continue?', {
                                         confirmButtonText: 'Confirm',
@@ -726,38 +740,24 @@
                             this.loadButton = false;
                         });
                 },
-                handleDelete(index, row) {
-                    this.$confirm('This will permanently delete user ' + row.username + ". Continue?", 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            var id = new FormData();
-                            id.append("id", row.id)
-                            axios.post("action.php?action=delete", id)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true
-                                        setTimeout(() => {
-                                            this.getData();
-                                            this.tableLoad = false
-                                            this.$message({
-                                                message: 'User deleted successfully!',
-                                                type: 'success'
-                                            })
-                                            this.page = 1;
-                                        }, 1500)
-                                    }
-                                })
-                        })
-                        .catch(() => {});
-                },
-                bulkDelete() {
+                changeStatus(status) {
+                    let statusUpdate = "";
+                    let statusSuccess = "";
                     if (Object.keys(this.multiID).length === 0) {
-                        this.$message.error("Please select aleast one(1) user to delete!")
+                        if (status == "activate") {
+                            this.$message.error("Please select aleast one(1) user to activate!");
+                        } else {
+                            this.$message.error("Please select aleast one(1) user to deactivate!")
+                        }
                     } else {
-                        this.$confirm('This will permanently delete all selected users. Continue?', "Warning", {
+                        if (status == "activate") {
+                            statusUpdate = "This will activate all selected users";
+                            statusSuccess = "Selected users has been activated!"
+                        } else {
+                            statusUpdate = "This will deactivate all selected users";
+                            statusSuccess = "Selected users has been deactivated!"
+                        }
+                        this.$confirm(statusUpdate + '. Continue?', "Warning", {
                                 confirmButtonText: 'Yes',
                                 cancelButtonText: 'No',
                                 type: "warning"
@@ -765,7 +765,8 @@
                             .then(() => {
                                 var ids = new FormData()
                                 ids.append("user_ids", this.multiID)
-                                axios.post("action.php?action=bulk_delete", ids)
+                                ids.append("status", status)
+                                axios.post("action.php?action=bulk_status", ids)
                                     .then(response => {
                                         if (response.data) {
                                             this.tableLoad = true;
@@ -773,7 +774,7 @@
                                                 this.getData()
                                                 this.tableLoad = false;
                                                 this.$message({
-                                                    message: 'Selected users has been deleted successfully!',
+                                                    message: statusSuccess,
                                                     type: 'success'
                                                 });
                                                 this.page = 1;
@@ -783,6 +784,34 @@
                             })
                             .catch(() => {});
                     }
+                },
+                handleSwitch(row) {
+                    var updateStatus = new FormData()
+                    updateStatus.append("id", row.id)
+                    updateStatus.append("status", row.status)
+                    axios.post("action.php?action=update_status", updateStatus)
+                        .then(response => {
+                            if (response.data) {
+                                this.loadButton = false;
+                                this.tableLoad = true;
+                                setTimeout(() => {
+                                    this.tableLoad = false;
+                                    this.getData();
+                                    if (response.data.status == "Inactive") {
+                                        this.$message({
+                                            message: 'User has been deactivated!',
+                                            type: 'success'
+                                        });
+                                    } else {
+                                        this.$message({
+                                            message: 'User has been activated!',
+                                            type: 'success'
+                                        });
+                                    }
+
+                                }, 1500)
+                            }
+                        })
                 },
                 changeColumn(selected) {
                     this.searchNull = ""

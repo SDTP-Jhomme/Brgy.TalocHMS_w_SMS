@@ -67,18 +67,18 @@
                     active: 0,
                     fullscreenLoading: true,
                     backToHome: false,
-                    isHealthCheckup: false,
-                    isImmunization: false,
-                    isPregnancy: false,
+                    checkupType: "",
                     avatar: "",
                     addPatient: {
                         id: 0,
+                        fsn: "",
                         firstName: "",
                         middleName: "",
                         lastName: "",
                         suffix: "",
                         birthDate: "",
                         gender: "",
+                        phone: "",
                     },
                     prenatal: {
                         appointment: "",
@@ -89,9 +89,16 @@
                         height: "",
                         fhb: "",
                         presentation: "",
+                        purok: "",
+                        brgy: "",
+                        g: "",
+                        p: "",
+                        lmp: "",
+                        edc: "",
+                        status: "",
+
                     },
                     health: {
-                        fsn: "",
                         clinisysFSN: "",
                         civil: "",
                         spouse: "",
@@ -99,7 +106,6 @@
                         employment: "",
                         occupation: "",
                         religion: "",
-                        telephone: "",
                         street: "",
                         purok: "",
                         barangay: "",
@@ -120,9 +126,17 @@
                         otherAlert: "",
                         history: [],
                         otherHistory: [],
-                        age: ""
+                        encounter: "",
+                        date: "",
+                        age: "",
+                        transaction: "",
                     },
                     addRules: {
+                        fsn: [{
+                            required: true,
+                            message: 'FSN is required!',
+                            trigger: 'blur'
+                        }],
                         firstName: [{
                             required: true,
                             message: 'First name is required!',
@@ -151,51 +165,27 @@
                             message: 'Gender is required!',
                             trigger: 'blur'
                         }],
-                    },
-                    prenatalRules: {
-                        dateVisit: [{
+                        phone: [{
                             required: true,
-                            message: 'Date is required!',
+                            message: 'Phone number is required!',
+                            trigger: 'blur'
+                        }, {
+                            min: 11,
+                            max: 11,
+                            message: 'Invalid phone number!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[0-9]*$/,
+                            message: 'Invalid phone number!',
                             trigger: 'blur'
                         }],
-                        weight: [{
-                            required: true,
-                            message: 'Weight is required!',
-                            trigger: 'blur'
-                        }],
-                        blood: [{
-                            required: true,
-                            message: 'Blood type is required!',
-                            trigger: 'blur'
-                        }],
-                        aog: [{
-                            required: true,
-                            message: 'AOG is required!',
-                            trigger: 'blur'
-                        }],
-                        height: [{
-                            required: true,
-                            message: 'Height is required!',
-                            trigger: 'blur'
-                        }],
-                        fhb: [{
-                            required: true,
-                            message: 'FHB is required!',
-                            trigger: 'blur'
-                        }],
-                        presentation: [{
-                            required: true,
-                            message: 'Presentation is required!',
-                            trigger: 'blur'
-                        }],
-                    },
-                    healthRules: {
-
                     }
                 }
             },
             created() {
                 this.fetchAvatar()
+
+                this.checkupType = localStorage.checkupType ? localStorage.checkupType : ""
             },
             mounted() {
                 setTimeout(() => {
@@ -203,23 +193,10 @@
                 }, 1000)
                 this.active = localStorage.active ? parseInt(localStorage.active) : 0
                 this.addPatient = localStorage.addPatient ? JSON.parse(localStorage.addPatient) : {}
-                this.isHealthCheckup = localStorage.isHealthCheckup ? localStorage.isHealthCheckup : false
-                this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
-                this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
-
-                this.health.age = localStorage.age ? localStorage.age : 0
-
-                const today = new Date();
-                const options = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-
-                const date = today.toLocaleDateString("en-US", options);
-                localStorage.setItem("date", date)
 
                 this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
+                this.health.date = localStorage.date ? localStorage.date : "January 01, 1970"
+                this.health.age = localStorage.age ? localStorage.age : 0
             },
             methods: {
                 // Logout **********************************************************
@@ -257,9 +234,19 @@
                             this.active++;
                             localStorage.setItem("active", this.active)
                             localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
-                            this.isHealthCheckup = false;
-                            this.isImmunization = false;
-                            this.isImmunization = false;
+
+                            const now = new Date();
+                            const options = {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            };
+
+                            const date = now.toLocaleDateString("en-US", options);
+                            localStorage.setItem("date", date)
+
+                            this.prenatal.appointment = date
+                            this.health.date = date
 
                             var today = new Date();
                             var birthDate = new Date(this.addPatient.birthDate);
@@ -269,54 +256,63 @@
                                 age--;
                             }
                             localStorage.setItem("age", age);
-                            this.individual.age = age;
+                            this.health.age = age;
                         } else {
-                            this.$message.error("Please fill in the required fields!");
+                            this.$message.error("Unable to proceed. Please check the errors!");
                             return false;
                         }
                     })
                 },
                 back() {
-                    this.active--
-                    localStorage.setItem("active", this.active)
-                    if (this.active == 0) {
-                        localStorage.removeItem("addPatient")
-                        localStorage.removeItem("age")
-                    }
-                    localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
-                    localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
-                    localStorage.isPregnancy ? localStorage.removeItem("isPregnancy") : ""
-                },
-                next() {
-                    if (this.isHealthCheckup) {
-                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
-                    } else if (this.isImmunization) {
-                        localStorage.setItem("isImmunization", this.isImmunization)
-                    } else if (this.isPregnancy) {
-                        localStorage.setItem("isPregnancy", this.isPregnancy)
+                    if (this.active == 1) {
+                        if (Object.keys(this.addPatient).length != 0) {
+                            this.$confirm('Changes unsaved. Continue?', {
+                                    confirmButtonText: 'Yes',
+                                    cancelButtonText: 'No',
+                                })
+                                .then(() => {
+                                    this.active--
+                                    this.addPatient = {}
+                                    this.checkupType = "";
+                                    localStorage.removeItem("checkupType")
+                                    localStorage.setItem("active", this.active)
+                                })
+                                .catch(() => {});
+                        } else {
+                            this.active--
+                            localStorage.removeItem("checkupType")
+                            this.checkupType = "";
+                        }
+                    } else {
+                        if (this.checkupType == "isPregnancy") {
+                            this.active--
+                            this.prenatal = {}
+                            localStorage.removeItem("addPatient")
+                        } else {
+                            this.active--
+                        }
                     }
 
-                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy) {
+                    localStorage.setItem("active", this.active)
+                },
+                next() {
+                    if (this.checkupType) {
                         this.active++;
+                        localStorage.setItem("checkupType", this.checkupType)
                         localStorage.setItem("active", this.active)
                     } else {
                         this.$message.error("Please select an appointment!");
                     }
                 },
                 healthCheckup() {
-                    this.isPregnancy = false;
-                    this.isImmunization = false;
-                    this.isHealthCheckup = !this.isHealthCheckup;
+                    this.checkupType = "" ? "isHealthCheckup" : this.checkupType == "isHealthCheckup" ? "" : "isHealthCheckup";
                 },
                 immunization() {
-                    this.isPregnancy = false;
-                    this.isImmunization = !this.isImmunization;
-                    this.isHealthCheckup = false;
+                    this.checkupType = "" ? "isImmunization" : this.checkupType == "isImmunization" ? "" : "isImmunization";
                 },
                 pregnancy() {
-                    this.isPregnancy = !this.isPregnancy;
-                    this.isImmunization = false;
-                    this.isHealthCheckup = false;
+                    this.checkupType = "" ? "isPregnancy" : this.checkupType == "isPregnancy" ? "" : "isPregnancy";
+                    this.addPatient.gender = "Female"
                 },
                 submitHealth() {
                     console.log(this.addPatient, "healthcheck")
@@ -325,13 +321,7 @@
                     console.log(this.addPatient, "immunization")
                 },
                 submitPrenatal(prenatal) {
-                    this.$refs[prenatal].validate((valid) => {
-                        if (valid) {
-                            console.log(this.addPatient, "pregnancy")
-                        } else {
-
-                        }
-                    })
+                    console.log(this.addPatient, "pregnancy")
                 }
             }
         })
