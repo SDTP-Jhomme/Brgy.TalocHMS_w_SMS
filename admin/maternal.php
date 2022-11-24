@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Dashboard</title>
+    <title>Admin | Maternal</title>
     <?php
 
     include("./import/head.php");
@@ -34,7 +34,7 @@
                 <main>
                     <el-container>
                         <el-header class="mt-4" height="40">
-                            <h1 class="mt-4">Prenatal Table</h1>
+                            <h1 class="mt-4">Maternal Table</h1>
                             <div class="card mb-4">
                                 <div class="card-body text-primary">
                                     Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
@@ -70,7 +70,7 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="FSN No." prop="fsn">
+                                    <el-table-column sortable label="FSN" prop="fsn">
                                     </el-table-column>
                                     <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>

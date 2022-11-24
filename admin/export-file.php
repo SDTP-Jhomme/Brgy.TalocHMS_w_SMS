@@ -11,17 +11,17 @@ if (isset($_POST["export"])) {
         $output .= '
    <table class="table" bordered="1">  
         <tr>  
-            <th class="col-5 text-center">ACTIVITY</th>
-            <th class="col-2 text-center">NO. ACCOMPLISHED</th>
-            <th class="col-auto"></th>
-            <th class="col-auto"></th>
-            <th class="col-auto">REMARKS</th>
+            <th>ACTIVITY</th>
+            <th>NO. ACCOMPLISHED</th>
+            <th></th>
+            <th></th>
+            <th>REMARKS</th>
         </tr>
         <tr>
-            <th class="col-5">RMCHN</th>
-            <th class="col-auto">10-14 y.o.</th>
-            <th class="col-auto">15-19 y.o.</th>
-            <th class="col-auto">20-49 y.o.</th>
+            <th>RMCHN</th>
+            <th>10-14 y.o.</th>
+            <th>15-19 y.o.</th>
+            <th>20-49 y.o.</th>
         </tr>
   ';
         while ($row = mysqli_fetch_array($result)) {
@@ -35,357 +35,357 @@ if (isset($_POST["export"])) {
             }
             $output .= '
             <tr>
-                <th class="col-5">I. MATERNAL CARE</th>
-                <th class="col-auto"></th>
-                <th class="col-auto"></th>
-                <th class="col-auto"></th>
+                <th>I. MATERNAL CARE</th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
             <tr>
-                <td class="col-5">1. No. of pregnant women identified and refered and tracked</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td>1. No. of pregnant women identified and refered and tracked</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 ps-5">a. Number of pregnant women seen - 1st trimester</td>
-                <td class="col-auto">' . $prenatal["total"] . '</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td>a. Number of pregnant women seen - 1st trimester</td>
+                <td>' . $prenatal["total"] . '</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 float-end"> - 2nd trimester</td>
-                <td class="col-auto"></td>
-                <td class="col-auto">' . $prenatal["total"] . '</td>
-                <td class="col-auto"></td>
+                <td> - 2nd trimester</td>
+                <td></td>
+                <td>' . $prenatal["total"] . '</td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 float-end"> - 3rd trimester</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
-                <td class="col-auto">' . $prenatal["total"] . '</td>
+                <td> - 3rd trimester</td>
+                <td></td>
+                <td></td>
+                <td>' . $prenatal["total"] . '</td>
             </tr>
             <tr>
-                <td class="col-8 ps-4">b. Number of antenatal care check - ups monitored</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td>b. Number of antenatal care check - ups monitored</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 ps-5"> - 1st trimester (up to 12 weeks and 6 days AOG)</td>
-                <td class="col-auto">' . $twelve . '</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td> - 1st trimester (up to 12 weeks and 6 days AOG)</td>
+                <td>' . $twelve . '</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 ps-5"> - 2nd trimester (13-27 weeks and 6 days AOG)</td>
-                <td class="col-auto">' . $thirteen . '</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td> - 2nd trimester (13-27 weeks and 6 days AOG)</td>
+                <td>' . $thirteen . '</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 ps-5"> - 3rd trimester (28 weeks AOG and more )</td>
-                <td class="col-auto">' . $twentyseven . '</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td> - 3rd trimester (28 weeks AOG and more )</td>
+                <td>' . $twentyseven . '</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8">2. No. of pregnant women delivered this month</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td>2. No. of pregnant women delivered this month</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 ps-5">Pregnancy Outcome</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td>Pregnancy Outcome</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td class="col-8 float-end">-Live birth</td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
-                <td class="col-auto"></td>
+                <td>-Live birth</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr><tr>
-            <td class="col-8 float-end">-Preterm</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Preterm</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 float-end">-Still Birth</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Still Birth</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 float-end">-Abortion</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Abortion</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 ps-5">Gender of the Baby</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>Gender of the Baby</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 float-end">-Boy</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Boy</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 float-end">-Girl</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Girl</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8">No. of home delivered mother/newborn/transferred in referred to midwife</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>No. of home delivered mother/newborn/transferred in referred to midwife</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 ">3. Mother and Child Postnatal Check-up, followed-up and referred</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>3. Mother and Child Postnatal Check-up, followed-up and referred</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-auto ps-5">-Day of discharged/24 hours after birth</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Day of discharged/24 hours after birth</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-auto ps-5">-Within 7 days after birth</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>-Within 7 days after birth</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 ">4. Number of postpartum mothers monitored on exclusive breastfeeding</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>4. Number of postpartum mothers monitored on exclusive breastfeeding</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 ">5. Number of lactating mothers given Vit A (within 4 weeks)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>5. Number of lactating mothers given Vit A (within 4 weeks)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <th class="col-8 ">Family Planning</th>
-            <th class="col-auto"></th>
-            <th class="col-auto"></th>
-            <th class="col-auto"></th>
+            <th>Family Planning</th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
         <tr>
-            <td class="col-8">1. A Number of women referred for Family Planning(NEW)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>1. A Number of women referred for Family Planning(NEW)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">a. IUD (Interval)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>a. IUD (Interval)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 ps-4 float-end"> IUD (Postpartum)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td> IUD (Postpartum)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">b. DMPA</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>b. DMPA</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">c. PILLS (COC - Combined Oral Contraceptive)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>c. PILLS (COC - Combined Oral Contraceptive)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 ps-4 float-end"> PILLS (POP) - (Progestin Only Pill)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td> PILLS (POP) - (Progestin Only Pill)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">d. IMPLANTS(PSI)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>d. IMPLANTS(PSI)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">e. CONDOM</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>e. CONDOM</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">f. Vasectomy</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>f. Vasectomy</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">g. BTL(Bilateral Tubal Ligation)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>g. BTL(Bilateral Tubal Ligation)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">h. Fertility Awareness Bases Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>h. Fertility Awareness Bases Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">- SDM (Standard Days Method)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>- SDM (Standard Days Method)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">- STM (Syptho-thermal Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>- STM (Syptho-thermal Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end"> - BBT(Basal Body Temperature</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td> - BBT(Basal Body Temperature</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">- CCM (Cervical-Mucus Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>- CCM (Cervical-Mucus Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8 ps-4">B. Number of women <b>USING</b> Family Planning method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>B. Number of women <b>USING</b> Family Planning method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">a. IUD (Interval)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>a. IUD (Interval)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 ps-4 float-end"> IUD (Postpartum)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td> IUD (Postpartum)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">b. DMPA</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>b. DMPA</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">c. PILLS (COC - Combined Oral Contraceptive)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>c. PILLS (COC - Combined Oral Contraceptive)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 ps-4 float-end"> PILLS (POP) - (Progestin Only Pill)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td> PILLS (POP) - (Progestin Only Pill)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">d. IMPLANTS(PSI)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>d. IMPLANTS(PSI)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">e. CONDOM</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>e. CONDOM</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">f. Vasectomy</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>f. Vasectomy</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">g. BTL(Bilateral Tubal Ligation)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>g. BTL(Bilateral Tubal Ligation)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">h. Fertility Awareness Bases Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>h. Fertility Awareness Bases Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">- SDM (Standard Days Method)</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>- SDM (Standard Days Method)</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">- STM (Syptho-thermal Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>- STM (Syptho-thermal Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end"> - BBT(Basal Body Temperature</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td> - BBT(Basal Body Temperature</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-5 float-end">- CCM (Cervical-Mucus Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>- CCM (Cervical-Mucus Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8">2. A Number of WRA profiled and masterlisted</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>2. A Number of WRA profiled and masterlisted</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td class="col-8">3. A Number of WRA who do not practice any Family Planning Method</td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
-            <td class="col-auto"></td>
+            <td>3. A Number of WRA who do not practice any Family Planning Method</td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
    ';
         }
         $output .= '</table>';
         header('Content-Type: application/xls');
-        header('Content-Disposition: attachment; filename=download.xls');
+        header('Content-Disposition: attachment; filename=monthly-report.xls');
         echo $output;
     }
 }

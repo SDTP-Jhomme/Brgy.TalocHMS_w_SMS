@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Admin | Dashboard</title>
+    <title>Admin | Immunization</title>
     <?php
 
     include("./import/head.php");
@@ -70,11 +70,11 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="FSN No." prop="fsn">
+                                    <el-table-column sortable label="FSN" prop="fsn">
                                     </el-table-column>
                                     <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>
-                                    <el-table-column sortable label="Name" width="220" prop="name">
+                                    <el-table-column sortable label="Name" v-if="viewPatient.suffix != 'undefined'" width="220" prop="name">
                                     </el-table-column>
                                     <el-table-column sortable label="Birthday" width="160" prop="birthdate">
                                     </el-table-column>

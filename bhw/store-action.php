@@ -65,6 +65,8 @@ if ($action == 'storeImmunization') {
     $immunize_sql = mysqli_query($db, "INSERT INTO immunization(fsn,child_no,first_name,middle_name,last_name,suffix,birthdate,gender,mother_name,father_name,purok,barangay,appointment,age,weight,temp,immunization_given,day,month,year)
         VALUES('$fsn','$child_no','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$mother_name','$father_name','$purok','$barangay','$appointment','$age','$weight',    
         '$temp','$immunization_given','$day','$month','$year')");
+
+    $request = mysqli_query($db, "UPDATE immunization_request SET status='Done' WHERE id");
 }
 
 if ($action == 'storeHealth') {
@@ -181,6 +183,8 @@ if ($action == 'storeHealth') {
         VALUES('$fsn','$clinisys','$last_name','$first_name','$middle_name','$suffix','$birthdate','$gender','$civil_status','$spouse','$educ_attainment','$employment_status','$occupation','$religion','$telephone',
         '$street','$purok','$barangay','$blood_type','$family_member','$other_member','$philhealth_type','$philhealth_no','$m_lastname','$m_firstname','$m_middlename','$nhts','$pantawid_member','$hh_no','$alert_type','$other_alert','$medical_history','$other_history',
         '$encounter_type','$consultation_type','$consultation_date','$age','$transaction_mode','$s','$o','$pr','$rr','$bp','$weight','$height','$temp','$a','$p','$day','$month','$year')");
+
+    $request = mysqli_query($db, "UPDATE immunization_request SET status='Done' WHERE id");
 }
 
 if ($action == 'storePrenatal') {
@@ -245,5 +249,7 @@ if ($action == 'storePrenatal') {
 
     $prenatal_sql = mysqli_query($db, "INSERT INTO prenatal(fsn,first_name,middle_name,last_name,birthdate,gender,spouse_name,purok,barangay,gp,lmp,edc,tt_status,appointment,date_visit,weight,bp,cr,rr,temp,aog,fundic_height,fhb,presentation,day,month,year)
         VALUES('$fsn','$first_name','$middle_name','$last_name','$birthdate','$gender','$spouse_name','$purok','$barangay','$gp','$lmp','$edc','$tt_status','$appointment','$date_visit','$weight','$bp','$cr','$rr','$temp','$aog','$fundic_height','$fhb','$presentation','$day','$month','$year')");
+        
+    $request = mysqli_query($db, "UPDATE immunization_request SET status='Done' WHERE id");
 }
 echo json_encode($response);

@@ -80,8 +80,11 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6 d-flex align-items-center">
-                                    <img src="../assets/img/health-center1.jpg" alt="">
+                                <div class="col-lg-6 d-flex align-items-center gradient-custom-1">
+                                    <div class="px-3 py-4 p-md-5 mx-md-4">
+                                        <h4 class="mb-4">Barangay Taloc Online Health Record Management System with Sms Notification</h4>
+                                        <p class="small mb-0">Bachelor of Science in Information System - Bago City College <?php echo date("Y") ?></p>
+                                    </div>
                                 </div>
                             </div>
 

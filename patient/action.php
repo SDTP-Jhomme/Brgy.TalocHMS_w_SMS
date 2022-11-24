@@ -51,6 +51,43 @@ if ($action == 'fetch') {
         $response["message"] = "Table is empty!";
     }
 }
+if ($action == 'store') {
+
+    $fsn = $_POST["fsn"];
+    $first_name = $_POST["first_name"];
+    $middle_name = $_POST["middle_name"];
+    $last_name = $_POST["last_name"];
+    $suffix = $_POST["suffix"];
+    $birthdate = $_POST["birthdate"];
+    $gender = $_POST["gender"];
+    $phone_number = $_POST["phone_number"];
+
+    if ($gender == "Male") {
+        $avatar = "avatar/default.png";
+    } else {
+        $avatar = "avatar/default-woman.png";
+    }
+
+    $day = date("d");
+    $year = date("Y");
+    $month = date("M");
+    $db_status = "Active";
+    $type = "PATIENT";
+
+    $response = array(
+        "fsn" => $fsn,
+        "first_name" => $first_name,
+        "last_name" => $last_name,
+        "middle_name" => $middle_name,
+        "suffix" => $suffix,
+        "birthdate" => $birthdate,
+        "gender" => $gender,
+        "phone_number" => $phone_number,
+    );
+
+    mysqli_query($db, "INSERT INTO pending_request(fsn,first_name,middle_name,last_name,suffix,birthdate,gender,phone_number,day,month,year)
+        VALUES('$fsn','$first_name','$middle_name','$last_name','$suffix','$birthdate','$gender','$phone_number','$day','$month','$year')");
+}
 if ($action == 'change_password') {
 
     $user_id = $_POST["id"];

@@ -18,7 +18,7 @@
                 </a>
                 <div class="collapse" id="collapsePages" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="./prenatal">Prenatal</a>
+                        <a class="nav-link" href="./maternal">Maternal</a>
                     </nav>
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="./immunization">Immunization</a>
@@ -34,7 +34,7 @@
                 </a>
                 <div class="collapse" id="collapsePages1" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="./maternity-chart">Prenatal Section</a>
+                        <a class="nav-link" href="./maternity-chart">Maternal Section</a>
                     </nav>
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="./immunize-chart">Immunization Section</a>

@@ -1,63 +1,10 @@
-<div class="w-75 lg">
+<div class="w-95 lg">
     <el-container>
         <el-header height="0px"></el-header>
         <div class="body-card-form">
-            <h3 class="text-center mb-4">Individual Treatment Form</h3>
+            <h3 class="text-center mb-4">Individual Treatment Request Form</h3>
             <el-main>
                 <el-form :model="health" :rules="healthRules" ref="health">
-                    <div class="underline-input top d-flex justify-content-end">
-                        <div class="d-flex flex-wrap justify-content-between w-50">
-                            <div class="w-40">
-                                <el-form-item label="FSN :" prop="fsn">
-                                    <el-input v-model="addPatient.fsn" clearable disabled></el-input>
-                                </el-form-item>
-                            </div>
-                            <div class="w-50">
-                                <el-form-item label="Clinisys FSN :" prop="clinisysFSN">
-                                    <el-input v-model="health.clinisysFSN" clearable></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <el-divider></el-divider>
-                    </div>
-
-                    <!-- Patient Information -->
-                    <div class="label-format d-flex flex-wrap justify-content-evenly">
-                        <div class="mb-4" :class="addPatient.middleName && !addPatient.suffix || !addPatient.middleName && addPatient.suffix ? 'w-30' : addPatient.middleName && addPatient.suffix ? 'w-20' : 'w-25'">
-                            <label class="m-0">First Name</label>
-                            <el-input v-model="addPatient.firstName" size="small" clearable disabled></el-input>
-                        </div>
-                        <div class="mb-4" :class="addPatient.middleName && !addPatient.suffix || !addPatient.middleName && addPatient.suffix ? 'w-30' : addPatient.middleName && addPatient.suffix ? 'w-20' : 'w-25'">
-                            <label class="m-0">Last Name</label>
-                            <el-input v-model="addPatient.lastName" size="small" clearable disabled></el-input>
-                        </div>
-                        <div class="mb-4" :class="addPatient.middleName && !addPatient.suffix ? 'w-30' : addPatient.middleName && addPatient.suffix ? 'w-20' : 'w-25'" v-if="addPatient.middleName">
-                            <label class="m-0">Middle Name</label>
-                            <el-input v-model="addPatient.middleName" size="small" clearable disabled></el-input>
-                        </div>
-                        <div class="mb-4" :class="!addPatient.middleName && addPatient.suffix ? 'w-10' : addPatient.middleName && addPatient.suffix ? 'w-10' : 'w-25'" v-if="addPatient.suffix">
-                            <label class="m-0">Suffix</label>
-                            <el-input v-model="addPatient.suffix" size="small" clearable disabled></el-input>
-                        </div>
-                        <div class="d-flex flex-wrap" :class="addPatient.middleName || addPatient.suffix ? 'w-50 justify-content-evenly' : 'w-40 justify-content-between'">
-                            <div class="mb-4 birth-width" :class="addPatient.middleName && addPatient.suffix || addPatient.middleName || addPatient.suffix ? 'w-50' : 'w-65'">
-                                <label class="m-0">Birthdate</label>
-                                <el-date-picker v-model="addPatient.birthDate" type="date" size="small" placeholder="" disabled>
-                                </el-date-picker>
-                            </div>
-                            <div class="mb-4" :class="!addPatient.middleName && !addPatient.suffix ? 'w-30' : 'w-20'">
-                                <label class="m-0">Gender</label>
-                                <el-input v-model="addPatient.gender" size="small" clearable disabled></el-input>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End -->
-
-                    <div>
-                        <el-divider></el-divider>
-                    </div>
                     <div class="fs-6">
                         <div class="row g-3 mt-5">
                             <div class="col-auto">
@@ -135,21 +82,13 @@
                                     <el-input v-model="health.religion" clearable></el-input>
                                 </el-form-item>
                             </div>
-                            <div class="col-auto">
-                                <label for=""><span class="text-danger">*</span>Telephone (Mobile/Landline/Email) :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="phoneNo">
-                                    <el-input v-model="addPatient.phoneNo" clearable disabled></el-input>
-                                </el-form-item>
-                            </div>
                         </div>
                         <div class="row g-3 mt-5">
                             <div class="col-auto">
                                 <label for=""><span class="text-danger">*</span>Number/Street Name :</label>
                             </div>
                             <div class="col-auto">
-                                <el-form-item prop="purok">
+                                <el-form-item prop="street">
                                     <el-input v-model="health.street" clearable></el-input>
                                 </el-form-item>
                             </div>
@@ -340,189 +279,6 @@
                             <div class="col-auto">
                                 <el-form-item prop="otherAlert">
                                     <el-input v-model="health.otherHistory" :disabled="health.medicalHistory != 'Others'" clearable></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for=""><span class="text-danger">*</span>Type of Encounter / (OPD) : (Pls. Check) :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item class="radio normal" prop="encounter">
-                                    <el-radio-group v-model="health.encounter">
-                                        <el-radio label="Consultation">Consultation</el-radio>
-                                        <el-radio label="New Admission">New Admission</el-radio>
-                                        <el-radio label="For follow-up">For follow-up</el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for=""><span class="text-danger">*</span>Type of Consultation / Purpose of visit :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="consultationType">
-                                    <el-select v-model="health.consultationType" placeholder="Select" clearable>
-                                        <el-option label="General" value="General">General</el-option>
-                                        <el-option label="Prental" value="Prental">Prenatal</el-option>
-                                        <el-option label="Child Immunization" value="Child Immunization">Child Immunization</el-option>
-                                        <el-option label="Others" value="Others">Others</el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </div>
-                            <div class="col-auto">
-                                <label for="">Others :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item class="blank" prop="otherConsultation">
-                                    <el-input v-model="health.otherConsultation" :disabled="health.consultationType != 'Others'" clearable></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for="">Consultaion Date :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="appointment">
-                                    <el-input v-model="health.appointment" clearable disabled></el-input>
-                                </el-form-item>
-                            </div>
-                            <div class="col-auto">
-                                <label for="">Age :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="age">
-                                    <el-input v-model="health.age" clearable disabled></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for=""><span class="text-danger">*</span>Mode of Transaction : (Pls. Check) :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item class="radio normal" prop="transaction">
-                                    <el-radio-group v-model="health.transaction">
-                                        <el-radio label="Walk-in">Walk-in</el-radio>
-                                        <el-radio label="Visited">Visited</el-radio>
-                                        <el-radio label="Referral">Referral</el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for="">S :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="s">
-                                    <el-input v-model="health.s" clearable></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for="">O :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="s">
-                                    <el-input v-model="health.o" clearable></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="ps-5">
-                            <div class="row g-3 mt-5">
-                                <div class="col-auto">
-                                    <label for="">PR / CR :</label>
-                                </div>
-                                <div class="col-auto">
-                                    <el-form-item prop="pr">
-                                        <el-input v-model="health.pr" clearable>
-                                            <template slot="suffix">b / min</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="row g-3 mt-5">
-                                <div class="col-auto">
-                                    <label for="">RR :</label>
-                                </div>
-                                <div class="col-auto">
-                                    <el-form-item prop="rr">
-                                        <el-input v-model="health.rr" clearable>
-                                            <template slot="suffix">c / min</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="row g-3 mt-5">
-                                <div class="col-auto">
-                                    <label for="">BP :</label>
-                                </div>
-                                <div class="col-auto">
-                                    <el-form-item prop="bp">
-                                        <el-input v-model="health.bp" clearable>
-                                            <template slot="suffix">mmHg</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="row g-3 mt-5">
-                                <div class="col-auto">
-                                    <label for="">Weight :</label>
-                                </div>
-                                <div class="col-auto">
-                                    <el-form-item prop="weight">
-                                        <el-input v-model="health.weight" clearable>
-                                            <template slot="suffix">kg . lbs</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="row g-3 mt-5">
-                                <div class="col-auto">
-                                    <label for="">Height :</label>
-                                </div>
-                                <div class="col-auto">
-                                    <el-form-item prop="height">
-                                        <el-input v-model="health.height" clearable>
-                                            <template slot="suffix">cm / ft</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="row g-3 mt-5">
-                                <div class="col-auto">
-                                    <label for="">Temp :</label>
-                                </div>
-                                <div class="col-auto">
-                                    <el-form-item prop="temp">
-                                        <el-input v-model="health.temp" clearable>
-                                            <template slot="suffix">℃</template>
-                                        </el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for="">A :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="a">
-                                    <el-input v-model="health.a" clearable></el-input>
-                                </el-form-item>
-                            </div>
-                        </div>
-                        <div class="row g-3 mt-5">
-                            <div class="col-auto">
-                                <label for="">P :</label>
-                            </div>
-                            <div class="col-auto">
-                                <el-form-item prop="p">
-                                    <el-input v-model="health.p" clearable></el-input>
                                 </el-form-item>
                             </div>
                         </div>

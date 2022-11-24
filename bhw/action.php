@@ -12,32 +12,166 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
 
-if ($action == 'fetch') {
+if ($action == 'fetchHealth') {
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM patient ORDER BY fsn ");
+    $data = mysqli_query($db, "SELECT * FROM patient INNER JOIN health_request ON patient.fsn=health_request.fsn");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
             $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]);
             $db_birthdate = $data_row["birthdate"];
-            $birthdate = date("F d, Y", strtotime($db_birthdate));
+            $birthday = substr($db_birthdate, 4, 11);
+            $birthdate = date("F d, Y", strtotime($birthday));
             $db_avatar = $data_row["avatar"];
-            $date = $data_row["month"] . " " . $data_row["day"] . ", " . $data_row["year"];
+            $date = $data_row["date"];
 
             $array_data = array(
                 "id" => $data_row["id"],
-                "username" => $data_row["username"],
+                "fsn" => $data_row["fsn"],
                 "name" => $fullname,
                 "date" => $date,
+                "last_name" => $data_row["last_name"],
+                "first_name" => $data_row["first_name"],
+                "middle_name" => $data_row["middle_name"],
+                "suffix" => $data_row["suffix"],
                 "birthdate" => $birthdate,
                 "gender" => $data_row["gender"],
-                "fsn" => $data_row["fsn"],
-                "first_name" => $data_row["first_name"],
-                "last_name" => $data_row["last_name"],
                 "phone_number" => $data_row["phone_number"],
-                "last_login" => $data_row["last_login"],
+                "section" => $data_row["section"],
+                "status" => $data_row["status"],
+                "avatar" => "../assets/$db_avatar",
+            );
+
+            array_push($user_data, $array_data);
+            $response = $user_data;
+        }
+    } else {
+
+        $response["error"] = true;
+        $response["message"] = "Table is empty!";
+    }
+}
+if ($action == 'fetchMaternal') {
+    $user_data = array();
+
+    $data = mysqli_query($db, "SELECT * FROM patient INNER JOIN prenatal_request ON patient.fsn=prenatal_request.fsn");
+
+    if (mysqli_num_rows($data) > 0) {
+        while ($data_row = mysqli_fetch_assoc($data)) {
+
+            $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]);
+            $db_birthdate = $data_row["birthdate"];
+            $birthday = substr($db_birthdate, 4, 11);
+            $birthdate = date("F d, Y", strtotime($birthday));
+            $db_avatar = $data_row["avatar"];
+            $date = $data_row["date"];
+
+            $array_data = array(
+                "id" => $data_row["id"],
+                "fsn" => $data_row["fsn"],
+                "name" => $fullname,
+                "date" => $date,
+                "last_name" => $data_row["last_name"],
+                "first_name" => $data_row["first_name"],
+                "middle_name" => $data_row["middle_name"],
+                "suffix" => $data_row["suffix"],
+                "birthdate" => $birthdate,
+                "gender" => $data_row["gender"],
+                "phone_number" => $data_row["phone_number"],
+                "section" => $data_row["section"],
+                "status" => $data_row["status"],
+                "avatar" => "../assets/$db_avatar",
+            );
+
+            array_push($user_data, $array_data);
+            $response = $user_data;
+        }
+    } else {
+
+        $response["error"] = true;
+        $response["message"] = "Table is empty!";
+    }
+}
+if ($action == 'fetchImmunization') {
+    $user_data = array();
+
+    $data = mysqli_query($db, "SELECT * FROM immunization_request INNER JOIN patient ON immunization_request.fsn=patient.fsn");
+
+    if (mysqli_num_rows($data) > 0) {
+        while ($data_row = mysqli_fetch_assoc($data)) {
+
+            $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]);
+            $db_birthdate = $data_row["birthdate"];
+            $birthday = substr($db_birthdate, 4, 11);
+            $birthdate = date("F d, Y", strtotime($birthday));
+            $db_avatar = $data_row["avatar"];
+            $date = $data_row["date"];
+
+            $array_data = array(
+                "id" => $data_row["id"],
+                "fsn" => $data_row["fsn"],
+                "name" => $fullname,
+                "date" => $date,
+                "last_name" => $data_row["last_name"],
+                "first_name" => $data_row["first_name"],
+                "middle_name" => $data_row["middle_name"],
+                "suffix" => $data_row["suffix"],
+                "birthdate" => $birthdate,
+                "gender" => $data_row["gender"],
+                "phone_number" => $data_row["phone_number"],
+                "section" => $data_row["section"],
+                "status" => $data_row["status"],
+                "m_lastname" => $data_row["m_lastname"],
+                "m_firstname" => $data_row["m_firstname"],
+                "m_middlename" => $data_row["m_middlename"],
+                "f_lastname" => $data_row["f_lastname"],
+                "f_firstname" => $data_row["f_firstname"],
+                "f_middlename" => $data_row["f_middlename"],
+                "purok" => $data_row["purok"],
+                "barangay" => $data_row["barangay"],
+                "avatar" => "../assets/$db_avatar",
+            );
+
+            array_push($user_data, $array_data);
+            $response = $user_data;
+        }
+    } else {
+
+        $response["error"] = true;
+        $response["message"] = "Table is empty!";
+    }
+}
+if ($action == 'fetch') {
+    $user_data = array();
+
+    $data = mysqli_query($db, "SELECT * FROM patient INNER JOIN pending_request ON patient.fsn=pending_request.fsn");
+
+    if (mysqli_num_rows($data) > 0) {
+        while ($data_row = mysqli_fetch_assoc($data)) {
+
+            $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]);
+            $db_birthdate = $data_row["birthdate"];
+            $birthday = substr($db_birthdate, 4, 11);
+            $birthdate = date("F d, Y", strtotime($birthday));
+            $db_avatar = $data_row["avatar"];
+            $date = $data_row["date"];
+
+            $array_data = array(
+                "id" => $data_row["id"],
+                "fsn" => $data_row["fsn"],
+                "name" => $fullname,
+                "date" => $date,
+                "last_name" => $data_row["last_name"],
+                "first_name" => $data_row["first_name"],
+                "middle_name" => $data_row["middle_name"],
+                "suffix" => $data_row["suffix"],
+                "birthdate" => $birthdate,
+                "gender" => $data_row["gender"],
+                "phone_number" => $data_row["phone_number"],
+                "section" => $data_row["section"],
+                "status" => $data_row["status"],
                 "avatar" => "../assets/$db_avatar",
             );
 
@@ -103,46 +237,32 @@ if ($action == 'store') {
 
 if ($action == 'sent_message') {
 
-    $array_id = $_POST["user_ids"];
     $contact = $_POST['contact'];
-    $appointment = $_POST['appointments'];
     $message = $_POST['message'];
-    $apicodeBulk = "PR-SAMPLE123456_ABCDE";
-    $password = "	123456789ABCD";
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $appointment = $_POST['appointment'];
+    $n_appointment = substr($appointment, 4, 11);
+    $new_appointment = date("F d, Y", strtotime($n_appointment));
 
-    $send = new ItexMoController();
+    $data = "Mr. / Ms. ".ucfirst($first_name)." ".ucfirst($last_name)." Your appointment ".$new_appointment ." ". $message;
+    $sms_url = "http://sms.pagenet.info/admin/index.php";
+    $auth_key = "p6rV1tCjldQ05HCiuO8Zh5ZXtMSv44tIOG7bvHgC";
 
-    $send->itexmo($contact, $message, $appointment, $apicodeBulk, $password);
+    $device_id = "13";
 
-    if ($send == false) {
-        header("Location: ./");
-        $response["error"] = true;
-        $response["message"] = "Message not sent!";
-    } elseif ($send == true) {
-        header("Location: ./");
-        $response["error"] = true;
-        $response["message"] = "Message sent!";
-    } else {
-        header("Location: ./");
-        $response["error"] = true;
-        $response["message"] = "Something went wrong!";
-    }
-    class ItexMoController
-    {
+    $sim_id = "99";
 
-        function itexmo($contact, $message, $apicode, $password)
-        {
+    $msg = $sms_url . "?route=api/sms/send&auth_key=" . $auth_key . "&device_id=" . $device_id . "&sim_id=" . $sim_id . "&mobile_no=" . $contact . "&data_type=Plain&message=" . urlencode("$data");
 
-            $ch = curl_init();
-            $itexmo = array('1' => $contact, '2' => $message, '3' => $apicode, 'password' => $password);
-            curl_setopt($ch, CURLOPT_URL, "https://www.itexmo.com/php_api/api.php");
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($itexmo));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            return curl_exec($ch);
-            curl_close($ch);
-        }
-    }
+    $cURL = curl_init($msg);
+    curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($cURL, CURLOPT_POSTFIELDS, $contact);
+    curl_setopt($cURL, CURLOPT_POSTFIELDS, $message);
+    $response = curl_exec($cURL);
+    curl_close($cURL);
+
+    $result = json_decode($response, true);
 }
 if ($action == 'change_password') {
 

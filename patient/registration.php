@@ -9,7 +9,7 @@
             </el-row>
             <el-row :gutter="40" type="flex" justify="center">
                 <el-col :span="5">
-                    <div class="block">
+                    <div>
                         <a href="javascript:void(0)" @click="healthCheckup">
                             <div class="card card-overflow-hidden health-checkup" :class="{'card-border-health': this.isHealthCheckup}">
                                 <img src="../assets/img/health-checkup.png" alt="Health Checkup">
@@ -23,7 +23,7 @@
                     </div>
                 </el-col>
                 <el-col :span="5">
-                    <div class="block">
+                    <div>
                         <a href="javascript:void(0)" @click="immunization">
                             <div class="card card-overflow-hidden immunization-checkup" :class="{'card-border-immunization': this.isImmunization}">
                                 <img src="../assets/img/immunization.png" alt="Immunization Checkup">
@@ -37,8 +37,8 @@
                     </div>
                 </el-col>
                 <el-col :span="5">
-                    <div class="block">
-                        <a href="javascript:void(0)" v-if="viewPatient.gender = 'Female'" @click="pregnancy">
+                    <div>
+                        <a href="javascript:void(0)" @click="pregnancy">
                             <div class="card card-overflow-hidden pregnancy-checkup" :class="{'card-border-pregnancy': this.isPregnancy}">
                                 <img src="../assets/img/pregnancy.png" alt="Pregnancy Checkup">
                                 <div :class="this.isPregnancy ? 'card-with-hover-active' : 'card-with-hover'">
@@ -65,9 +65,6 @@
                 <?php include("./prenatal-checkup.php"); ?>
             </el-row>
         </el-main>
-        <el-main v-if="active == 2">
-
-        </el-main>
         <el-main>
             <el-row type="flex" justify="center" class="mt-4 mb-4">
                 <el-col>
@@ -93,12 +90,6 @@
                 <el-button-group v-else>
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
                     <el-button type="primary" size="small" plain @click="submitPrenatal('prenatal')">Submit</i></el-button>
-                </el-button-group>
-            </el-row>
-            <el-row type="flex" justify="center" v-if="active == 2">
-                <el-button-group>
-                    <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="addUser('addSms')">Send <i class="el-icon-s-promotion"></i></el-button>
                 </el-button-group>
             </el-row>
         </el-main>

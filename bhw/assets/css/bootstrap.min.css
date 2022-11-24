@@ -11717,9 +11717,6 @@ fieldset:disabled .btn {
     .d-print-none {
         display: none !important
     }
-    .is-selected {
-        color: #1989FA;
-      }
 }
 
 /*# sourceMappingURL=bootstrap.min.css.map */

@@ -22,10 +22,14 @@
             $db_firstname = $user_row["first_name"];
             $db_lastname = $user_row["last_name"];
             $db_middlename = $user_row["middle_name"];
+            $db_phonenumber = $user_row["phone_number"];
             $name = ucfirst($user_row["first_name"]) . " " . ucfirst($user_row["last_name"]);
             $db_avatar = $user_row["avatar"];
-            $db_birthday = $birthdate = date("F d, Y", strtotime($user_row["birthdate"]));
+            $birthday = $user_row["birthdate"];
+            $birth_date = substr($birthday, 4, 11);
+            $db_birthday = date("F d, Y", strtotime($birth_date));
             $db_gender = $user_row["gender"];
+            $db_suffix = $user_row["suffix"];
         }
 
         if ($db_last_login == "") {
@@ -48,13 +52,22 @@
                 <!-- Topbar -->
                 <?php include("./import/nav.php"); ?>
                 <!-- End of Topbar -->
-                <div class="container-md">
-                    <el-contaiiner>
-                        <?php include("./main.php"); ?>
-                    </el-contaiiner>
-                </div>
                 <!-- /.container-fluid -->
             </div>
+            <div class="container-sm">
+                <?php include("./main.php"); ?>
+            </div>
+                <!-- <el-dialog title="Set Appointment" :visible.sync="openAppointmentDialog" width="30%" :before-close="closeAppointmentDialog">
+                    <el-form :model="addAppointment:" :rules="smsRules" ref="addAppointment:">
+                        <el-form-item label="Set Appointment" prop="appointment">
+                            <el-date-picker size="medium" v-model="addAppointment.appointment" type="date" placeholder="Select Date">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="closeAppointmentDialog">Close</el-button>
+                    </span>
+                </el-dialog> -->
             <!-- End of Main Content -->
             <!-- Footer -->
             <?php include("./import/footer.php") ?>
@@ -71,45 +84,26 @@
             data() {
                 return {
                     active: 0,
-                    showAllData: false,
                     fullscreenLoading: true,
-                    openAddDialog: false,
+                    openAppointmentDialog: false,
                     backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
                     avatar: "",
-                    fsn: "",
-                    first_name: "",
-                    last_name: "",
-                    middle_name: "",
-                    suffix: "",
-                    birthdate: "",
                     gender: "",
-                    phone_number: "",
-                    viewPatient: [],
+                    addAppointment: {
+                        appointment: ""
+                    },
                     prenatal: {
+                        fsn: <?php echo $db_identification ?>,
                         spouseFname: "",
                         spouseLname: "",
                         purok: "",
                         barangay: "",
-                        gp: "",
-                        lmp: "",
-                        edc: "",
-                        ttStatus: "",
-                        appointment: "",
-                        dateVisit: "",
-                        weight: "",
-                        cr: "",
-                        bp: "",
-                        temp: "",
-                        blood: "",
-                        aog: "",
-                        height: "",
-                        fhb: "",
-                        presentation: "",
                     },
                     health: {
+                        fsn: <?php echo $db_identification ?>,
                         clinisysFSN: "",
                         civil: "",
                         spouse: "",
@@ -128,7 +122,6 @@
                         mLastName: "",
                         mFirstName: "",
                         mMidName: "",
-                        age: "",
                         nhts: "",
                         pantawid: "",
                         hhNo: "",
@@ -136,24 +129,9 @@
                         otherAlert: "",
                         medicalHistory: "",
                         otherHistory: "",
-                        encounter: "",
-                        consultationType: "",
-                        otherConsultation: "",
-                        appointment: "",
-                        age: "",
-                        transaction: "",
-                        s: "",
-                        o: "",
-                        pr: "",
-                        rr: "",
-                        bp: "",
-                        weight: "",
-                        height: "",
-                        temp: "",
-                        a: "",
-                        p: "",
                     },
                     immunize: {
+                        fsn: <?php echo $db_identification ?>,
                         childNo: "",
                         mLastName: "",
                         mFirstName: "",
@@ -163,10 +141,13 @@
                         fMidName: "",
                         purok: "",
                         barangay: "",
-                        appointment: "",
-                        age: "",
-                        temp: "",
-                        immunizationGiven: "",
+                    },
+                    apptRules: {
+                        appointment: [{
+                            required: true,
+                            message: 'Please set your appointment!',
+                            trigger: 'blur'
+                        }]
                     },
                     prenatalRules: {
                         spouseFname: [{
@@ -187,46 +168,6 @@
                         barangay: [{
                             required: true,
                             message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
-                        dateVisit: [{
-                            required: true,
-                            message: 'Date is required!',
-                            trigger: 'blur'
-                        }],
-                        cr: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid pulse rate (PR) format!',
-                            trigger: 'blur'
-                        }],
-                        rr: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid respiratory rate (RR) format!',
-                            trigger: 'blur'
-                        }],
-                        bp: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid blood pressure (BP) format!',
-                            trigger: 'blur'
-                        }],
-                        weight: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid weight format!',
-                            trigger: 'blur'
-                        }],
-                        height: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid fundic height format!',
-                            trigger: 'blur'
-                        }],
-                        temp: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid temperature format!',
-                            trigger: 'blur'
-                        }],
-                        aog: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid aog format!',
                             trigger: 'blur'
                         }],
                     },
@@ -304,61 +245,6 @@
                             message: 'Past medical family history  is required!',
                             trigger: 'blur'
                         }],
-                        encounter: [{
-                            required: true,
-                            message: 'Encounter type is required!',
-                            trigger: 'blur'
-                        }],
-                        consultationType: [{
-                            required: true,
-                            message: 'Consultation type is required!',
-                            trigger: 'blur'
-                        }],
-                        appointment: [{
-                            required: true,
-                            message: 'Consultation date is required!',
-                            trigger: 'blur'
-                        }],
-                        age: [{
-                            required: true,
-                            message: 'Age is required!',
-                            trigger: 'blur'
-                        }],
-                        transaction: [{
-                            required: true,
-                            message: 'Mode of transaction is required!',
-                            trigger: 'blur'
-                        }],
-                        pr: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid pulse rate (PR) format!',
-                            trigger: 'blur'
-                        }],
-                        rr: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid respiratory rate (RR) format!',
-                            trigger: 'blur'
-                        }],
-                        bp: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid blood pressure (BP) format!',
-                            trigger: 'blur'
-                        }],
-                        weight: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid weight format!',
-                            trigger: 'blur'
-                        }],
-                        height: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid height format!',
-                            trigger: 'blur'
-                        }],
-                        temp: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid temperature format!',
-                            trigger: 'blur'
-                        }],
                     },
                     immunizationRules: {
                         mLastName: [{
@@ -417,11 +303,6 @@
                             message: 'Barangay is required!',
                             trigger: 'blur'
                         }],
-                        temp: [{
-                            pattern: /^[\.0-9]*$/,
-                            message: 'Invalid temperature format!',
-                            trigger: 'blur'
-                        }],
                     },
                 }
             },
@@ -476,6 +357,24 @@
                             }
                         })
                 },
+                closeAppointmentDialog() {
+                    this.$confirm('Done copying username & password?', 'Warning', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: "warning"
+                        })
+                        .then(() => {
+                            this.openAppointmentDialog = false
+                        })
+                        .catch(() => {});
+                },
+                submit() {
+                    if (this.active++ > 1) {
+                        this.active = 0;
+                    } else {
+
+                    }
+                },
                 back() {
                     this.active--
                     localStorage.setItem("active", this.active)
@@ -519,25 +418,18 @@
                     this.isHealthCheckup = false;
                 },
                 submitHealth(health) {
+                    if (this.active++ > 1) this.active = 0;
                     this.$refs[health].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
-                            var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
-                            newData.append("clinisys", this.health.clinisysFSN)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("gender", this.addPatient.gender)
+                            const newData = new FormData()
+                            newData.append("fsn", this.health.fsn)
                             newData.append("civil", this.health.civil)
                             newData.append("spouse", this.health.spouse)
                             newData.append("educ_attainment", this.health.education)
                             newData.append("employment_status", this.health.employment)
                             newData.append("occupation", this.health.occupation)
                             newData.append("religion", this.health.religion)
-                            newData.append("telephone", this.addPatient.phoneNo)
                             newData.append("street", this.health.street)
                             newData.append("purok", this.health.purok)
                             newData.append("barangay", this.health.barangay)
@@ -556,21 +448,6 @@
                             newData.append("other_alert", this.health.otherAlert)
                             newData.append("medical_history", this.health.medicalHistory)
                             newData.append("other_history", this.health.otherHistory)
-                            newData.append("encounter_type", this.health.encounter)
-                            newData.append("consultation_type", this.health.consultationType)
-                            newData.append("consultation_date", this.health.appointment)
-                            newData.append("age", this.health.age)
-                            newData.append("transaction_mode", this.health.transaction)
-                            newData.append("s", this.health.s)
-                            newData.append("o", this.health.o)
-                            newData.append("pr", this.health.pr)
-                            newData.append("rr", this.health.rr)
-                            newData.append("bp", this.health.bp)
-                            newData.append("weight", this.health.weight)
-                            newData.append("height", this.health.height)
-                            newData.append("temp", this.health.temp)
-                            newData.append("a", this.health.a)
-                            newData.append("p", this.health.p)
                             axios.post("store-action.php?action=storeHealth", newData)
                                 .then(response => {
                                     if (response.data) {
@@ -582,14 +459,16 @@
                                             });
                                             this.tableLoad = false;
                                             this.getData();
+                                            setTimeout(() => {
+                                                this.openAppointmentDialog = true;
+                                            }, 1500)
                                         }, 1500);
                                         this.newUser = response.data;
                                         this.loadButton = false
                                     }
                                 })
-                            this.active++;
+                            this.loadButton = true
                             localStorage.setItem("active", this.active)
-                            console.log(this.addPatient, "healthcheck")
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -597,18 +476,12 @@
                     })
                 },
                 submitImmunization(immunize) {
+                    if (this.active++ > 1) this.active = 0;
                     this.$refs[immunize].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
-                            var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
-                            newData.append("child_no", this.immunize.childNo)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("gender", this.addPatient.gender)
+                            const newData = new FormData()
+                            newData.append("fsn", this.immunize.fsn)
                             newData.append("m_lastname", this.immunize.mLastName)
                             newData.append("m_firstname", this.immunize.mFirstName)
                             newData.append("m_middlename", this.immunize.mMidName)
@@ -617,11 +490,6 @@
                             newData.append("f_middlename", this.immunize.fMidName)
                             newData.append("purok", this.immunize.purok)
                             newData.append("barangay", this.immunize.barangay)
-                            newData.append("appointment", this.immunize.appointment)
-                            newData.append("age", this.immunize.age)
-                            newData.append("weight", this.immunize.weight)
-                            newData.append("temp", this.immunize.temp)
-                            newData.append("immunization_given", this.immunize.immunizationGiven)
                             axios.post("store-action.php?action=storeImmunization", newData)
                                 .then(response => {
                                     if (response.data) {
@@ -633,12 +501,15 @@
                                             });
                                             this.tableLoad = false;
                                             this.getData();
+                                            setTimeout(() => {
+                                                this.openAppointmentDialog = true;
+                                            }, 1500)
                                         }, 1500);
                                         this.newUser = response.data;
                                         this.loadButton = true;
                                     }
                                 })
-                            this.active++;
+                            this.loadButton = true
                             localStorage.setItem("active", this.active)
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
@@ -648,35 +519,16 @@
                     console.log(this.addPatient, "immunization")
                 },
                 submitPrenatal(prenatal) {
+                    if (this.active++ > 1) this.active = 0;
                     this.$refs[prenatal].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
-                            var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("gender", this.addPatient.gender)
+                            const newData = new FormData()
+                            newData.append("fsn", this.prenatal.fsn)
                             newData.append("spouse_lastname", this.prenatal.spouseLname)
                             newData.append("spouse_firstname", this.prenatal.spouseFname)
                             newData.append("purok", this.prenatal.purok)
                             newData.append("barangay", this.prenatal.barangay)
-                            newData.append("gp", this.prenatal.gp)
-                            newData.append("lmp", this.prenatal.lmp)
-                            newData.append("edc", this.prenatal.edc)
-                            newData.append("tt_status", this.prenatal.ttStatus)
-                            newData.append("appointment", this.prenatal.appointment)
-                            newData.append("date_visit", this.prenatal.appointment)
-                            newData.append("weight", this.prenatal.weight)
-                            newData.append("bp", this.prenatal.bp)
-                            newData.append("cr", this.prenatal.cr)
-                            newData.append("rr", this.prenatal.rr)
-                            newData.append("temp", this.prenatal.temp)
-                            newData.append("aog", this.prenatal.aog)
-                            newData.append("height", this.prenatal.height)
-                            newData.append("fhb", this.prenatal.fhb)
-                            newData.append("presentation", this.prenatal.presentation)
                             axios.post("store-action.php?action=storePrenatal", newData)
                                 .then(response => {
                                     if (response.data) {
@@ -688,15 +540,16 @@
                                             });
                                             this.tableLoad = false;
                                             this.getData();
+                                            setTimeout(() => {
+                                                this.openAppointmentDialog = true;
+                                            }, 1500)
                                         }, 1500);
                                         this.newUser = response.data;
                                         this.loadButton = false
                                     }
                                 })
-                            this.active++;
+                            this.loadButton = true
                             localStorage.setItem("active", this.active)
-                            console.log(this.addPatient, "pregnancy")
-
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -715,19 +568,14 @@
                         })
                 },
                 getData() {
-                    const getData = new FormData();
-                    getData.append("id", <?php echo $id; ?>)
                     axios.post("action.php?action=fetch")
                         .then(response => {
-                            if (response) {
-                                this.first_name = response.data
-                                this.last_name = response.data
-                                this.middle_name = response.data
-                                this.suffix = response.data
-                                this.birthdate = response.data
+                            if (response.data.error) {
+                                this.tableData = []
+                            } else {
+                                this.tableData = response.data
                                 this.gender = response.data
-                                this.fsn = response.data
-                                this.phone_number = response.data
+                                this.checkIdentification = response.data.map(res => res.fsn)
                             }
                         })
                 },

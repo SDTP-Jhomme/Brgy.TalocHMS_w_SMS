@@ -22,7 +22,14 @@
 
         header("Location: ./login");
         die();
-    } ?>
+    }
+    $health_record = mysqli_query($db, "SELECT * FROM patient");
+
+    while ($health_row = mysqli_fetch_assoc($health_record)) {
+
+        $db_gender = $health_row["gender"];
+    }
+    ?>
 </head>
 
 <body class="sb-nav-fixed">
@@ -70,7 +77,7 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="FSN No." prop="fsn">
+                                    <el-table-column sortable label="FSN" prop="fsn">
                                     </el-table-column>
                                     <el-table-column label="Date Visited" prop="date">
                                     </el-table-column>
@@ -172,12 +179,20 @@
                                                     <label for="">Date of Birth: <span class="border-bottom border-dark px-5">{{viewPrenatal.birthdate}}</label>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <label for="">Gender:
-                                                        <el-radio-group v-model="viewPrenatal.gender">
-                                                            <el-radio label="Male" disabled>Male</el-radio>
-                                                            <el-radio label="Female" disabled>Female</el-radio>
-                                                        </el-radio-group>
-                                                    </label>
+                                                    <label for="">Gender:</label>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" id="inlineCheckbox1" value="<?php echo $db_gender ?>">
+                                                        <label class="form-check-label" for="inlineCheckbox1">Male</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" id="inlineCheckbox2" value="<?php echo $db_gender ?>">
+                                                        <label class="form-check-label" for="inlineCheckbox2">Female</label>
+                                                    </div>
+
+                                                    <el-radio-group v-model="viewPrenatal.gender">
+                                                        <el-radio label="Male" disabled>Male</el-radio>
+                                                        <el-radio label="Female" disabled>Female</el-radio>
+                                                    </el-radio-group>
                                                 </div>
                                                 <div class="col-auto">
                                                     <label for="">Civil Status: <span class="border-bottom border-dark px-5">{{viewPrenatal.civil_status}}</label>
@@ -188,26 +203,24 @@
                                             </div>
                                             <div class="row g-2 mb-3">
                                                 <div class="col-auto">
-                                                    <label for="">Educational Attainment (Pls.Check):
-                                                        <el-radio-group v-model="viewPrenatal.educ_attainment">
-                                                            <el-radio label="Elementary" disabled>Elementary</el-radio>
-                                                            <el-radio label="High School" disabled>High School</el-radio>
-                                                            <el-radio label="College" disabled>College</el-radio>
-                                                            <el-radio label="Post Grad" disabled>Post Grad</el-radio>
-                                                            <el-radio label="No Formal Educ" disabled>No Formal Educ</el-radio>
-                                                        </el-radio-group>
-                                                    </label>
+                                                    <label for="">Educational Attainment (Pls.Check):</label>
+                                                    <el-radio-group v-model="viewPrenatal.educ_attainment">
+                                                        <el-radio label="Elementary" disabled>Elementary</el-radio>
+                                                        <el-radio label="High School" disabled>High School</el-radio>
+                                                        <el-radio label="College" disabled>College</el-radio>
+                                                        <el-radio label="Post Grad" disabled>Post Grad</el-radio>
+                                                        <el-radio label="No Formal Educ" disabled>No Formal Educ</el-radio>
+                                                    </el-radio-group>
                                                 </div>
                                             </div>
                                             <div class="row g-2 mb-3">
                                                 <div class="col-auto">
-                                                    <label for="">Employment Status (Pls.Check):
-                                                        <el-radio-group v-model="viewPrenatal.employment_status">
-                                                            <el-radio label="Student" disabled>Student</el-radio>
-                                                            <el-radio label="Unemployed" disabled>Unemployed</el-radio>
-                                                            <el-radio label="Employed" disabled>Employed</el-radio>
-                                                        </el-radio-group>
-                                                    </label>
+                                                    <label for="">Employment Status (Pls.Check):</label>
+                                                    <el-radio-group v-model="viewPrenatal.employment_status">
+                                                        <el-radio label="Student" disabled>Student</el-radio>
+                                                        <el-radio label="Unemployed" disabled>Unemployed</el-radio>
+                                                        <el-radio label="Employed" disabled>Employed</el-radio>
+                                                    </el-radio-group>
                                                 </div>
                                                 <div class="col-auto">
                                                     <label for="">(Occupation if employed): <span class="border-bottom border-dark px-5">{{viewPrenatal.occupation}}</label>
@@ -239,15 +252,14 @@
                                             </div>
                                             <div class="row g-2 mb-3">
                                                 <div class="col-auto">
-                                                    <label for="">Family Member (Pls.Check):
-                                                        <el-radio-group v-model="viewPrenatal.family_member">
-                                                            <el-radio label="Father" disabled>Father</el-radio>
-                                                            <el-radio label="Mother" disabled>Mother</el-radio>
-                                                            <el-radio label="Son" disabled>Son</el-radio>
-                                                            <el-radio label="Daughter" disabled>Daughter</el-radio>
-                                                            <el-radio label="Others" disabled>Others</el-radio>
-                                                        </el-radio-group>
-                                                    </label>
+                                                    <label for="">Family Member (Pls.Check):</label>
+                                                    <el-radio-group v-model="viewPrenatal.family_member">
+                                                        <el-radio label="Father" disabled>Father</el-radio>
+                                                        <el-radio label="Mother" disabled>Mother</el-radio>
+                                                        <el-radio label="Son" disabled>Son</el-radio>
+                                                        <el-radio label="Daughter" disabled>Daughter</el-radio>
+                                                        <el-radio label="Others" disabled>Others</el-radio>
+                                                    </el-radio-group>
                                                 </div>
                                                 <div class="col-auto">
                                                     <label for="">Other : Pls.specify: <span class="border-bottom border-dark px-5">{{viewPrenatal.other_member}}</label>
@@ -320,14 +332,13 @@
                                             </div>
                                             <div class="row g-2 mb-3">
                                                 <div class="col-auto">
-                                                    <label for="">Past mediical family history:
-                                                        <el-radio-group v-model="viewPrenatal.medical_history">
-                                                            <el-radio label="HPN" disabled>HPN</el-radio>
-                                                            <el-radio label="DM" disabled>DM</el-radio>
-                                                            <el-radio label="Asthma" disabled>Asthma</el-radio>
-                                                            <el-radio label="Smoker" disabled>Smoker</el-radio>
-                                                        </el-radio-group>
-                                                    </label>
+                                                    <label for="">Past mediical family history:</label>
+                                                    <el-radio-group v-model="viewPrenatal.medical_history">
+                                                        <el-radio label="HPN" disabled>HPN</el-radio>
+                                                        <el-radio label="DM" disabled>DM</el-radio>
+                                                        <el-radio label="Asthma" disabled>Asthma</el-radio>
+                                                        <el-radio label="Smoker" disabled>Smoker</el-radio>
+                                                    </el-radio-group>
                                                 </div>
                                                 <div class="col-auto">
                                                     <label for="">Others: <span class="border-bottom border-dark px-5">{{viewPrenatal.other_history}}</label>
@@ -611,7 +622,7 @@
                     this.viewDialog = false;
                 },
                 closeEditDialog(editBhw) {
-                    this.$confirm('Are you sure you want to cancel updating BHW?', {
+                    this.$confirm('Are you sure you want to cancel updating Phone No.?', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                         })

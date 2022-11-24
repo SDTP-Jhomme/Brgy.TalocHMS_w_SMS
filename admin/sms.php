@@ -43,7 +43,7 @@
                             <div class="container p-0">
                                 <el-row :gutter="20">
                                     <el-col :span="12">
-                                        <el-button icon="el-icon-position" size="mini" type="danger" @click="handleSms()">Text Blast</el-button>
+                                        <el-button icon="el-icon-position" size="mini" type="danger" @click="bulkSms()">Text Blast</el-button>
                                     </el-col>
                                 </el-row>
                             </div>
@@ -77,7 +77,7 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="FSN No." prop="fsn">
+                                    <el-table-column sortable label="FSN." prop="fsn">
                                     </el-table-column>
                                     <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>
@@ -112,7 +112,7 @@
                         <el-dialog :visible.sync="viewDialog" width="70%" :before-close="closeViewDialog">
                             <template #title>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="fs-5">User {{ viewPatient.name }}</div>
+                                    <div class="fs-5">User {{ viewPatient.first_name }}</div>
                                     <div class="pe-4">
                                         <el-avatar :size="70" :src="viewPatient.avatar"></el-avatar>
                                     </div>
@@ -154,8 +154,8 @@
                                 </el-form>
                             </div>
                             <span slot="footer" class="dialog-footer">
-                                <el-button type="primary" @click="addUser('addSms')" size="small" icon="el-icon-position">Send</el-button>
-                                <el-button :loading="loadButton" @click="closeViewDialog('addSms')">Cancel</el-button>
+                                <el-button :loading="loadButton" type="primary" @click="sendSMS('addSms')" size="small" icon="el-icon-position">Send</el-button>
+                                <el-button @click="closeViewDialog('addSms')" size="small">Cancel</el-button>
                             </span>
                         </el-dialog>
 
@@ -192,8 +192,8 @@
                                 </el-form>
                             </div>
                             <span slot="footer" class="dialog-footer">
-                                <el-button type="primary" @click="sendSms('addSms')" size="small" icon="el-icon-position">Send</el-button>
-                                <el-button :loading="loadButton" @click="closeViewDialog('addSms')">Cancel</el-button>
+                                <el-button :loading="loadButton" type="primary" @click="sendSms('addSms')" size="small" icon="el-icon-position">Send</el-button>
+                                <el-button @click="closeSmsDialog('addSms')" size="small">Cancel</el-button>
                             </span>
                         </el-dialog>
                         <!----------------------------------------------------------------------------------- End of Modals/Drawers ----------------------------------------------------------------------------------->
@@ -211,8 +211,7 @@
             data() {
                 return {
                     addSms: {
-                        multiID: [],
-                        phone_number: "",
+                        multiNumber: [],
                         message: "",
                         appointment: "",
                     },
@@ -324,7 +323,7 @@
                 },
                 // ******************************************************
                 handleSelectionChange(val) {
-                    this.addSms.multiID = Object.values(val).map(i => i.phone_number)
+                    this.addSms.multiNumber = Object.values(val).map(i => i.phone_number)
                 },
                 filterHandler(value, row, column) {
                     const property = column['property'];
@@ -378,12 +377,12 @@
                     this.viewPatient = row;
                     this.viewDialog = true;
                 },
-                addUser(addSms) {
+                sendSMS(addSms) {
                     this.$refs[addSms].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
-                            newData.append("contact", this.addSms.phone_number)
+                            newData.append("phone_number", this.viewPatient.phone_number)
                             newData.append("message", this.addSms.message)
                             newData.append("appointment", this.addSms.appointment)
                             axios.post("sms-action.php?action=sent_message", newData)
@@ -412,11 +411,13 @@
                 resetFormData() {
                     this.addSms = []
                 },
-                handleSms() {
-                    if (Object.keys(this.addSms.multiID).length === 0) {
+                bulkSms() {
+                    console.log(this.addSms.multiNumber)
+                    if (Object.keys(this.addSms.multiNumber).length === 0) {
                         this.$message.error("Please select aleast one(1) user to send message!")
                     } else {
                         this.smsDialog = true
+                        
                     }
                 },
                 sendSms(addSms) {
@@ -424,12 +425,12 @@
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
-                            newData.append("user_ids", this.addSms.multiID)
-                            newData.append("contact", this.addSms.phone_number)
+                            newData.append("number_blast", this.addSms.multiNumber)
                             newData.append("message", this.addSms.message)
                             newData.append("appointment", this.addSms.appointment)
-                            axios.post("sms-action.php?action=sent_message", newData)
+                            axios.post("sms-action.php?action=bulk_message", newData)
                                 .then(response => {
+                                    console.log(response)
                                     if (response.data) {
                                         this.loadButton = false;
                                         this.tableLoad = true;
@@ -441,7 +442,7 @@
                                             this.tableLoad = false;
                                         }, 1500);
                                         this.resetFormData();
-                                        this.loadButton = false;
+                                        this.loadButton = true;
                                         this.smsDialog = false;
                                     }
                                 })

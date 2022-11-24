@@ -7,7 +7,7 @@
     include("./database/database.php");
 
     session_start();
-    
+
     ?>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -240,7 +240,6 @@
                 </div>
 
                 <div class="row mt-5">
-
                     <div class="col-lg-4">
                         <div class="info">
                             <div class="address">
@@ -248,17 +247,8 @@
                                 <h4>Location:</h4>
                                 <p>Barangay Taloc Bago City</p>
                             </div>
-
-                            <div class="phone">
-                                <i class="bi bi-phone"></i>
-                                <h4>Call:</h4>
-                                <p>+1 5589 55488 55s</p>
-                            </div>
-
                         </div>
-
                     </div>
-
                 </div>
 
             </div>

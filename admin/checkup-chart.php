@@ -39,7 +39,7 @@ $year = date("Y");
                 theme: "light1", // "light2", "dark1", "dark2"
                 animationEnabled: true, // change to true		
                 title: {
-                    text: "Monthly Individual Treatment <?php echo $year ?>"
+                    text: "Submitted Individual Treatment Forms Monthly"
                 },
                 data: [{
                     // Change type to "bar", "area", "spline", "pie",etc.

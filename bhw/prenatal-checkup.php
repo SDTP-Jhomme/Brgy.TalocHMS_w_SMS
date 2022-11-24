@@ -41,10 +41,6 @@
                         </div>
                     </div>
                     <!-- End -->
-                    <div class="underline-input">
-                        <div class="mt-5 d-flex flex-wrap justify-content-between">
-                        </div>
-                    </div>
                     <div>
                         <el-divider></el-divider>
                     </div>

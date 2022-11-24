@@ -1,29 +1,29 @@
 <?php
 require_once './import/head.php';
 $year = date("Y", strtotime("+8 HOURS"));
-$qjan = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Jan' && `year` = '$year'");
+$qjan = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Jan' && `year` = '$year'");
 $jan = $qjan->fetch_array();
-$qfeb = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Feb' && `year` = '$year'");
+$qfeb = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Feb' && `year` = '$year'");
 $feb = $qfeb->fetch_array();
-$qmar = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Mar' && `year` = '$year'");
+$qmar = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Mar' && `year` = '$year'");
 $mar = $qmar->fetch_array();
-$qapr = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Apr' && `year` = '$year'");
+$qapr = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Apr' && `year` = '$year'");
 $apr = $qapr->fetch_array();
-$qmay = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'May' && `year` = '$year'");
+$qmay = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'May' && `year` = '$year'");
 $may = $qmay->fetch_array();
-$qjun = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Jun' && `year` = '$year'");
+$qjun = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Jun' && `year` = '$year'");
 $jun = $qjun->fetch_array();
-$qjul = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Jul' && `year` = '$year'");
+$qjul = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Jul' && `year` = '$year'");
 $jul = $qjul->fetch_array();
-$qaug = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Aug' && `year` = '$year'");
+$qaug = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Aug' && `year` = '$year'");
 $aug = $qaug->fetch_array();
-$qsep = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Sept' && `year` = '$year'");
+$qsep = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Sept' && `year` = '$year'");
 $sep = $qsep->fetch_array();
-$qoct = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Oct' && `year` = '$year'");
+$qoct = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Oct' && `year` = '$year'");
 $oct = $qoct->fetch_array();
-$qnov = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Nov' && `year` = '$year'");
+$qnov = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Nov' && `year` = '$year'");
 $nov = $qnov->fetch_array();
-$qdec = $db->query("SELECT COUNT(*) as total FROM `immunization` INNER JOIN patient ON patient.fsn=immunization.fsn WHERE `month` = 'Dec' && `year` = '$year'");
+$qdec = $db->query("SELECT COUNT(*) as total FROM `immunization` WHERE `month` = 'Dec' && `year` = '$year'");
 $dec = $qdec->fetch_array();
 $year = date("Y");
 ?>
@@ -39,7 +39,7 @@ $year = date("Y");
                 theme: "light1", // "light2", "dark1", "dark2"
                 animationEnabled: true, // change to true		
                 title: {
-                    text: "Submitted Forms <?php echo date("F") ?>"
+                    text: "Submitted Immunization Forms Monthly"
                 },
                 data: [{
                     // Change type to "bar", "area", "spline", "pie",etc.

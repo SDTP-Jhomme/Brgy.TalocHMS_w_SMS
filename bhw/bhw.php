@@ -4,6 +4,72 @@
         <el-main v-if="active == 0">
             <el-row class="mb-3">
                 <el-col :span="12" :offset="2">
+                    Patient Information
+                </el-col>
+            </el-row>
+            <el-form :model="addPatient" :rules="addRules" ref="addPatient">
+                <el-row :gutter="20" type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item prop="lastName">
+                            <label class="m-0"><span class="text-danger">*</span> Last Name</label>
+                            <el-input v-model="addPatient.lastName" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="firstName">
+                            <label class="m-0"><span class="text-danger">*</span> First Name</label>
+                            <el-input v-model="addPatient.firstName" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="middleName">
+                            <label class="m-0">Middle Name</label>
+                            <el-input v-model="addPatient.middleName" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col v-if="!isPregnancy" :span="2">
+                        <el-form-item prop="suffix">
+                            <label class="m-0">Suffix</label>
+                            <el-input v-model="addPatient.suffix" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="30" type="flex" justify="center" align="middle">
+                    <el-col :span="6">
+                        <el-form-item prop="birthDate">
+                            <label class="m-0 d-block"><span class="text-danger">*</span> Birthdate</label>
+                            <el-date-picker v-model="addPatient.birthDate" type="date" placeholder="">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col v-if="!isPregnancy" :span="6">
+                        <el-form-item prop="gender">
+                            <label class="m-0"><span class="text-danger">*</span> Gender</label>
+                            <div>
+                                <el-radio v-model="addPatient.gender" label="Male">Male</el-radio>
+                                <el-radio v-model="addPatient.gender" label="Female">Female</el-radio>
+                            </div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-form-item prop="fsn">
+                            <label class="m-0"><span class="text-danger">*</span>FSN</label>
+                            <el-input v-model="addPatient.fsn" type="number"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item prop="phoneNo">
+                            <label class="m-0"><span class="text-danger">*</span>Mobile Number</label>
+                            <el-input v-model="addPatient.phoneNo" id="phone" maxlength="11" placeholder="09*********" clearable></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <el-divider></el-divider>
+        </el-main>
+        <el-main v-if="active == 1">
+            <el-row class="mb-3">
+                <el-col :span="12" :offset="2">
                     Select Checkup
                 </el-col>
             </el-row>
@@ -36,7 +102,7 @@
                         </a>
                     </div>
                 </el-col>
-                <el-col :span="5">
+                <el-col v-if="addPatient.gender=='Female'" :span="5">
                     <div>
                         <a href="javascript:void(0)" @click="pregnancy">
                             <div class="card card-overflow-hidden pregnancy-checkup" :class="{'card-border-pregnancy': this.isPregnancy}">
@@ -52,73 +118,6 @@
                 </el-col>
             </el-row>
         </el-main>
-        <el-main v-if="active == 1">
-            <el-row class="mb-3">
-                <el-col :span="12" :offset="2">
-                    Patient Information
-                </el-col>
-            </el-row>
-            <el-form :model="addPatient" :rules="addRules" ref="addPatient">
-                <el-row :gutter="20" type="flex" justify="center">
-                    <el-col :span="6">
-                        <el-form-item prop="lastName">
-                            <label class="m-0"><span class="text-danger">*</span> Last Name</label>
-                            <el-input v-model="addPatient.lastName" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-form-item prop="firstName">
-                            <label class="m-0"><span class="text-danger">*</span> First Name</label>
-                            <el-input v-model="addPatient.firstName" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-form-item prop="middleName">
-                            <label class="m-0">Middle Name</label>
-                            <el-input v-model="addPatient.middleName" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="2">
-                        <el-form-item prop="suffix">
-                            <label class="m-0">Suffix</label>
-                            <el-input v-model="addPatient.suffix" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter="30" type="flex" justify="center" align="middle">
-                    <el-col :span="6">
-                        <el-form-item prop="birthDate">
-                            <label class="m-0 d-block"><span class="text-danger">*</span> Birthdate</label>
-                            <el-date-picker v-model="addPatient.birthDate" type="date" placeholder="">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-form-item prop="gender">
-                            <label class="m-0"><span class="text-danger">*</span> Gender</label>
-                            <div>
-                                <el-radio v-model="addPatient.gender" label="Male">Male</el-radio>
-                                <el-radio v-model="addPatient.gender" label="Female">Female</el-radio>
-                            </div>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-form-item prop="fsn">
-                            <label class="m-0"><span class="text-danger">*</span>FSN</label>
-                            <el-input v-model="addPatient.fsn" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-form-item prop="phoneNo">
-                            <label class="m-0"><span class="text-danger">*</span>Mobile Number</label>
-                            <el-input v-model="addPatient.phoneNo" id="phone" maxlength="11" placeholder="09*********" clearable></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-            </el-form>
-            <el-divider></el-divider>
-            <?php //include("./patient.php"); ?>
-        </el-main>
         <el-main v-if="active == 2">
             <el-row class="mb-4">
             </el-row>
@@ -133,31 +132,38 @@
             </el-row>
         </el-main>
         <el-main v-if="active == 3">
-            <el-form :model="addSms" :rules="smsRules" ref="addSms">
-                <div class="underline-input top d-flex justify-content-start">
-                    <div class="w-40">
-                        <el-form-item label="To :" prop="phoneNo">
-                            <el-input v-model="addPatient.phoneNo" type="tel" maxlength='11' clearable disabled></el-input>
-                        </el-form-item>
-                    </div>
-                    <div class="w-30 mb-4">
-                        <el-form-item label="Appointment" prop="appointment">
-                            <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
-                            </el-date-picker>
-                        </el-form-item>
-                    </div>
+            <el-row :gutter="30" type="flex" justify="center">
+                <div class="w-60 lg body-card-form">
+                    <el-form :model="addSms" :rules="smsRules" ref="addSms">
+                        <div class="underline-input top d-flex justify-content-start">
+                            <div class="w-40">
+                                <el-form-item label="To :" prop="phoneNo">
+                                    <el-input v-model="addPatient.phoneNo" clearable disabled></el-input>
+                                </el-form-item>
+                                <el-form-item label="Name :" prop="firstName">
+                                    <el-input v-model="addPatient.firstName" clearable disabled></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="w-30 mb-4">
+                                <el-form-item label="Appointment" prop="appointment">
+                                    <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </div>
+                        </div>
+                        <div>
+                            <el-divider></el-divider>
+                        </div>
+                        <div class="underline-input top d-flex justify-content-start">
+                            <div class="w-80">
+                                <el-form-item label="Message :" prop="message">
+                                    <el-input v-model="addSms.message" type="textarea" placeholder="Message here" clearable></el-input>
+                                </el-form-item>
+                            </div>
+                        </div>
+                    </el-form>
                 </div>
-                <div>
-                    <el-divider></el-divider>
-                </div>
-                <div class="underline-input top d-flex justify-content-start">
-                    <div class="w-80">
-                        <el-form-item label="Message :" prop="message">
-                            <el-input v-model="addSms.message" type="textarea" placeholder="Message here" clearable></el-input>
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-form>
+            </el-row>
         </el-main>
         <el-main>
             <el-row type="flex" justify="center" class="mt-4 mb-4">
@@ -170,12 +176,12 @@
                 </el-col>
             </el-row>
             <el-row type="flex" justify="center" v-if="active == 0">
-                <el-button type="primary" size="small" plain @click="next">Next <i class="el-icon-arrow-right el-icon-right"></i></el-button>
+                <el-button type="primary" size="small" plain @click="proceed('addPatient')">Next <i class="el-icon-arrow-right el-icon-right"></i></el-button>
             </el-row>
             <el-row type="flex" justify="center" v-if="active == 1">
                 <el-button-group>
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="proceed('addPatient')">Next <i class="el-icon-arrow-right el-icon-right"></i></el-button>
+                    <el-button type="primary" size="small" plain @click="next">Next <i class="el-icon-arrow-right el-icon-right"></i></el-button>
                 </el-button-group>
             </el-row>
             <el-row type="flex" justify="center" v-if="active == 2">
@@ -195,7 +201,7 @@
             <el-row type="flex" justify="center" v-if="active == 3">
                 <el-button-group>
                     <el-button type="primary" size="small" plain @click="back" icon="el-icon-arrow-left el-icon-back">Back</el-button>
-                    <el-button type="primary" size="small" plain @click="addUser('addSms')">Send <i class="el-icon-s-promotion"></i></el-button>
+                    <el-button type="primary" size="small" plain @click="sendSms('addSms')">Send <i class="el-icon-s-promotion"></i></el-button>
                 </el-button-group>
             </el-row>
         </el-main>

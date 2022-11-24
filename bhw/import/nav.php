@@ -26,6 +26,11 @@
             </a>
             <!-- Dropdown - User Information -->
             <div id="dropdownMenu" class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="./patient-request">
+                    <i class="fas fa-table fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Patient(s) Request
+                </a>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="./profile">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile

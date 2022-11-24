@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>BHW | Add Patient</title>
+    <title>BHW | Patient Request</title>
     <?php
 
     include("./import/head.php");
@@ -42,20 +42,162 @@
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <!-- ElementUI Container -->
-                    <?php include("./bhw.php"); ?>
+                    <el-header class="mt-4" height="40">
+                        <h1 class="mt-4">Patient(s) Request Table</h1>
+                        <div class="card mb-5">
+                            <div class="card-body text-primary">
+                                Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
+                            </div>
+                        </div>
+                    </el-header>
+                    <el-main>
+                        <div class="container border rounded p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex">
+                                    <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
+                                        <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
+                                        </el-option>
+                                    </el-select>
+                                    <div class="ps-2">
+                                        <div v-if="searchValue == 'fsn'">
+                                            <el-input v-model="searchID" size="mini" placeholder="Type to search..." clearable />
+                                        </div>
+                                        <div v-else-if="searchValue == 'name'">
+                                            <el-input v-model="searchName" size="mini" placeholder="Type to search..." clearable />
+                                        </div>
+                                        <div v-else>
+                                            <el-input v-model="searchNull" size="mini" placeholder="Type to search..." clearable />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                <el-table-column label="No." type="index" width="50">
+                                </el-table-column>
+                                <el-table-column sortable label="FSN" prop="fsn">
+                                </el-table-column>
+                                <el-table-column sortable label="Date Requested" prop="date">
+                                </el-table-column>
+                                <el-table-column sortable label="Name" width="220" prop="name">
+                                </el-table-column>
+                                <el-table-column sortable label="Gender" prop="gender" width="110" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
+                                    <template slot-scope="scope">
+                                        <el-tag size="small" v-if="scope.row.gender == 'Male'">{{ scope.row.gender }}</el-tag>
+                                        <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column sortable label="Section" prop="section" width="200" column-key="section" :filters="[{text: 'Maternity', value: 'Maternity'}, {text: 'Individual Treatment', value: 'Individual Treatment'}, {text: 'Immunization', value: 'Immunization'}]" :filter-method="filterHandler">
+                                    <template slot-scope="scope">
+                                        <el-tag size="small" v-if="scope.row.section == 'Maternity'">{{ scope.row.section }}</el-tag>
+                                        <el-tag size="small" v-else-if="scope.row.section == 'Individual Treatment'" type="success">{{ scope.row.section }}</el-tag>
+                                        <el-tag size="small" v-else type="danger">{{ scope.row.section }}</el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column sortable label="Status" width="110" prop="status">
+                                    <template slot-scope="scope">
+                                        <el-tag size="small" v-if="scope.row.status == 'Pending'" type="warning">{{ scope.row.status }}</el-tag>
+                                        <el-tag size="small" v-else type="success">{{ scope.row.status }}</el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="Actions" width="140">
+                                    <template slot-scope="scope">
+                                        <el-tooltip class="item" effect="dark" content="View Details" placement="top-start">
+                                            <el-button icon="el-icon-view" v-if="scope.row.section == 'Maternity'" size="mini" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
+                                            <el-button icon="el-icon-view" v-else-if="scope.row.section == 'Individual Treatment'" size="mini" type="success" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
+                                            <el-button icon="el-icon-view" v-else size="mini" type="danger" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
+                                        </el-tooltip>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <div class="d-flex justify-content-between mt-2">
+                                <el-checkbox v-model="showAllData">Show All</el-checkbox>
+                                <el-pagination :current-page.sync="page" :pager-count="5" :page-size="this.pageSize" background layout="prev, pager, next" :total="this.tableData.length" @current-change="setPage">
+                                </el-pagination>
+                            </div>
+                        </div>
+                    </el-main>
+                    <el-dialog :visible.sync="viewDialog" width="70%" :before-close="closeViewDialog">
+                        <template #title>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="pe-4">
+                                    <el-avatar :size="70" :src="viewPatient.avatar"></el-avatar>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="container">
+                            <div v-if="viewPatient.section == 'Maternity'">
+                                <?php include("./prenatal-request.php") ?>
+                            </div>
+                            <div v-else-if="viewPatient.section == 'Individual Treatment'">
+                                <?php include("./health-request.php") ?>
+                            </div>
+                            <div v-else>
+                                <?php include("./immunization-request.php") ?>
+                            </div>
+                        </div>
+                        <span slot="footer" class="dialog-footer">
+                            <div v-if="viewPatient.section == 'Maternity'">
+                                <el-button size="medium" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" type="warning" @click="smsDialog=true">Set Appointment</el-button>
+                                <el-button size="medium" :loading="loadButton" @click="submitPrenatal('prenatal')">Save</el-button>
+                            </div>
+                            <div v-else-if="viewPatient.section == 'Individual Treatment'">
+                                <el-button size="medium" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" type="warning" @click="smsDialog=true">Set Appointment</el-button>
+                                <el-button size="medium" :loading="loadButton" type="success" @click="submitHealth('health')">Save</el-button>
+                            </div>
+                            <div v-else>
+                                <el-button size="medium" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" type="warning" @click="smsDialog=true">Send Appointment</el-button>
+                                <el-button size="medium" :loading="loadButton" type="danger" @click="submitImmunization('immunize')">Save</el-button>
+                            </div>
+                        </span>
+                    </el-dialog>
+                    <el-dialog :visible.sync="smsDialog" width="50%" :before-close="closeSmsDialog">
+                        <template #title>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fs-5">User {{ viewPatient.first_name }}</div>
+                                <div class="pe-4">
+                                    <el-avatar :size="70" :src="viewPatient.avatar"></el-avatar>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="container">
+                            <el-form :model="addSms" :rules="smsRules" ref="addSms">
+                                <div class="row underline-input">
+                                    <div class="col-auto">
+                                        <el-header>
+                                            <h4>Send Appointments</h4>
+                                        </el-header>
+                                    </div>
+                                    <div class="col-auto">
+                                        <el-form-item class="" label="Send To :" prop="phone_number">
+                                            <el-input v-model="viewPatient.phone_number" clearable disabled></el-input>
+                                        </el-form-item>
+                                    </div>
+                                </div>
+                                <div>
+                                    <el-divider></el-divider>
+                                </div>
+                                <div class="row d-flex justify-content-center">
+                                    <div class="col-9">
+                                        <el-form-item prop="appointment">
+                                            <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
+                                            </el-date-picker>
+                                        </el-form-item>
+                                    </div>
+                                </div>
+                                <div>
+                                    <el-divider></el-divider>
+                                </div>
+                            </el-form>
+                        </div>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button :loading="loadButton" type="primary" @click="sendSMS('addSms')" size="small" icon="el-icon-position">Send</el-button>
+                            <el-button @click="closeSmsDialog('addSms')" size="small">Cancel</el-button>
+                        </span>
+                    </el-dialog>
                 </div>
-                <!-- /.container-fluid -->
-                <!-- After Add Show Patient Username & Password -->
-                <el-dialog title="New Patient Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
-                    <label class="text-primary">Username</label>
-                    <el-input class="mb-2 text-dark" v-model="newUser.username" disabled></el-input>
-                    <label class="text-primary">Password</label>
-                    <el-input class="mb-2 text-dark" v-model="newUser.password" disabled></el-input>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button type="primary" @click="closeAddDialog">Close</el-button>
-                    </span>
-                </el-dialog>
             </div>
             <!-- End of Main Content -->
             <!-- Footer -->
@@ -77,7 +219,8 @@
                     showAllData: false,
                     tableLoad: false,
                     tableData: [],
-                    active: 0,
+                    viewDialog: false,
+                    loadButton: false,
                     fullscreenLoading: true,
                     openAddDialog: false,
                     backToHome: false,
@@ -85,6 +228,9 @@
                     isImmunization: false,
                     isPregnancy: false,
                     avatar: "",
+                    smsDialog: false,
+                    viewPatient: [],
+                    viewImmunization: [],
                     checkIdentification: [],
                     searchValue: "",
                     searchNull: "",
@@ -106,22 +252,7 @@
                         message: "",
                         appointment: "",
                     },
-                    addPatient: {
-                        id: 0,
-                        fsn: "",
-                        firstName: "",
-                        middleName: "",
-                        lastName: "",
-                        suffix: "",
-                        birthDate: "",
-                        gender: "",
-                        phoneNo: "",
-                    },
                     prenatal: {
-                        spouseFname: "",
-                        spouseLname: "",
-                        purok: "",
-                        barangay: "",
                         gp: "",
                         lmp: "",
                         edc: "",
@@ -140,31 +271,6 @@
                     },
                     health: {
                         clinisysFSN: "",
-                        civil: "",
-                        spouse: "",
-                        education: "",
-                        employment: "",
-                        occupation: "",
-                        religion: "",
-                        street: "",
-                        purok: "",
-                        barangay: "",
-                        blood: "",
-                        member: "",
-                        otherMember: "",
-                        phlType: "",
-                        philhealth: "",
-                        mLastName: "",
-                        mFirstName: "",
-                        mMidName: "",
-                        age: "",
-                        nhts: "",
-                        pantawid: "",
-                        hhNo: "",
-                        alert: "",
-                        otherAlert: "",
-                        medicalHistory: "",
-                        otherHistory: "",
                         encounter: "",
                         consultationType: "",
                         otherConsultation: "",
@@ -184,91 +290,28 @@
                     },
                     immunize: {
                         childNo: "",
-                        mLastName: "",
-                        mFirstName: "",
-                        mMidName: "",
-                        fLastName: "",
-                        fFirstName: "",
-                        fMidName: "",
-                        purok: "",
-                        barangay: "",
                         appointment: "",
                         age: "",
                         temp: "",
                         immunizationGiven: "",
                     },
                     smsRules: {
+                        message: [{
+                            required: true,
+                            message: 'Message is required!',
+                            trigger: 'blur'
+                        }, {
+                            min: 2,
+                            message: 'Message should atleast two(2) characters!',
+                            trigger: 'blur'
+                        }],
                         appointment: [{
                             required: true,
                             message: 'Appointment is required!',
                             trigger: 'blur'
                         }],
                     },
-                    addRules: {
-                        fsn: [{
-                            required: true,
-                            message: 'FSN is required!',
-                            trigger: 'blur'
-                        }],
-                        firstName: [{
-                            required: true,
-                            message: 'First name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        lastName: [{
-                            required: true,
-                            message: 'Last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        birthDate: [{
-                            required: true,
-                            message: 'Birthdate is required!',
-                            trigger: 'blur'
-                        }],
-                        gender: [{
-                            required: true,
-                            message: 'Gender is required!',
-                            trigger: 'blur'
-                        }],
-                        phoneNo: [{
-                            required: true,
-                            message: 'Phone number is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^(09|\+639)\d{9}$/,
-                            message: 'Invalid phone number format!',
-                            trigger: 'blur'
-                        }],
-                    },
                     prenatalRules: {
-                        spouseFname: [{
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        spouseLname: [{
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }],
-                        purok: [{
-                            required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
                         dateVisit: [{
                             required: true,
                             message: 'Date is required!',
@@ -311,79 +354,6 @@
                         }],
                     },
                     healthRules: {
-                        civil: [{
-                            required: true,
-                            message: 'Civil Status is required!',
-                            trigger: 'blur'
-                        }],
-                        education: [{
-                            required: true,
-                            message: 'Education Attainment is required!',
-                            trigger: 'blur'
-                        }],
-                        employment: [{
-                            required: true,
-                            message: 'Employment Status is required!',
-                            trigger: 'blur'
-                        }],
-                        religion: [{
-                            required: true,
-                            message: 'Religion is required!',
-                            trigger: 'blur'
-                        }],
-                        street: [{
-                            required: true,
-                            message: 'Street is required!',
-                            trigger: 'blur'
-                        }],
-                        purok: [{
-                            required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
-                        member: [{
-                            required: true,
-                            message: 'Family member is required!',
-                            trigger: 'blur'
-                        }],
-                        mLastName: [{
-                            required: true,
-                            message: 'Mother last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }],
-                        mFirstName: [{
-                            required: true,
-                            message: 'Mother first name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        mMidName: [{
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid middle name format!',
-                            trigger: 'blur'
-                        }],
-                        alert: [{
-                            required: true,
-                            message: 'Alert type is required!',
-                            trigger: 'blur'
-                        }],
-                        medicalHistory: [{
-                            required: true,
-                            message: 'Past medical family history  is required!',
-                            trigger: 'blur'
-                        }],
                         encounter: [{
                             required: true,
                             message: 'Encounter type is required!',
@@ -441,62 +411,6 @@
                         }],
                     },
                     immunizationRules: {
-                        mLastName: [{
-                            required: true,
-                            message: 'Mother last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        mFirstName: [{
-                            required: true,
-                            message: 'Mother first name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        mMidName: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        fLastName: [{
-                            required: true,
-                            message: 'Father last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        fFirstName: [{
-                            required: true,
-                            message: 'Father first name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        fMidName: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        purok: [{
-                            required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
                         temp: [{
                             pattern: /^[\.0-9]*$/,
                             message: 'Invalid temperature format!',
@@ -513,11 +427,16 @@
             created() {
                 this.fetchAvatar()
                 this.getData()
+                this.getImmunization()
             },
             mounted() {
                 setTimeout(() => {
                     this.fullscreenLoading = false
                 }, 1000)
+                if (window.location.pathname != "/caps/capstone-new/bhw/") {
+                    localStorage.clear()
+                    this.backToHome = true;
+                }
                 this.active = localStorage.active ? parseInt(localStorage.active) : 0
                 this.addPatient = localStorage.addPatient ? JSON.parse(localStorage.addPatient) : {}
                 this.isHealthCheckup = localStorage.isHealthCheckup ? localStorage.isHealthCheckup : false
@@ -564,9 +483,6 @@
                 usersTable() {
                     return this.tableData
                         .filter((data) => {
-                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
-                        })
-                        .filter((data) => {
                             return data.first_name.toLowerCase().includes(this.searchName.toLowerCase());
                         })
                         .filter((data) => {
@@ -597,6 +513,48 @@
                             }
                         })
                 },
+                closeViewDialog(addDetails) {
+                    this.$confirm('Are you sure you want to cancel?', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                        })
+                        .then(() => {
+                            this.viewDialog = false
+                            this.$refs[addDetails].resetFields();
+                            localStorage.removeItem("fsn")
+                        })
+                        .catch(() => {});
+                },
+                closeSmsDialog(addSms) {
+                    this.$confirm('Are you sure you want to cancel send message?', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                        })
+                        .then(() => {
+                            this.smsDialog = false
+                            this.$refs[addSms].resetFields();
+                            localStorage.removeItem("fsn")
+                        })
+                        .catch(() => {});
+                },
+                handleView(index, row) {
+                    this.viewImmunization = row;
+                    this.viewPatient = row;
+                    this.viewDialog = true;
+
+                    localStorage.setItem("viewPatient", JSON.stringify(this.viewPatient))
+
+                    var today = new Date();
+                    var birthDate = new Date(this.viewPatient.birthdate);
+                    var age = today.getFullYear() - birthDate.getFullYear();
+                    var m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
+                    localStorage.setItem("age", age);
+                    this.health.age = age;
+                    this.immunize.age = age;
+                },
                 handleOpen(key, keyPath) {
                     console.log(key, keyPath);
                 },
@@ -611,6 +569,9 @@
                         })
                         .then(() => {
                             this.openAddDialog = false
+                            setTimeout(() => {
+                                this.fullscreenLoading = true
+                            }, 1000)
                         })
                         .catch(() => {});
                 },
@@ -636,6 +597,15 @@
                             }
                         })
                 },
+                getImmunization() {
+                    axios.post("action.php?action=fetchImmunization")
+                        .then(response => {
+                            console.log(response)
+                            if (response.data.error) {
+                                this.viewImmunization.m_lastname = response.data
+                            }
+                        })
+                },
                 changeColumn(selected) {
                     this.searchNull = ""
                     this.searchName = ""
@@ -652,20 +622,19 @@
                     const property = column['property'];
                     return row[property] === value;
                 },
-                sendSms(addSms) {
+                sendSMS(addSms) {
                     this.$refs[addSms].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
-                            this.openAddDrawer = false;
                             var newData = new FormData()
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("contact", this.addPatient.phoneNo)
-                            newData.append("message", this.addSms.message)
+                            newData.append("first_name", this.viewPatient.first_name)
+                            newData.append("last_name", this.viewPatient.last_name)
+                            newData.append("contact", this.viewPatient.phone_number)
                             newData.append("appointment", this.addSms.appointment)
                             axios.post("action.php?action=sent_message", newData)
                                 .then(response => {
                                     if (response.data) {
+                                        this.loadButton = false;
                                         this.tableLoad = true;
                                         setTimeout(() => {
                                             this.$message({
@@ -675,12 +644,10 @@
                                             this.tableLoad = false;
                                         }, 1500);
                                         this.resetFormData();
-                                        this.newUser = response.data;
                                         this.loadButton = false;
+                                        this.smsDialog = false;
                                     }
                                 })
-                            if (this.active++ > 2) this.active = 0;
-                            this.loadButton = true;
                         } else {
                             this.$message.error("Cannot submit the message. Please check the error(s).")
                             return false;
@@ -690,118 +657,19 @@
                 resetFormData() {
                     this.addSms = []
                 },
-                proceed(addPatient) {
-                    this.$refs[addPatient].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            this.tableLoad = true;
-                            var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("gender", this.addPatient.gender)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("phone_number", this.addPatient.phoneNo)
-                            axios.post("action.php?action=store", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New Patient has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData()
-                                            setTimeout(() => {
-                                                this.openAddDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.newUser = response.data;
-                                        this.loadButton = false;
-                                    }
-                                })
-                            this.active++;
-                            localStorage.setItem("active", this.active)
-                            localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
-                            this.isHealthCheckup = false;
-                            this.isImmunization = false;
-                            this.isImmunization = false;
-
-                            var today = new Date();
-                            var birthDate = new Date(this.addPatient.birthDate);
-                            var age = today.getFullYear() - birthDate.getFullYear();
-                            var m = today.getMonth() - birthDate.getMonth();
-                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                                age--;
-                            }
-                            localStorage.setItem("age", age);
-                            this.health.age = age;
-                            this.immunize.age = age;
-                        } else {
-                            this.$message.error("Please fill in the required informations!");
-                            return false;
-                        }
-                    })
-                },
-                back() {
-                    this.active--
-                    localStorage.setItem("active", this.active)
-                    if (this.active == 0) {
-                        localStorage.removeItem("addPatient")
-                        localStorage.removeItem("age")
-                    }
-                    localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
-                    localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
-                    localStorage.isPregnancy ? localStorage.removeItem("isPregnancy") : ""
-                },
-                next() {
-                    if (this.isHealthCheckup) {
-                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
-                    } else if (this.isImmunization) {
-                        localStorage.setItem("isImmunization", this.isImmunization)
-                    } else if (this.isPregnancy) {
-                        localStorage.setItem("isPregnancy", this.isPregnancy)
-                        this.addPatient.gender = "Female"
-                    }
-
-                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy) {
-                        this.active++;
-                        localStorage.setItem("active", this.active)
-                    } else {
-                        this.$message.error("Please select an appointment!");
-                    }
-                },
-                healthCheckup() {
-                    this.isPregnancy = false;
-                    this.isImmunization = false;
-                    this.isHealthCheckup = !this.isHealthCheckup;
-                },
-                immunization() {
-                    this.isPregnancy = false;
-                    this.isImmunization = !this.isImmunization;
-                    this.isHealthCheckup = false;
-                },
-                pregnancy() {
-                    this.isPregnancy = !this.isPregnancy;
-                    this.isImmunization = false;
-                    this.isHealthCheckup = false;
-                },
                 submitHealth(health) {
                     this.$refs[health].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("fsn", this.viewPatient.fsn)
                             newData.append("clinisys", this.health.clinisysFSN)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("gender", this.addPatient.gender)
+                            newData.append("last_name", this.viewPatient.lastName)
+                            newData.append("first_name", this.viewPatient.firstName)
+                            newData.append("middle_name", this.viewPatient.middleName)
+                            newData.append("suffix", this.viewPatient.suffix)
+                            newData.append("birthdate", this.viewPatient.birthDate)
+                            newData.append("gender", this.viewPatient.gender)
                             newData.append("civil", this.health.civil)
                             newData.append("spouse", this.health.spouse)
                             newData.append("educ_attainment", this.health.education)
@@ -860,7 +728,6 @@
                                 })
                             this.active++;
                             localStorage.setItem("active", this.active)
-                            console.log(this.addPatient, "healthcheck")
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -872,22 +739,22 @@
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("fsn", this.viewPatient.fsn)
                             newData.append("child_no", this.immunize.childNo)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("gender", this.addPatient.gender)
-                            newData.append("m_lastname", this.immunize.mLastName)
-                            newData.append("m_firstname", this.immunize.mFirstName)
-                            newData.append("m_middlename", this.immunize.mMidName)
-                            newData.append("f_lastname", this.immunize.fLastName)
-                            newData.append("f_firstname", this.immunize.fFirstName)
-                            newData.append("f_middlename", this.immunize.fMidName)
-                            newData.append("purok", this.immunize.purok)
-                            newData.append("barangay", this.immunize.barangay)
+                            newData.append("first_name", this.viewPatient.firstName)
+                            newData.append("middle_name", this.viewPatient.middleName)
+                            newData.append("last_name", this.viewPatient.lastName)
+                            newData.append("suffix", this.viewPatient.suffix)
+                            newData.append("birthdate", this.viewPatient.birthDate)
+                            newData.append("gender", this.viewPatient.gender)
+                            newData.append("m_lastname", <?php echo $m_lastname ?>)
+                            newData.append("m_firstname", <?php echo $m_firstname ?>)
+                            newData.append("m_middlename", <?php echo $m_middlename ?>)
+                            newData.append("f_lastname", <?php echo $f_lastname ?>)
+                            newData.append("f_firstname", <?php echo $f_firstname ?>)
+                            newData.append("f_middlename", <?php echo $f_middlename ?>)
+                            newData.append("purok", <?php echo $purok ?>)
+                            newData.append("barangay", <?php echo $barangay ?>)
                             newData.append("appointment", this.immunize.appointment)
                             newData.append("age", this.immunize.age)
                             newData.append("weight", this.immunize.weight)
@@ -923,12 +790,12 @@
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("gender", this.addPatient.gender)
+                            newData.append("fsn", this.viewPatient.fsn)
+                            newData.append("first_name", this.viewPatient.firstName)
+                            newData.append("middle_name", this.viewPatient.middleName)
+                            newData.append("last_name", this.viewPatient.lastName)
+                            newData.append("birthdate", this.viewPatient.birthDate)
+                            newData.append("gender", this.viewPatient.gender)
                             newData.append("spouse_lastname", this.prenatal.spouseLname)
                             newData.append("spouse_firstname", this.prenatal.spouseFname)
                             newData.append("purok", this.prenatal.purok)
@@ -966,8 +833,6 @@
                                 })
                             this.active++;
                             localStorage.setItem("active", this.active)
-                            console.log(this.addPatient, "pregnancy")
-
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;

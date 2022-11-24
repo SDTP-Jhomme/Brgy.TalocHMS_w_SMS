@@ -19,4 +19,3 @@ session_start();
 <!-- Custom styles for this template-->
 <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
 <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
-<script src="./assets/js/bootstrap.bundle.min.js"></script>
