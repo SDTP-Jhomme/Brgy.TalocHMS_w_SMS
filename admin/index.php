@@ -28,7 +28,7 @@
 <body class="sb-nav-fixed">
     <div id="app">
         <?php include("./import/nav.php"); ?>
-        <div id="layoutSidenav" v-loading.fullscreen.lock="fullscreenLoading">
+        <div id="layoutSidenav">
             <?php include("./import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
@@ -47,11 +47,6 @@
                 return {
                     fullscreenLoading: true
                 }
-            },
-            mounted() {
-                setTimeout(() => {
-                    this.fullscreenLoading = false
-                }, 1000)
             },
             methods: {
                 // Logout ****************

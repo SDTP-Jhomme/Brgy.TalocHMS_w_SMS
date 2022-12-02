@@ -24,14 +24,14 @@
         }
     } else {
 
-        header("Location: ../../capstone-new");
+        header("Location: ./login");
         die();
     } ?>
 </head>
 
 <body id="page-top">
     <!-- Page Wrapper -->
-    <div id="app" v-loading.fullscreen.lock="fullscreenLoading">
+    <div id="app">
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column vh-100">
             <!-- Main Content -->
@@ -62,13 +62,18 @@
         new Vue({
             el: "#app",
             data() {
-                const dateToday = new Date();
                 return {
+                    maxDate: {
+                        disabledDate(date) {
+                            return date > new Date();
+                        }
+                    },
                     active: 0,
-                    fullscreenLoading: true,
                     backToHome: false,
                     checkupType: "",
                     avatar: "",
+                    date: "",
+                    age: "",
                     addPatient: {
                         id: 0,
                         fsn: "",
@@ -81,7 +86,6 @@
                         phone: "",
                     },
                     prenatal: {
-                        appointment: "",
                         dateVisit: "",
                         weight: "",
                         blood: "",
@@ -127,10 +131,9 @@
                         history: [],
                         otherHistory: [],
                         encounter: "",
-                        date: "",
-                        age: "",
                         transaction: "",
                     },
+                    histories: ["HPN", "DM", "Asthma", "Smoker"],
                     addRules: {
                         fsn: [{
                             required: true,
@@ -182,28 +185,38 @@
                     }
                 }
             },
-            created() {
+            mounted() {
+
                 this.fetchAvatar()
                 this.checkStatus()
 
-                this.checkupType = localStorage.checkupType ? localStorage.checkupType : ""
-            },
-            mounted() {
-                setTimeout(() => {
-                    this.fullscreenLoading = false
-                }, 1000)
-                this.active = localStorage.active ? parseInt(localStorage.active) : 0
-                this.addPatient = localStorage.addPatient ? JSON.parse(localStorage.addPatient) : {}
+                const now = new Date();
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+                const date = now.toLocaleDateString("en-US", options);
+                this.date = date
 
-                this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
-                this.health.date = localStorage.date ? localStorage.date : "January 01, 1970"
-                this.health.age = localStorage.age ? localStorage.age : 0
+                this.checkupType = localStorage.checkupType ? localStorage.checkupType : "";
+                this.active = localStorage.active ? parseInt(localStorage.active) : 0;
+                this.addPatient = localStorage.addPatient ? JSON.parse(localStorage.addPatient) : {};
+                this.age = localStorage.age ? localStorage.age : "";
+
+                if (this.checkupType == "isPregnancy") {
+                    this.addPatient.gender = "Female";
+                }
+
+                if (this.active == 0) {
+                    this.checkupType = "";
+                    localStorage.clear();
+                }
             },
             methods: {
                 // Logout **********************************************************
                 logout() {
-                    this.fullscreenLoading = true
-                    axios.post("../auth.php?action=logout")
+                    axios.post("./auth.php?action=logout")
                         .then(response => {
                             if (response.data.message) {
                                 localStorage.clear();
@@ -213,7 +226,7 @@
                                     type: 'success'
                                 });
                                 setTimeout(() => {
-                                    window.location.href = "../../capstone-new"
+                                    window.location.href = "./login"
                                 }, 1000)
                             }
                         })
@@ -225,7 +238,7 @@
                     axios.post("action.php?action=fetch_status", fetchStatus)
                         .then(response => {
                             if (response.data == "Inactive") {
-                                axios.post("../auth.php?action=logout")
+                                axios.post("./auth.php?action=logout")
                                     .then(response => {
                                         if (response.data.message) {
                                             localStorage.clear();
@@ -234,7 +247,7 @@
                                                 message: 'Status is inactive!',
                                             });
                                             setTimeout(() => {
-                                                window.location.href = "../../capstone-new"
+                                                window.location.href = "./login"
                                             }, 1000)
                                         }
                                     })
@@ -251,35 +264,55 @@
                             }
                         })
                 },
+                calculateAge(birthDay) {
+                    let dob = new Date(birthDay);
+                    let now = new Date();
+                    let lastDayOfMonth = new Date(dob.getFullYear(), dob.getMonth() + 1, 0).getDate();
+
+                    let birthYear = dob.getYear();
+                    let birthMonth = dob.getMonth();
+                    let birthDate = dob.getDate();
+
+                    let currentYear = now.getYear();
+                    let currentMonth = now.getMonth();
+                    let currentDate = now.getDate();
+
+                    let monthDiff = currentMonth - birthMonth;
+                    let dateDiff = currentDate - birthDate;
+                    let age = currentYear - birthYear;
+
+                    if (age > 1 && (monthDiff < 0 || (monthDiff == 0 && currentDate < birthDate))) {
+                        let count = age - 1
+                        return count + ` year${count > 1 ? "s" : ""} old`
+                    } else if (age == 1 && (monthDiff < 0 || (monthDiff == 0 && currentDate < birthDate))) {
+                        let count = 11 - birthMonth + currentMonth
+                        return count + ` month${count > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff > 0 && currentDate >= birthDate) {
+                        let count = monthDiff
+                        return count + ` month${count > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff > 1 && currentDate < birthDate) {
+                        let count = monthDiff - 1
+                        return count + ` month${count > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff <= 1 && currentDate >= birthDate) {
+                        let count = dateDiff
+                        return count + ` day${count > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff <= 1 && currentDate < birthDate) {
+                        let count = lastDayOfMonth - birthDate + currentDate
+                        return count + ` day${count > 1 ? "s" : ""} old`
+                    }
+
+
+                    return age + ` year${age > 1 ? "s" : ""} old`;
+                },
                 proceed(addPatient) {
                     this.$refs[addPatient].validate((valid) => {
                         if (valid) {
                             this.active++;
+                            this.age = this.calculateAge(this.addPatient.birthDate);
+
                             localStorage.setItem("active", this.active)
                             localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
-
-                            const now = new Date();
-                            const options = {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            };
-
-                            const date = now.toLocaleDateString("en-US", options);
-                            localStorage.setItem("date", date)
-
-                            this.prenatal.appointment = date
-                            this.health.date = date
-
-                            var today = new Date();
-                            var birthDate = new Date(this.addPatient.birthDate);
-                            var age = today.getFullYear() - birthDate.getFullYear();
-                            var m = today.getMonth() - birthDate.getMonth();
-                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                                age--;
-                            }
-                            localStorage.setItem("age", age);
-                            this.health.age = age;
+                            localStorage.setItem("age", this.age);
                         } else {
                             this.$message.error("Unable to proceed. Please check the errors!");
                             return false;
@@ -288,35 +321,53 @@
                 },
                 back() {
                     if (this.active == 1) {
-                        if (Object.keys(this.addPatient).length != 0) {
-                            this.$confirm('Changes unsaved. Continue?', {
+                        delete this.addPatient.gender
+                        if (Object.values(this.addPatient).every((i) => i == "")) {
+                            this.addPatient = {}
+                        }
+                        if (Object.values(this.addPatient).length != 0) {
+                            this.$confirm('There are unsaved changes. Continue?', {
                                     confirmButtonText: 'Yes',
                                     cancelButtonText: 'No',
                                 })
                                 .then(() => {
                                     this.active--
                                     this.addPatient = {}
-                                    this.checkupType = "";
-                                    localStorage.removeItem("checkupType")
+                                    localStorage.removeItem("active")
+                                })
+                                .catch(() => {});
+                        } else {
+                            this.active--
+                            localStorage.removeItem("active")
+                        }
+                    } else if (this.active == 2) {
+                        if (Object.values(this.prenatal).every((i) => i == "") || Object.values(this.prenatal).every((i) => i == "")) {
+                            this.prenatal = {}
+                            this.health = {}
+                        }
+                        if (Object.values(this.prenatal).length != 0 || Object.values(this.health).length != 0) {
+                            this.$confirm('There are unsaved changes. Continue?', {
+                                    confirmButtonText: 'Yes',
+                                    cancelButtonText: 'No',
+                                })
+                                .then(() => {
+                                    this.active--
+                                    this.prenatal = {}
+                                    this.health = {}
+                                    localStorage.removeItem("addPatient")
+                                    localStorage.removeItem("age")
                                     localStorage.setItem("active", this.active)
                                 })
                                 .catch(() => {});
                         } else {
                             this.active--
-                            localStorage.removeItem("checkupType")
-                            this.checkupType = "";
+                            localStorage.removeItem("addPatient")
+                            localStorage.removeItem("age")
+                            localStorage.setItem("active", this.active)
                         }
                     } else {
-                        if (this.checkupType == "isPregnancy") {
-                            this.active--
-                            this.prenatal = {}
-                            localStorage.removeItem("addPatient")
-                        } else {
-                            this.active--
-                        }
+                        this.active--
                     }
-
-                    localStorage.setItem("active", this.active)
                 },
                 next() {
                     if (this.checkupType) {

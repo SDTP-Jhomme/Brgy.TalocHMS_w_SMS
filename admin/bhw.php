@@ -28,7 +28,7 @@
 <body class="sb-nav-fixed">
     <div id="app">
         <?php include("./import/nav.php"); ?>
-        <div id="layoutSidenav" v-loading.fullscreen.lock="fullscreenLoading">
+        <div id="layoutSidenav">
             <?php include("./import/sidebar.php"); ?>
             <div id="layoutSidenav_content">
                 <main>
@@ -136,7 +136,7 @@
                                         <el-input v-model="addBhw.lastName" clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="Birthday" prop="birthdate">
-                                        <el-date-picker v-model="addBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
+                                        <el-date-picker :picker-options="this.maxDate" v-model="addBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
                                         </el-date-picker>
                                     </el-form-item>
                                     <el-form-item label="Gender" prop="gender">
@@ -180,7 +180,7 @@
                             <template #title>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="fs-5">User {{ viewBhw.username }}</div>
-                                    <div class="pe-4">
+                                    <div class="pe-4 view-avatar">
                                         <el-avatar :size="70" :src="viewBhw.avatar"></el-avatar>
                                     </div>
                                 </div>
@@ -223,7 +223,7 @@
                                     <el-input v-model="updateBhw.lastName" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item label="Birthday" prop="birthdate">
-                                    <el-date-picker v-model="updateBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
+                                    <el-date-picker :picker-options="this.maxDate" v-model="updateBhw.birthdate" type="date" placeholder="Select birthdate" clearable>
                                     </el-date-picker>
                                 </el-form-item>
                                 <el-form-item label="Gender" prop="gender">
@@ -234,7 +234,7 @@
                                 </el-form-item>
                             </el-form>
                             <span slot="footer" class="dialog-footer">
-                                <el-button :loading="loadButton" @click="closeEditDialog('updateBhw')">Cancel</el-button>
+                                <el-button :loading="loadButton" @click="closeEditDialog">Cancel</el-button>
                                 <el-button :loading="loadButton" type="warning" @click="resetPassword">Reset Password</el-button>
                                 <el-button :loading="loadButton" type="primary" @click="updateUser('updateBhw')">Update</el-button>
                             </span>
@@ -285,6 +285,11 @@
                     }
                 };
                 return {
+                    maxDate: {
+                        disabledDate(date) {
+                            return date > new Date();
+                        }
+                    },
                     rules: {
                         identification: [{
                             required: true,
@@ -403,7 +408,6 @@
                     viewDialog: false,
                     switch: false,
                     multipleSelection: [],
-                    fullscreenLoading: true,
                     tableData: [],
                     multiID: [],
                     newUser: [],
@@ -463,11 +467,6 @@
             created() {
                 this.getData()
             },
-            mounted() {
-                setTimeout(() => {
-                    this.fullscreenLoading = false
-                }, 1000)
-            },
             watch: {
                 editBhw(value) {
                     this.updateBhw.id = value.id ? value.id : "";
@@ -523,14 +522,20 @@
                     return row[property] === value;
                 },
                 closeAddDrawer() {
-                    this.$confirm('Are you sure you want to cancel adding new BHW?', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                        })
-                        .then(() => {
-                            this.openAddDrawer = false
-                        })
-                        .catch(() => {});
+                    if (!Object.values(this.addBhw).every((val) => val == "")) {
+                        this.$confirm('There are unsaved changes. Continue?', {
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+                            })
+                            .then(() => {
+                                this.openAddDrawer = false
+                                this.resetForm("addBhw")
+                            })
+                            .catch(() => {});
+                    } else {
+                        this.openAddDrawer = false
+                        this.resetForm("addBhw")
+                    }
                 },
                 closeAddDialog() {
                     this.$confirm('Done copying username & password?', 'Warning', {
@@ -546,14 +551,14 @@
                 closeViewDialog() {
                     this.viewDialog = false;
                 },
-                closeEditDialog(editBhw) {
+                closeEditDialog() {
                     this.$confirm('Are you sure you want to cancel updating BHW?', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                         })
                         .then(() => {
                             this.editDialog = false
-                            this.$refs[editBhw].resetFields();
+                            this.resetForm("updateBhw")
                             localStorage.removeItem("identification")
                         })
                         .catch(() => {});
@@ -573,12 +578,19 @@
                     this.page = value
                 },
                 getData() {
+                    this.tableLoad = true
                     axios.post("action.php?action=fetch")
                         .then(response => {
                             if (response.data.error) {
-                                this.tableData = []
+                                setTimeout(() => {
+                                    this.tableData = []
+                                    this.tableLoad = false
+                                }, 1000)
                             } else {
-                                this.tableData = response.data
+                                setTimeout(() => {
+                                    this.tableData = response.data
+                                    this.tableLoad = false
+                                }, 1000)
                                 this.checkIdentification = response.data.map(res => res.identification)
                             }
                         })
@@ -611,7 +623,7 @@
                                                 this.openAddDialog = true;
                                             }, 1500)
                                         }, 1500);
-                                        this.resetFormData();
+                                        this.resetForm("addBhw");
                                         this.newUser = response.data;
                                         this.loadButton = false;
                                     }
@@ -622,11 +634,8 @@
                         }
                     });
                 },
-                resetForm(addBhw) {
-                    this.$refs[addBhw].resetFields();
-                },
-                resetFormData() {
-                    this.addBhw = []
+                resetForm(form) {
+                    this.$refs[form].resetFields();
                 },
                 handleView(index, row) {
                     this.viewBhw = row;
@@ -678,6 +687,7 @@
                                                             type: 'success'
                                                         });
                                                     }, 1500)
+                                                    this.resetForm("updateBhw")
                                                 }
                                             })
                                         localStorage.removeItem("identification")
