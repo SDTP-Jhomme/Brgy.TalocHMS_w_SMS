@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2022 at 02:37 PM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 7.4.30
+-- Generation Time: Dec 04, 2022 at 03:27 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -46,6 +46,43 @@ INSERT INTO `admin` (`id`, `username`, `password`, `last_login`, `attempt`, `log
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `individual_treatment`
+--
+
+CREATE TABLE `individual_treatment` (
+  `id` int(11) NOT NULL,
+  `clynisis_fsn` varchar(255) NOT NULL,
+  `civil_status` varchar(255) NOT NULL,
+  `spouse` varchar(255) NOT NULL,
+  `educ_attainment` varchar(255) NOT NULL,
+  `employ_status` varchar(255) NOT NULL,
+  `occupation` varchar(255) NOT NULL,
+  `religion` varchar(255) NOT NULL,
+  `st_name` varchar(255) NOT NULL,
+  `purok` varchar(255) NOT NULL,
+  `brgy` varchar(255) NOT NULL,
+  `blood_type` varchar(255) NOT NULL,
+  `family_member` varchar(255) NOT NULL,
+  `phlhealth_type` varchar(255) NOT NULL,
+  `phlhealth_no` varchar(255) NOT NULL,
+  `mother_lname` varchar(255) NOT NULL,
+  `mother_fname` varchar(255) NOT NULL,
+  `mother_mname` varchar(255) NOT NULL,
+  `nhts_member` varchar(255) NOT NULL,
+  `pantawid_pamilya` varchar(255) NOT NULL,
+  `hh_no` varchar(255) NOT NULL,
+  `allergy` varchar(255) NOT NULL,
+  `disability` varchar(255) NOT NULL,
+  `drug` varchar(255) NOT NULL,
+  `handicap` varchar(255) NOT NULL,
+  `impairment` varchar(255) NOT NULL,
+  `others` varchar(255) NOT NULL,
+  `med_history` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `patient`
 --
 
@@ -55,6 +92,7 @@ CREATE TABLE `patient` (
   `middle_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `suffix` varchar(255) NOT NULL,
+  `phone_number` int(11) NOT NULL,
   `birthdate` varchar(255) NOT NULL,
   `gender` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -104,7 +142,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `birthday`, `gender`, `username`, `password`, `bhw_id`, `status`, `avatar`, `last_login`) VALUES
 (10, 'Jhomme', 'dimasuay', '1998-02-06', 'Male', 'BHW-Jhomme', '$2y$10$xxdAIzgZ36WA5W4SBLaPt.w8uzKkqIJWLU8O9JnU5IICTyUMHL7Ie', '134543', 'Active', 'avatar/default.jpg', '10-02-2022'),
-(24, 'Test', 'Sample', '2001-03-01', 'Male', 'BHW-Test', '$2y$10$Pu3yjPbf9zWGG0DUx2rxCubXlpJRhnHrfm80t37VJ1A1WNOzVYvW2', '17808253', 'Active', 'avatar/1667186288.jfif', '12-02-2022'),
+(24, 'Test', 'Sample', '2001-03-01', 'Male', 'BHW-Test', '$2y$10$Pu3yjPbf9zWGG0DUx2rxCubXlpJRhnHrfm80t37VJ1A1WNOzVYvW2', '17808253', 'Active', 'avatar/1667186288.jfif', '12-04-2022'),
 (25, 'sample', 'asdfasdf', '1991-07-11', 'Female', 'BHW-Sample', '$2y$10$mhPqqC1pcog9YhPMVK/5fO5usUtfc8N9fstCTFW2dMrIYPRuXDP0m', '1345365354562', 'Active', 'avatar/default-woman.png', '');
 
 --
@@ -115,6 +153,12 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `birthday`, `gender`, `use
 -- Indexes for table `admin`
 --
 ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `individual_treatment`
+--
+ALTER TABLE `individual_treatment`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -138,6 +182,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `individual_treatment`
+--
+ALTER TABLE `individual_treatment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `patient`

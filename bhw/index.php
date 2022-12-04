@@ -115,7 +115,6 @@
                         barangay: "",
                         blood: "",
                         member: "",
-                        otherMember: "",
                         phlType: "",
                         philhealth: "",
                         mLastName: "",
@@ -133,7 +132,7 @@
                         encounter: "",
                         transaction: "",
                     },
-                    histories: ["HPN", "DM", "Asthma", "Smoker"],
+                    otherMember: "",
                     addRules: {
                         fsn: [{
                             required: true,
@@ -173,12 +172,7 @@
                             message: 'Phone number is required!',
                             trigger: 'blur'
                         }, {
-                            min: 11,
-                            max: 11,
-                            message: 'Invalid phone number!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[0-9]*$/,
+                            min: 10,
                             message: 'Invalid phone number!',
                             trigger: 'blur'
                         }],
@@ -264,6 +258,12 @@
                             }
                         })
                 },
+                numbersOnly(event) {
+                    let keyCode = (event.keyCode ? event.keyCode : event.which);
+                    if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+                        event.preventDefault();
+                    }
+                },
                 calculateAge(birthDay) {
                     let dob = new Date(birthDay);
                     let now = new Date();
@@ -282,23 +282,23 @@
                     let age = currentYear - birthYear;
 
                     if (age > 1 && (monthDiff < 0 || (monthDiff == 0 && currentDate < birthDate))) {
-                        let count = age - 1
-                        return count + ` year${count > 1 ? "s" : ""} old`
+                        let ageCount = age - 1
+                        return ageCount + ` year${ageCount > 1 ? "s" : ""} old`
                     } else if (age == 1 && (monthDiff < 0 || (monthDiff == 0 && currentDate < birthDate))) {
-                        let count = 11 - birthMonth + currentMonth
-                        return count + ` month${count > 1 ? "s" : ""} old`
+                        let ageCount = 11 - birthMonth + currentMonth
+                        return ageCount + ` month${ageCount > 1 ? "s" : ""} old`
                     } else if (age == 0 && monthDiff > 0 && currentDate >= birthDate) {
-                        let count = monthDiff
-                        return count + ` month${count > 1 ? "s" : ""} old`
+                        let ageCount = monthDiff
+                        return ageCount + ` month${ageCount > 1 ? "s" : ""} old`
                     } else if (age == 0 && monthDiff > 1 && currentDate < birthDate) {
-                        let count = monthDiff - 1
-                        return count + ` month${count > 1 ? "s" : ""} old`
+                        let ageCount = monthDiff - 1
+                        return ageCount + ` month${ageCount > 1 ? "s" : ""} old`
                     } else if (age == 0 && monthDiff <= 1 && currentDate >= birthDate) {
-                        let count = dateDiff
-                        return count + ` day${count > 1 ? "s" : ""} old`
+                        let ageCount = dateDiff
+                        return ageCount + ` day${ageCount > 1 ? "s" : ""} old`
                     } else if (age == 0 && monthDiff <= 1 && currentDate < birthDate) {
-                        let count = lastDayOfMonth - birthDate + currentDate
-                        return count + ` day${count > 1 ? "s" : ""} old`
+                        let ageCount = lastDayOfMonth - birthDate + currentDate
+                        return ageCount + ` day${ageCount > 1 ? "s" : ""} old`
                     }
 
 

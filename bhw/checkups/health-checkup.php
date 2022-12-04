@@ -115,7 +115,9 @@
                             </div>
                             <div class="w-35 mb-4">
                                 <el-form-item class="telephone" label="Telephone" prop="telephone">
-                                    <el-input size="medium" v-model="addPatient.phone" placeholder="Mobile/Landline/Email" clearable disabled></el-input>
+                                    <el-input size="medium" v-model="addPatient.phone" placeholder="Mobile/Landline/Email" clearable disabled>
+                                        <template slot="prepend">+63</template>
+                                    </el-input>
                                 </el-form-item>
                             </div>
                             <div class="w-35 mb-4">
@@ -152,7 +154,7 @@
                                 </div>
                                 <div class="w-40">
                                     <el-form-item label="Please specify" prop="otherMember">
-                                        <el-input size="medium" v-model="health.otherMember" :disabled="health.member != 'Others'" clearable></el-input>
+                                        <el-input size="medium" v-model="otherMember" :disabled="health.member != 'Others'" clearable></el-input>
                                     </el-form-item>
                                 </div>
                             </div>
@@ -256,70 +258,6 @@
                                 <div class="w-50">
                                     <el-form-item label="Others" prop="history">
                                         <el-input size="medium" v-model="health.otherHistory" clearable></el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <el-divider></el-divider>
-                    </div>
-                    <div class="underline-input health">
-                        <div class="d-flex flex-wrap justify-content-around">
-                            <div class="w-85 d-flex justify-content-between flex-wrap">
-                                <div class="w-50">
-                                    <el-form-item label="Type of Encounter/OPD" prop="encounter">
-                                        <el-radio-group v-model="health.encounter">
-                                            <el-radio label="Consultation">Consultation</el-radio>
-                                            <el-radio label="New Admission">New Admission</el-radio>
-                                            <el-radio label="For Follow-up">For Follow-up</el-radio>
-                                        </el-radio-group>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="w-85 d-flex justify-content-between flex-wrap">
-                                <div class="w-80">
-                                    <el-form-item label="Type of Consultation/Purpose of Visit" prop="purpose">
-                                        <el-radio-group v-model="health.encounter">
-                                            <el-radio label="General">General</el-radio>
-                                            <el-radio label="Post Partum">Post Partum</el-radio>
-                                            <el-radio label="Family Planning">Family Planning</el-radio>
-                                            <el-radio label="Dental Care">Dental Care</el-radio>
-                                            <el-radio label="Tuberculosis">Tuberculosis</el-radio>
-                                            <el-radio label="Child Care">Child Care</el-radio>
-                                            <el-radio label="Sick Children">Sick Children</el-radio>
-                                            <el-radio label="Child Nutrition">Child Nutrition</el-radio>
-                                            <el-radio label="Injury">Injury</el-radio>
-                                            <el-radio label="Fire Cracker Injury">Fire Cracker Injury</el-radio>
-                                        </el-radio-group>
-                                        <div class="w-30">
-                                            <el-input placeholder="Others" size="mini" v-model="health.otherHistory" clearable></el-input>
-                                        </div>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                            <div class="w-85 d-flex justify-content-start flex-wrap">
-                                <div class="w-50 d-flex">
-                                    <div class="w-40 mb-4 mr-4">
-                                        <el-form-item label="Consultation Date" prop="date">
-                                            <el-input size="mini" v-model="date" disabled clearable></el-input>
-                                        </el-form-item>
-                                    </div>
-                                    <div class="w-30 mb-4">
-                                        <el-form-item label="Age" prop="age">
-                                            <el-input size="mini" v-model="age" disabled clearable></el-input>
-                                        </el-form-item>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-85 d-flex justify-content-between flex-wrap">
-                                <div class="w-50">
-                                    <el-form-item label="Mode of Transaction" prop="transaction">
-                                        <el-radio-group v-model="health.transaction">
-                                            <el-radio label="Consultation">Walk-in</el-radio>
-                                            <el-radio label="New Admission">Referral</el-radio>
-                                            <el-radio label="For Follow-up">Visited</el-radio>
-                                        </el-radio-group>
                                     </el-form-item>
                                 </div>
                             </div>

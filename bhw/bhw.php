@@ -113,7 +113,9 @@
                     <el-col :span="5">
                         <el-form-item prop="phone">
                             <label class="m-0"><span class="text-danger">*</span> Phone Number</label>
-                            <el-input v-model="addPatient.phone" clearable></el-input>
+                            <el-input v-model="addPatient.phone" clearable maxlength="10" @keypress.native="numbersOnly($event)">
+                                <template slot="prepend">+63</template>
+                            </el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
