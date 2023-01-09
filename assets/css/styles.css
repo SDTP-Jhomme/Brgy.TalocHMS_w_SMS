@@ -372,6 +372,10 @@ th {
 
 label {
   display: inline-block;
+  font-weight: 700;
+  line-height: 24px !important;
+  font-size: 14px;
+  color: #606266;
 }
 
 button {
@@ -12985,6 +12989,9 @@ nav#sidenavAccordion {
 .pregnancy-checkup {
   background-color: #ffc0cb !important;
 }
+.family-checkup {
+  background-color: #f2c64382 !important;
+}
 
 .card-border-health {
   outline-style: solid !important;
@@ -13003,6 +13010,12 @@ nav#sidenavAccordion {
 .card-border-pregnancy {
   outline-style: solid !important;
   outline-color: #e4abab !important;
+  outline-width: 3px !important;
+  outline-offset: -1px !important;
+}
+.card-border-family {
+  outline-style: solid !important;
+  outline-color: #fff700ab !important;
   outline-width: 3px !important;
   outline-offset: -1px !important;
 }
@@ -13124,97 +13137,25 @@ body#page-top {
 
 .label-format label {
   font-size: 14px;
+  font-weight: 700;
+  color: #606266;
 }
 
 .birth-width .el-date-editor.el-input {
   width: 100%;
 }
 
-.underline-input {
-  padding: 0 40px;
-}
-
-.underline-input .el-form-item {
-  display: flex !important;
-  align-items: center;
-}
-
-.underline-input .el-form-item .el-form-item__label {
-  text-align: left;
-  margin: 0 !important;
-}
-
-.underline-input.health .el-form-item .el-form-item__label {
-  width: 50% !important;
-}
-
-.underline-input.health .el-form-item.column .el-form-item__label {
-  width: 55% !important;
-}
-
-.underline-input.health .radio .el-form-item__label {
-  width: 20% !important;
-}
-
-.underline-input.health .radio.plus .el-form-item__label {
-  width: 30% !important;
-}
-
-.underline-input.health .radio.normal .el-form-item__label {
-  width: 50% !important;
-}
-
-.underline-input.health .telephone .el-form-item__label {
-  width: 70% !important;
-}
-
-.underline-input .el-form-item .el-form-item__content {
-  width: 60%;
-}
-
-.underline-input .radio .el-form-item__content {
-  width: 80%;
-}
-
-.underline-input .radio.plus .el-form-item__content {
-  width: 70%;
-}
-
-.underline-input.health .radio.normal .el-form-item__content {
-  width: 50%;
-}
-
-.underline-input .radio .el-form-item__content .el-radio,
-.underline-input .measurement .el-form-item__content p {
-  margin-bottom: 0 !important;
-}
-
-.underline-input .measurement .el-form-item__content {
-  display: flex;
-}
-
-.underline-input .el-form-item .el-form-item__content .el-date-editor.el-input,
-.underline-input .el-form-item .el-form-item__content .el-select {
+.underline-input .el-form-item .el-input,
+.underline-input .el-form-item .el-select,
+.body-card-form .el-date-editor {
   width: 100% !important;
 }
 
-.underline-input.top .el-form-item .el-form-item__label {
-  text-align: right;
-}
-
-.underline-input .el-form-item .el-form-item__content input {
-  background-color: transparent !important;
-  border: none !important;
-  border-bottom: 2px solid #eeeeee !important;
-  border-radius: 0px !important;
-  height: 30px !important;
-  transition: all 0.4s ease;
-}
-
-.underline-input .el-form-item .el-form-item__content input:focus,
-.underline-input .el-form-item .el-form-item__content input:active {
-  border-color: #409EFF !important;
-  border-width: 1px !important;
+.underline-input .el-form-item .el-form-item__label {
+  line-height: 24px !important;
+  font-weight: 700;
+  margin-bottom: 0 !important;
+  display: contents;
 }
 
 /* regitered */
@@ -13766,4 +13707,51 @@ a:focus {
 
 .el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
+}
+.image-clip img {
+  width: 100%;
+}
+
+.slide-down {
+  animation: slideDown 2s ease;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes slideDown {
+  0% {
+    -webkit-transform: translateY(-100%);
+  }
+  100% {
+    -webkit-transform: translateY(0%);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@-webkit-keyframes slideIn {
+  0% {
+    -webkit-transform: translateX(-100%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
 }

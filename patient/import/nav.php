@@ -16,7 +16,6 @@
                 Back To Home
             </a>
         </li>
-
         <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
@@ -26,6 +25,19 @@
             </a>
             <!-- Dropdown - User Information -->
             <div id="dropdownMenu" class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="./immunization-history">
+                    <i class="fab fa-wpforms fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Immunization History
+                </a>
+                <a v-if="this.gender == 'Female'" class="dropdown-item" href="./immunization-history">
+                    <i class="fab fa-wpforms fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Maternal Checkup History
+                </a>
+                <a class="dropdown-item" href="./health-history">
+                    <i class="fab fa-wpforms fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Individual Treatment Checkup History
+                </a>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="./profile">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile

@@ -44,6 +44,7 @@
                         <el-main>
                             <div class="container border rounded p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <el-button icon="el-icon-printer" size="mini" type="primary" @click="printDialog = true">Print</el-button>
                                     <div class="d-flex">
                                         <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
                                             <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
@@ -70,15 +71,11 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="FSN" prop="fsn">
-                                    </el-table-column>
                                     <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>
                                     <el-table-column sortable label="Name" v-if="viewPatient.suffix != 'undefined'" width="220" prop="name">
                                     </el-table-column>
                                     <el-table-column sortable label="Birthday" width="160" prop="birthdate">
-                                    </el-table-column>
-                                    <el-table-column sortable label="Purok" prop="address">
                                     </el-table-column>
                                     <el-table-column sortable label="Phone No." prop="phone_number">
                                     </el-table-column>
@@ -119,8 +116,21 @@
                             </span>
                         </el-dialog>
 
+                        <!-- print-table -->
+                        <el-dialog :visible.sync="printDialog" width="80%" :before-close="closePrintDialog">
+                            <div class="container">
+                                <div class="mt-5" id="printThis">
+                                    <?php include("./print-tables/immunization-print.php") ?>
+                                </div>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" size="small" icon="el-icon-printer" id="tablePrint">Print</el-button>
+                            </span>
+                        </el-dialog>
+                        <!-- end-print-table -->
+
                         <!-- View Dialog -->
-                        <el-dialog :visible.sync="viewDialog" width="70%" :before-close="closeViewDialog">
+                        <el-dialog :visible.sync="viewDialog" width="80%" :before-close="closeViewDialog">
                             <template #title>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="pe-4">
@@ -188,9 +198,6 @@
                                                 <div class="col-6">
                                                     <label>Date: <span class="border-bottom-1 border-dark">{{viewPatient.appointment}}</span></label>
                                                 </div>
-                                                <div class="col-5">
-                                                    <label>Date: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-auto">
@@ -202,98 +209,10 @@
                                                 <div class="col-3">
                                                     <label>Temp: <span class="border-bottom border-dark px-4">{{viewPatient.temp}}</span></label>
                                                 </div>
-                                                <div class="ms-5" style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Age: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Wt: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 11%;flex: 0 0 auto;">
-                                                    <label>Temp: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
                                             </div>
                                             <div class="row mb-5 d-flex justify-content-between">
                                                 <div class="col-auto">
                                                     <label>Immunization Given: <span class="border-bottom-1 border-dark">{{viewPatient.immunization_given}}</span></label>
-                                                </div>
-                                                <div class="col-6 mb-5">
-                                                    <label>Immunization Given: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="my-5" style="border-bottom:1px solid black ;">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <label>Date: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                                <div class="col-5">
-                                                    <label>Date: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="" style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Age: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Wt: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 28%;flex: 0 0 auto;">
-                                                    <label>Temp: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div class="ms-4" style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Age: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Wt: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 11%;flex: 0 0 auto;">
-                                                    <label>Temp: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-5 d-flex justify-content-between">
-                                                <div class="col-6">
-                                                    <label>Immunization Given: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                                <div class="col-6 mb-5">
-                                                    <label>Immunization Given: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="my-5" style="border-bottom:1px solid black ;">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <label>Date: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                                <div class="col-5">
-                                                    <label>Date: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="" style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Age: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Wt: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 28%;flex: 0 0 auto;">
-                                                    <label>Temp: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div class="ms-4" style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Age: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 10%;flex: 0 0 auto;">
-                                                    <label>Wt: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                                <div style="width: 11%;flex: 0 0 auto;">
-                                                    <label>Temp: <span class="border-bottom border-dark px-4"></span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-5 d-flex justify-content-between">
-                                                <div class="col-6">
-                                                    <label>Immunization Given: <span class="border-bottom-1 border-dark"></span></label>
-                                                </div>
-                                                <div class="col-6 mb-5">
-                                                    <label>Immunization Given: <span class="border-bottom-1 border-dark"></span></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -369,6 +288,7 @@
                     loadButton: false,
                     editDialog: false,
                     viewDialog: false,
+                    printDialog: false,
                     multipleSelection: [],
                     fullscreenLoading: true,
                     tableData: [],
@@ -468,6 +388,9 @@
                 closeViewDialog() {
                     this.viewDialog = false;
                 },
+                closePrintDialog() {
+                    this.printDialog = false;
+                },
                 closeEditDialog(editContact) {
                     this.$confirm('Are you sure you want to cancel updating Phone no.?', {
                             confirmButtonText: 'Yes',
@@ -497,6 +420,7 @@
                 getData() {
                     axios.post("action.php?action=fetch_immunization")
                         .then(response => {
+                            console.log(response)
                             if (response.data.error) {
                                 this.tableData = []
                             } else {
@@ -621,6 +545,27 @@
     <script>
         document.getElementById("Print").onclick = function() {
             printElement(document.getElementById("printThis"));
+        };
+
+        function printElement(elem) {
+            var domClone = elem.cloneNode(true);
+
+            var $printSection = document.getElementById("printSection");
+
+            if (!$printSection) {
+                var $printSection = document.createElement("div");
+                $printSection.id = "printSection";
+                document.body.appendChild($printSection);
+            }
+
+            $printSection.innerHTML = "";
+            $printSection.appendChild(domClone);
+            window.print();
+        }
+    </script>
+    <script>
+        document.getElementById("tablePrint").onclick = function() {
+            printElement(document.getElementById("printTable"));
         };
 
         function printElement(elem) {

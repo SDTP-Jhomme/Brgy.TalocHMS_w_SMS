@@ -115,7 +115,44 @@
                         </div>
                         <div class="col-4 mb-4">
                             <el-form-item prop="purok">
-                                <el-input v-model="immunize.purok" clearable></el-input>
+                                <el-select v-model="immunize.purok" placeholder="Select Purok" clearable>
+                                    <el-option label="Dangal" value="Dangal">
+                                    </el-option>
+                                    <el-option label="Baybay 13" value="Baybay 13">
+                                    </el-option>
+                                    <el-option label="Fatima" value="Fatima">
+                                    </el-option>
+                                    <el-option label="Hilado" value="Hilado">
+                                    </el-option>
+                                    <el-option label="13" value="13">
+                                    </el-option>
+                                    <el-option label="Paghidaet" value="Paghidaet">
+                                    </el-option>
+                                    <el-option label="Trese y Medya" value="Trese y Medya">
+                                    </el-option>
+                                    <el-option label="Marietta Village" value="Marietta Village">
+                                    </el-option>
+                                    <el-option label="Cubay" value="Cubay">
+                                    </el-option>
+                                    <el-option label="Langka" value="Langka">
+                                    </el-option>
+                                    <el-option label="Paho North" value="Paho North">
+                                    </el-option>
+                                    <el-option label="Paho South" value="Paho South">
+                                    </el-option>
+                                    <el-option label="Kawayanan" value="Kawayanan">
+                                    </el-option>
+                                    <el-option label="Ramos" value="Ramos">
+                                    </el-option>
+                                    <el-option label="Para Uno" value="Para Uno">
+                                    </el-option>
+                                    <el-option label="Para Dos" value="Para Dos">
+                                    </el-option>
+                                    <el-option label="Camingawan" value="Camingawan">
+                                    </el-option>
+                                    <el-option label="Newton" value="Newton">
+                                    </el-option>
+                                </el-select>
                             </el-form-item>
                         </div>
                         <div class="col-auto mb-4">
@@ -154,7 +191,7 @@
                         </div>
                         <div class="col-auto mb-4">
                             <el-form-item prop="weight">
-                                <el-input v-model="immunize.weight" clearable>
+                                <el-input v-model="immunize.weight" type="number">
                                     <template slot="suffix">kg / lbs</template>
                                 </el-input>
                             </el-form-item>
@@ -164,7 +201,7 @@
                         </div>
                         <div class="col-auto mb-4">
                             <el-form-item prop="temp">
-                                <el-input v-model="immunize.temp" clearable>
+                                <el-input v-model="immunize.temp" type="number">
                                     <template slot="suffix">℃</template>
                                 </el-input>
                             </el-form-item>
@@ -177,7 +214,8 @@
                         </div>
                         <div class="col-4 mb-4">
                             <el-form-item prop="immunizationGiven">
-                                <el-input v-model="immunize.immunizationGiven" clearable></el-input>
+                                <el-input v-model="immunize.immunizationGiven" size="small">
+                                </el-input>
                             </el-form-item>
                         </div>
                     </div>

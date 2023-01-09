@@ -8,30 +8,75 @@ $response = array('error' => false);
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
 }
+if ($action == 'fetch') {
+    $user_data = array();
+
+    $check_patient = mysqli_query($db, "SELECT * FROM patient");
+    $data = mysqli_query($db, "SELECT * FROM patient LEFT JOIN immunization ON patient.id=immunization.patient_id LEFT JOIN individual_treatment ON patient.id=individual_treatment.patient_id LEFT JOIN prenatal ON patient.id=prenatal.patient_id");
+
+    if (mysqli_num_rows($check_patient) > 0) {
+        $response = $data->fetch_all(MYSQLI_ASSOC);
+        // while ($data_row = mysqli_fetch_assoc($data)) {
+
+        //     // $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]);
+        //     // $db_birthdate = $data_row["birthdate"];
+        //     // $birthday = substr($db_birthdate, 4, 11);
+        //     // $birthdate = date("F d, Y", strtotime($birthday));
+        //     // $db_avatar = $data_row["avatar"];
+        //     // $date = $data_row["date"];
+
+        //     $array_data = array(
+        //         "id" => $data_row["id"],
+        //         "fsn" => $data_row["fsn"],
+        //         // "name" => $fullname,
+        //         // "date" => $date,
+        //         // "last_name" => $data_row["last_name"],
+        //         // "first_name" => $data_row["first_name"],
+        //         // "middle_name" => $data_row["middle_name"],
+        //         // "suffix" => $data_row["suffix"],
+        //         // "birthdate" => $birthdate,
+        //         // "gender" => $data_row["gender"],
+        //         // "phone_number" => $data_row["phone_number"],
+        //         // "section" => $data_row["section"],
+        //         // "status" => $data_row["status"],
+        //         // "avatar" => "../assets/$db_avatar",
+        //     );
+
+        //     array_push($user_data, $array_data);
+
+        // }
+        // $response = $user_data;
+    } else {
+
+        $response["error"] = true;
+        $response["message"] = "Table is empty!";
+    }
+}
 if ($action == 'fetch_health') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM individual_treatment INNER JOIN patient ON patient.fsn=individual_treatment.fsn");
+    $data = mysqli_query($db, "SELECT * FROM individual_treatment INNER JOIN patient ON patient.id=individual_treatment.patient_id");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname =ucfirst($data_row["first_name"]) . " " .substr( ucfirst($data_row["middle_name"]),0,1) . " " . ucfirst($data_row["last_name"])  . " " . $data_row["suffix"];
+            $fullname = ucfirst($data_row["first_name"]) . " " . trim(substr(ucfirst($data_row["middle_name"]), 0, 1), "undefined") . " " . ucfirst($data_row["last_name"]) . " " . trim($data_row["suffix"], "undefined");
             $db_birthdate = $data_row["birthdate"];
             $birthday = substr($db_birthdate, 4, 11);
             $birthdate = date("F d, Y", strtotime($birthday));
             $db_avatar = $data_row["avatar"];
             $date = $data_row["month"] . " " . $data_row["day"] . ", " . $data_row["year"];
+            $address = "Purok " . $data_row["purok"] . ", " . "Barangay " . $data_row["barangay"];
 
             $array_data = array(
                 "id" => $data_row["id"],
-                "fsn" => $data_row["fsn"],
+                "fsn" =>trim($data_row["fsn"],"undefined") ,
                 "clinisys" => $data_row["clinisys"],
                 "last_name" => $data_row["last_name"],
                 "first_name" => $data_row["first_name"],
-                "middle_name" => $data_row["middle_name"],
-                "suffix" => $data_row["suffix"],
+                "middle_name" => trim(ucfirst($data_row["middle_name"]), "undefined"),
+                "suffix" => trim($data_row["suffix"], "undefined"),
                 "birthdate" => $birthdate,
                 "gender" => $data_row["gender"],
                 "civil_status" =>  $data_row["civil_status"],
@@ -40,9 +85,10 @@ if ($action == 'fetch_health') {
                 "employment_status" =>  $data_row["employment_status"],
                 "occupation" =>  $data_row["occupation"],
                 "religion" =>  $data_row["religion"],
-                "phone_number" => $data_row["telephone"],
+                "phone_number" => $data_row["phone_number"],
                 "street" => $data_row["street"],
-                "address" => $data_row["purok"],
+                "address" => $address,
+                "purok" => $data_row["purok"],
                 "barangay" => $data_row["barangay"],
                 "blood_type" => $data_row["blood_type"],
                 "family_member" => $data_row["family_member"],
@@ -94,17 +140,18 @@ if ($action == 'fetch_immunization') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM immunization INNER JOIN patient ON patient.fsn=immunization.fsn");
+    $data = mysqli_query($db, "SELECT * FROM immunization INNER JOIN patient ON patient.id=immunization.patient_id");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname =ucfirst($data_row["first_name"]) . " " .substr( ucfirst($data_row["middle_name"]),0,1) . " " . ucfirst($data_row["last_name"])  . " " . $data_row["suffix"];
+            $fullname = ucfirst($data_row["first_name"]) . " " . trim(substr(ucfirst($data_row["middle_name"]), 0, 1), "undefined") . " " . ucfirst($data_row["last_name"]) . " " . trim($data_row["suffix"], "undefined");
             $db_birthdate = $data_row["birthdate"];
             $birthday = substr($db_birthdate, 4, 11);
             $birthdate = date("F d, Y", strtotime($birthday));
             $db_avatar = $data_row["avatar"];
             $date = $data_row["month"] . " " . $data_row["day"] . ", " . $data_row["year"];
+            $address = "Purok " . $data_row["purok"] . ", " . "Barangay " . $data_row["barangay"];
 
             $array_data = array(
                 "id" => $data_row["id"],
@@ -112,7 +159,8 @@ if ($action == 'fetch_immunization') {
                 "name" => $fullname,
                 "date" => $date,
                 "birthdate" => $birthdate,
-                "address" => $data_row["purok"],
+                "address" => $address,
+                "purok" => $data_row["purok"],
                 "barangay" => $data_row["barangay"],
                 "child_no" => $data_row["child_no"],
                 "suffix" => $data_row["suffix"],
@@ -123,7 +171,7 @@ if ($action == 'fetch_immunization') {
                 "age" => $data_row["age"],
                 "temp" => $data_row["temp"],
                 "gender" => $data_row["gender"],
-                "fsn" => $data_row["fsn"],
+                "fsn" =>trim($data_row["fsn"],"undefined") ,
                 "first_name" => $data_row["first_name"],
                 "last_name" => $data_row["last_name"],
                 "phone_number" => $data_row["phone_number"],
@@ -145,22 +193,24 @@ if ($action == 'fetch_prenatal') {
 
     $user_data = array();
 
-    $data = mysqli_query($db, "SELECT * FROM prenatal INNER JOIN patient ON patient.fsn=prenatal.fsn");
+    $data = mysqli_query($db, "SELECT * FROM prenatal INNER JOIN patient ON patient.id=prenatal.patient_id");
 
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname =ucfirst($data_row["first_name"]) . " " .substr( ucfirst($data_row["middle_name"]),0,1) . " " . ucfirst($data_row["last_name"]);
-            $db_birthdate = $data_row["birthdate"];
+            $fullname = ucfirst($data_row["first_name"]) . " " . trim(substr(ucfirst($data_row["middle_name"]), 0, 1), "undefined, U") . " " . ucfirst($data_row["last_name"]) . " " . trim($data_row["suffix"], "undefined");
+            $db_birthdate = substr($data_row["birthdate"], 4, 11);
             $birthdate = date("F d, Y", strtotime($db_birthdate));
             $db_avatar = $data_row["avatar"];
             $date = $data_row["month"] . " " . $data_row["day"] . ", " . $data_row["year"];
             $edc = $data_row["edc"];
             $edc_Date = substr($edc, 4, 11);
             $date_edc = date("F d, Y", strtotime($edc_Date));
-            $date_visit = $data_row["date_visit"];
-            $visit = substr($date_visit, 4, 11);
-            $date_visited = date("F d, Y", strtotime($visit));
+            $lmp = $data_row["lmp"];
+            $lmp_Date = substr($lmp, 4, 11);
+            $date_lmp = date("F d, Y", strtotime($lmp_Date));
+            $date_visit = date("F d, Y", strtotime($data_row["date_visit"]));
+            $address = "Purok " . $data_row["purok"] . ", " . "Barangay " . $data_row["barangay"];
 
             $array_data = array(
                 "id" => $data_row["id"],
@@ -168,14 +218,15 @@ if ($action == 'fetch_prenatal') {
                 "name" => $fullname,
                 "date" => $date,
                 "birthdate" => $birthdate,
-                "address" => $data_row["purok"],
+                "address" => $address,
+                "purok" => $data_row["purok"],
                 "barangay" => $data_row["barangay"],
                 "gp" => $data_row["gp"],
-                "lmp" => $data_row["lmp"],
+                "lmp" => $date_lmp,
                 "edc" => $date_edc,
                 "tt_status" => $data_row["tt_status"],
                 "appointment" => $data_row["appointment"],
-                "date_visit" =>  $date_visited,
+                "date_visit" =>  $date_visit,
                 "weight" => $data_row["weight"],
                 "bp" => $data_row["bp"],
                 "cr" => $data_row["cr"],
@@ -186,13 +237,74 @@ if ($action == 'fetch_prenatal') {
                 "fhb" => $data_row["fhb"],
                 "presentation" => $data_row["presentation"],
                 "gender" => $data_row["gender"],
-                "fsn" => $data_row["fsn"],
+                "fsn" =>trim($data_row["fsn"],"undefined") ,
                 "first_name" => $data_row["first_name"],
                 "last_name" => $data_row["last_name"],
                 "phone_number" => $data_row["phone_number"],
                 "last_login" => $data_row["last_login"],
                 "spouse" => $data_row["spouse_name"],
                 "avatar" => "../assets/$db_avatar",
+            );
+
+            array_push($user_data, $array_data);
+            $response = $user_data;
+        }
+    } else {
+
+        $response["error"] = true;
+        $response["message"] = "Table is empty!";
+    }
+}
+if ($action == 'fetch_planning') {
+
+    $user_data = array();
+
+    $data = mysqli_query($db, "SELECT * FROM family_planning INNER JOIN patient ON patient.id=family_planning.patient_id");
+
+    if (mysqli_num_rows($data) > 0) {
+        while ($data_row = mysqli_fetch_assoc($data)) {
+
+            $fullname = ucfirst($data_row["first_name"]) . " " . trim(substr(ucfirst($data_row["middle_name"]), 0, 1), "undefined, U") . " " . ucfirst($data_row["last_name"]) . " " . trim($data_row["suffix"], "undefined");
+            $db_birthdate = substr($data_row["birthdate"], 4, 11);
+            $birthdate = date("F d, Y", strtotime($db_birthdate));
+            $db_avatar = $data_row["avatar"];
+            $date = $data_row["month"] . " " . $data_row["day"] . ", " . $data_row["year"];
+            $address = "Purok " . $data_row["purok"] . ", " . "Barangay " . $data_row["barangay"];
+            $spouse_address = "Purok " . $data_row["spouse_purok"] . ", " . "Barangay " . $data_row["spouse_barangay"];
+
+            $array_data = array(
+                "id" => $data_row["id"],
+                "username" => $data_row["username"],
+                "name" => $fullname,
+                "date" => $date,
+                "birthdate" => $birthdate,
+                "address" => $address,
+                "purok" => $data_row["purok"],
+                "barangay" => $data_row["barangay"],
+                "appointment" => $data_row["appointment"],
+                "weight" => $data_row["weight"],
+                "bp" => $data_row["bp"],
+                "pr" => $data_row["pr"],
+                "gender" => $data_row["gender"],
+                "fsn" =>trim($data_row["fsn"],"undefined") ,
+                "first_name" => $data_row["first_name"],
+                "last_name" => $data_row["last_name"],
+                "phone_number" => $data_row["phone_number"],
+                "last_login" => $data_row["last_login"],
+                "spouse" => $data_row["spouse_name"],
+                "avatar" => "../assets/$db_avatar",
+                "spouse_purok" => $data_row["spouse_purok"],
+                "spouse_barangay" => $data_row["spouse_barangay"],
+                "spouse_address" => $spouse_address,
+                "heent" => $data_row["heent"],
+                "chLB" => $data_row["chLB"],
+                "conjunctive" => $data_row["conjunctive"],
+                "neck" => $data_row["neck"],
+                "abdomen" => $data_row["abdomen"],
+                "thorax" => $data_row["thorax"],
+                "femGenital" => $data_row["femGenital"],
+                "maleGenital" => $data_row["maleGenital"],
+                "section" => $data_row["section"],
             );
 
             array_push($user_data, $array_data);
@@ -248,7 +360,7 @@ if ($action == 'store') {
     $identification = $_POST["identification"];
     $first_name = $_POST["first_name"];
     $last_name = $_POST["last_name"];
-    $birthdate = $_POST["birthdate"];
+    $birthday = $_POST["birthday"];
     $gender = $_POST["gender"];
 
     if ($gender == "Male") {
@@ -274,26 +386,28 @@ if ($action == 'store') {
         return $shuffled;
     }
 
-    $username = "BHW-" . ucfirst($first_name . rand_username(3));
+    $username = "BHW-" . ucfirst($first_name);
     $year = date("Y");
     $month = date("M");
     $db_status = "Active";
-    $type = "BHW";
+    $last_login = "";
 
     $response = array(
+
         "first_name" => $first_name,
         "last_name" => $last_name,
-        "identification" => $identification,
-        "username" => $username,
-        "birthdate" => $birthdate,
+        "birthday" => $birthday,
         "gender" => $gender,
+        "username" => $username,
         "password" => $password,
+        "identification" => $identification,
+        "avatar" => $avatar,
         "status" => $db_status,
-        "type" => $type
+        "col_month" => $month,
+        "col_year" => $year
     );
-
-    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,status,month,year)
-        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$db_status','$month','$year')");
+    mysqli_query($db, "INSERT INTO users(first_name,last_name,birthday,gender,username,password,bhw_id,avatar,last_login,status,col_month,col_year)
+        VALUES('$first_name','$last_name','$birthdate','$gender','$username','$hashed_password','$identification','$avatar','$last_login','$db_status','$month','$year')");
 }
 
 if ($action == 'update') {

@@ -157,9 +157,46 @@
                                 <label for=""><span class="text-danger">*</span>Purok :</label>
                             </div>
                             <div class="col-auto">
-                                <el-form-item prop="purok">
-                                    <el-input v-model="health.purok" clearable></el-input>
-                                </el-form-item>
+                            <el-form-item prop="purok">
+                                <el-select v-model="health.purok" placeholder="Select Purok" clearable>
+                                    <el-option label="Dangal" value="Dangal">
+                                    </el-option>
+                                    <el-option label="Baybay 13" value="Baybay 13">
+                                    </el-option>
+                                    <el-option label="Fatima" value="Fatima">
+                                    </el-option>
+                                    <el-option label="Hilado" value="Hilado">
+                                    </el-option>
+                                    <el-option label="13" value="13">
+                                    </el-option>
+                                    <el-option label="Paghidaet" value="Paghidaet">
+                                    </el-option>
+                                    <el-option label="Trese y Medya" value="Trese y Medya">
+                                    </el-option>
+                                    <el-option label="Marietta Village" value="Marietta Village">
+                                    </el-option>
+                                    <el-option label="Cubay" value="Cubay">
+                                    </el-option>
+                                    <el-option label="Langka" value="Langka">
+                                    </el-option>
+                                    <el-option label="Paho North" value="Paho North">
+                                    </el-option>
+                                    <el-option label="Paho South" value="Paho South">
+                                    </el-option>
+                                    <el-option label="Kawayanan" value="Kawayanan">
+                                    </el-option>
+                                    <el-option label="Ramos" value="Ramos">
+                                    </el-option>
+                                    <el-option label="Para Uno" value="Para Uno">
+                                    </el-option>
+                                    <el-option label="Para Dos" value="Para Dos">
+                                    </el-option>
+                                    <el-option label="Camingawan" value="Camingawan">
+                                    </el-option>
+                                    <el-option label="Newton" value="Newton">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
                             </div>
                         </div>
                         <div class="row g-3 mt-5">
@@ -279,7 +316,7 @@
                             </div>
                             <div class="col-auto">
                                 <el-form-item class="blank" prop="hhNo">
-                                    <el-input v-model="health.hhNo" :disabled="health.pantawid != 'Yes'" id="hhno" OnInput="add_hyphen()" maxlength="14" clearable></el-input>
+                                    <el-input v-model="health.hhNo" :disabled="health.pantawid != 'Yes'" id="hhno" onKeyup="addDashes(this)" maxlength="14" clearable></el-input>
                                 </el-form-item>
                             </div>
                         </div>
@@ -532,3 +569,16 @@
         </div>
     </el-container>
 </div>
+<script>
+    window.addDashes = function addDashes(f) {
+        var r = /(\D+)/g,
+            npa = '',
+            nxx = '',
+            last4 = '';
+        f.value = f.value.replace(r, '');
+        npa = f.value.substr(0, 3);
+        nxx = f.value.substr(3, 3);
+        last4 = f.value.substr(6, 4);
+        f.value = npa + '-' + nxx + '-' + last4;
+    }
+</script>

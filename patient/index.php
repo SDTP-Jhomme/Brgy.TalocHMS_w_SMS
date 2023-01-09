@@ -56,18 +56,32 @@
             </div>
             <div class="container-sm">
                 <?php include("./main.php"); ?>
+                <?php //include("./user-tables/immunization.php"); ?>
             </div>
-                <!-- <el-dialog title="Set Appointment" :visible.sync="openAppointmentDialog" width="30%" :before-close="closeAppointmentDialog">
-                    <el-form :model="addAppointment:" :rules="smsRules" ref="addAppointment:">
-                        <el-form-item label="Set Appointment" prop="appointment">
-                            <el-date-picker size="medium" v-model="addAppointment.appointment" type="date" placeholder="Select Date">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-form>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button type="primary" @click="closeAppointmentDialog">Close</el-button>
-                    </span>
-                </el-dialog> -->
+            <el-dialog :visible.sync="openAppointmentDialog" width="20%" :before-close="closeAppointmentDialog">
+                <div class="container">
+                    <p>Please wait for <el-tag type="success">APPROVAL</el-tag> from BHWs via Sms.</p>
+                    <h4 class="text-center">THANK YOU!</h4>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button-group v-if="isHealthCheckup">
+                        <el-button type="primary" size="small" @click="closeAppointmentDialog">Close</el-button>
+                        <el-button type="primary" size="small" plain @click="submitHealth('health')">Submit</i></el-button>
+                    </el-button-group>
+                    <el-button-group v-else-if="isImmunization">
+                        <el-button type="primary" size="small" @click="closeAppointmentDialog">Close</el-button>
+                        <el-button type="primary" size="small" plain @click="submitImmunization('immunize')">Submit</i></el-button>
+                    </el-button-group>
+                    <el-button-group v-else-if="isPregnancy">
+                        <el-button type="primary" size="small" @click="closeAppointmentDialog">Close</el-button>
+                        <el-button type="primary" size="small" plain @click="submitPrenatal('prenatal')">Submit</i></el-button>
+                    </el-button-group>
+                    <el-button-group v-else>
+                        <el-button type="primary" size="small" @click="closeAppointmentDialog">Close</el-button>
+                        <el-button type="primary" size="small" plain @click="submitFamily('family')">Submit</i></el-button>
+                    </el-button-group>
+                </span>
+            </el-dialog>
             <!-- End of Main Content -->
             <!-- Footer -->
             <?php include("./import/footer.php") ?>
@@ -83,6 +97,12 @@
             el: "#app",
             data() {
                 return {
+                    datePickerOptions: {
+                        disabledDate(date) {
+                            return date < new Date()
+                        }
+                    },
+
                     active: 0,
                     fullscreenLoading: true,
                     openAppointmentDialog: false,
@@ -90,253 +110,45 @@
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
+                    isFamily: false,
                     avatar: "",
                     gender: "",
-                    addAppointment: {
-                        appointment: ""
+                    phone_number: "",
+                    name: "",
+                    family: {
+                        id: <?php echo $id ?>,
+                        section: "Family Planning",
                     },
-                    prenatal: {
-                        fsn: <?php echo $db_identification ?>,
-                        spouseFname: "",
-                        spouseLname: "",
-                        purok: "",
-                        barangay: "",
+                    maternal: {
+                        id: <?php echo $id ?>,
+                        section: "Maternity",
                     },
                     health: {
-                        fsn: <?php echo $db_identification ?>,
-                        clinisysFSN: "",
-                        civil: "",
-                        spouse: "",
-                        education: "",
-                        employment: "",
-                        occupation: "",
-                        religion: "",
-                        street: "",
-                        purok: "",
-                        barangay: "",
-                        blood: "",
-                        member: "",
-                        otherMember: "",
-                        phlType: "",
-                        philhealth: "",
-                        mLastName: "",
-                        mFirstName: "",
-                        mMidName: "",
-                        nhts: "",
-                        pantawid: "",
-                        hhNo: "",
-                        alert: "",
-                        otherAlert: "",
-                        medicalHistory: "",
-                        otherHistory: "",
+                        id: <?php echo $id ?>,
+                        section: "Individual Treatment",
                     },
                     immunize: {
-                        fsn: <?php echo $db_identification ?>,
-                        childNo: "",
-                        mLastName: "",
-                        mFirstName: "",
-                        mMidName: "",
-                        fLastName: "",
-                        fFirstName: "",
-                        fMidName: "",
-                        purok: "",
-                        barangay: "",
-                    },
-                    apptRules: {
-                        appointment: [{
-                            required: true,
-                            message: 'Please set your appointment!',
-                            trigger: 'blur'
-                        }]
-                    },
-                    prenatalRules: {
-                        spouseFname: [{
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        spouseLname: [{
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }],
-                        purok: [{
-                            required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
-                    },
-                    healthRules: {
-                        civil: [{
-                            required: true,
-                            message: 'Civil Status is required!',
-                            trigger: 'blur'
-                        }],
-                        education: [{
-                            required: true,
-                            message: 'Education Attainment is required!',
-                            trigger: 'blur'
-                        }],
-                        employment: [{
-                            required: true,
-                            message: 'Employment Status is required!',
-                            trigger: 'blur'
-                        }],
-                        religion: [{
-                            required: true,
-                            message: 'Religion is required!',
-                            trigger: 'blur'
-                        }],
-                        street: [{
-                            required: true,
-                            message: 'Street is required!',
-                            trigger: 'blur'
-                        }],
-                        purok: [{
-                            required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
-                        member: [{
-                            required: true,
-                            message: 'Family member is required!',
-                            trigger: 'blur'
-                        }],
-                        mLastName: [{
-                            required: true,
-                            message: 'Mother last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid last name format!',
-                            trigger: 'blur'
-                        }],
-                        mFirstName: [{
-                            required: true,
-                            message: 'Mother first name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        mMidName: [{
-                            pattern: /^[a-zA-Z ]*$/,
-                            message: 'Invalid middle name format!',
-                            trigger: 'blur'
-                        }],
-                        alert: [{
-                            required: true,
-                            message: 'Alert type is required!',
-                            trigger: 'blur'
-                        }],
-                        medicalHistory: [{
-                            required: true,
-                            message: 'Past medical family history  is required!',
-                            trigger: 'blur'
-                        }],
-                    },
-                    immunizationRules: {
-                        mLastName: [{
-                            required: true,
-                            message: 'Mother last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        mFirstName: [{
-                            required: true,
-                            message: 'Mother first name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        mMidName: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        fLastName: [{
-                            required: true,
-                            message: 'Father last name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        fFirstName: [{
-                            required: true,
-                            message: 'Father first name is required!',
-                            trigger: 'blur'
-                        }, {
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        fMidName: [{
-                            pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
-                            trigger: 'blur'
-                        }],
-                        purok: [{
-                            required: true,
-                            message: 'Purok is required!',
-                            trigger: 'blur'
-                        }],
-                        barangay: [{
-                            required: true,
-                            message: 'Barangay is required!',
-                            trigger: 'blur'
-                        }],
+                        id: <?php echo $id ?>,
+                        section: "Immunization",
                     },
                 }
             },
             created() {
                 this.fetchAvatar()
-                this.getData()
+                this.fetchName()
+                this.fetchContact()
+                this.fetchGender()
             },
             mounted() {
                 setTimeout(() => {
                     this.fullscreenLoading = false
                 }, 1000)
                 this.active = localStorage.active ? parseInt(localStorage.active) : 0
-                this.addPatient = localStorage.addPatient ? JSON.parse(localStorage.addPatient) : {}
                 this.isHealthCheckup = localStorage.isHealthCheckup ? localStorage.isHealthCheckup : false
                 this.isImmunization = localStorage.isImmunization ? localStorage.isImmunization : false
                 this.isPregnancy = localStorage.isPregnancy ? localStorage.isPregnancy : false
+                this.isFamily = localStorage.isFamily ? localStorage.isFamily : false
 
-                this.health.age = localStorage.age ? localStorage.age : 0
-                this.immunize.age = localStorage.age ? localStorage.age : 0
-
-
-                const today = new Date();
-                const options = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                };
-
-                const date = today.toLocaleDateString("en-US", options);
-                localStorage.setItem("date", date)
-
-                this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
-                this.health.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
-                this.immunize.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
             },
             methods: {
                 // Logout **********************************************************
@@ -358,7 +170,7 @@
                         })
                 },
                 closeAppointmentDialog() {
-                    this.$confirm('Done copying username & password?', 'Warning', {
+                    this.$confirm('Are you sure you want to cancel?', 'Warning', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                             type: "warning"
@@ -368,193 +180,240 @@
                         })
                         .catch(() => {});
                 },
-                submit() {
-                    if (this.active++ > 1) {
-                        this.active = 0;
-                    } else {
+                nextFamily(fam_planning) {
+                    if (this.isFamily) {
+                        localStorage.setItem("isFamily", this.isFamily)
+                        this.openAppointmentDialog = true
+                        localStorage.setItem("active", this.active)
+                        console.log(this.isFamily)
 
+                    } else if (this.isHealthCheckup) {
+                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
+                    } else if (this.isPregnancy) {
+                        localStorage.setItem("isPregnancy", this.isPregnancy)
+                    } else if (this.isImmunization) {
+                        localStorage.setItem("isImmunization", this.isImmunization)
+                    }
+
+                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy || this.isFamily) {
+                        localStorage.setItem("active", this.active)
+                    } else {
+                        this.$message.error("Please select an appointment!");
                     }
                 },
-                back() {
-                    this.active--
-                    localStorage.setItem("active", this.active)
-                    if (this.active == 0) {
-                        localStorage.removeItem("addPatient")
-                        localStorage.removeItem("age")
+                nextImmunize(immunize) {
+                    if (this.isImmunization) {
+                        localStorage.setItem("isImmunization", this.isImmunization)
+                        this.openAppointmentDialog = true
+                        localStorage.setItem("active", this.active)
+                        console.log(this.isImmunization)
+
+                    } else if (this.isHealthCheckup) {
+                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
+                    } else if (this.isPregnancy) {
+                        localStorage.setItem("isPregnancy", this.isPregnancy)
+                    } else if (this.isFamily) {
+                        localStorage.setItem("isFamily", this.isFamily)
                     }
-                    localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
-                    localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
-                    localStorage.isPregnancy ? localStorage.removeItem("isPregnancy") : ""
+
+                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy || this.isFamily) {
+                        localStorage.setItem("active", this.active)
+                    } else {
+                        this.$message.error("Please select an appointment!");
+                    }
                 },
-                next() {
+                nextPrenatal(maternal) {
+                    if (this.isPregnancy) {
+                        localStorage.setItem("isPregnancy", this.isPregnancy)
+                        this.openAppointmentDialog = true
+                        localStorage.setItem("active", this.active)
+
+                    } else if (this.isImmunization) {
+                        localStorage.setItem("isImmunization", this.isImmunization)
+                    } else if (this.isHealthCheckup) {
+                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
+                    } else if (this.isFamily) {
+                        localStorage.setItem("isFamily", this.isFamily)
+                    }
+
+                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy || this.isFamily) {
+                        localStorage.setItem("active", this.active)
+                    } else {
+                        this.$message.error("Please select an appointment!");
+                    }
+                },
+                nextHealth(health) {
                     if (this.isHealthCheckup) {
                         localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
+                        this.openAppointmentDialog = true
+                        localStorage.setItem("active", this.active)
+
                     } else if (this.isImmunization) {
                         localStorage.setItem("isImmunization", this.isImmunization)
                     } else if (this.isPregnancy) {
                         localStorage.setItem("isPregnancy", this.isPregnancy)
+                    } else if (this.isFamily) {
+                        localStorage.setItem("isFamily", this.isFamily)
                     }
 
-                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy) {
-                        this.active++;
+                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy || this.isFamily) {
                         localStorage.setItem("active", this.active)
                     } else {
                         this.$message.error("Please select an appointment!");
                     }
                 },
                 healthCheckup() {
+                    this.isFamily = false;
                     this.isPregnancy = false;
                     this.isImmunization = false;
                     this.isHealthCheckup = !this.isHealthCheckup;
                 },
                 immunization() {
+                    this.isFamily = false;
                     this.isPregnancy = false;
                     this.isImmunization = !this.isImmunization;
                     this.isHealthCheckup = false;
                 },
                 pregnancy() {
+                    this.isFamily = false;
                     this.isPregnancy = !this.isPregnancy;
                     this.isImmunization = false;
                     this.isHealthCheckup = false;
                 },
+                family() {
+                    this.isFamily = !this.isFamily;
+                    this.isPregnancy = false;
+                    this.isImmunization = false;
+                    this.isHealthCheckup = false;
+                },
                 submitHealth(health) {
-                    if (this.active++ > 1) this.active = 0;
-                    this.$refs[health].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            const newData = new FormData()
-                            newData.append("fsn", this.health.fsn)
-                            newData.append("civil", this.health.civil)
-                            newData.append("spouse", this.health.spouse)
-                            newData.append("educ_attainment", this.health.education)
-                            newData.append("employment_status", this.health.employment)
-                            newData.append("occupation", this.health.occupation)
-                            newData.append("religion", this.health.religion)
-                            newData.append("street", this.health.street)
-                            newData.append("purok", this.health.purok)
-                            newData.append("barangay", this.health.barangay)
-                            newData.append("blood_type", this.health.blood)
-                            newData.append("family_member", this.health.member)
-                            newData.append("other_member", this.health.otherMember)
-                            newData.append("philhealth_type", this.health.phlType)
-                            newData.append("philhealth_no", this.health.philhealth)
-                            newData.append("m_lastname", this.health.mLastName)
-                            newData.append("m_firstname", this.health.mFirstName)
-                            newData.append("m_middlename", this.health.mMidName)
-                            newData.append("nhts", this.health.nhts)
-                            newData.append("pantawid_member", this.health.pantawid)
-                            newData.append("hh_no", this.health.hhNo)
-                            newData.append("alert_type", this.health.alert)
-                            newData.append("other_alert", this.health.otherAlert)
-                            newData.append("medical_history", this.health.medicalHistory)
-                            newData.append("other_history", this.health.otherHistory)
-                            axios.post("store-action.php?action=storeHealth", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New individual treatment form has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData();
-                                            setTimeout(() => {
-                                                this.openAppointmentDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.newUser = response.data;
-                                        this.loadButton = false
-                                    }
-                                })
-                            this.loadButton = true
-                            localStorage.setItem("active", this.active)
-                        } else {
-                            this.$message.error("Cannot submit the form. Please check the error(s).")
-                            return false;
-                        }
-                    })
+                    this.loadButton = true;
+                    var newData = new FormData()
+                    newData.append("patient_id", this.health.id)
+                    newData.append("section", this.health.section)
+                    console.log(this.name)
+                    axios.post("store-action.php?action=storeHealth", newData)
+                        .then(response => {
+                            if (response.data) {
+                                this.tableLoad = true;
+                                setTimeout(() => {
+                                    this.$message({
+                                        message: 'New individual treatment request has been added successfully!',
+                                        type: 'success'
+                                    });
+                                    this.tableLoad = false;
+                                    this.fetchContact();
+                                    this.fetchGender();
+                                    this.fetchName();
+                                    setTimeout(() => {
+                                        this.openAppointmentDialog = false
+                                    }, 500)
+                                }, 1500);
+                                this.loadButton = false
+                                this.isHealthCheckup
+                            }
+                        })
+                    localStorage.setItem("active", this.active)
+                    localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
+                },
+                resetFormData() {
+                    this.health = []
                 },
                 submitImmunization(immunize) {
-                    if (this.active++ > 1) this.active = 0;
-                    this.$refs[immunize].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            const newData = new FormData()
-                            newData.append("fsn", this.immunize.fsn)
-                            newData.append("m_lastname", this.immunize.mLastName)
-                            newData.append("m_firstname", this.immunize.mFirstName)
-                            newData.append("m_middlename", this.immunize.mMidName)
-                            newData.append("f_lastname", this.immunize.fLastName)
-                            newData.append("f_firstname", this.immunize.fFirstName)
-                            newData.append("f_middlename", this.immunize.fMidName)
-                            newData.append("purok", this.immunize.purok)
-                            newData.append("barangay", this.immunize.barangay)
-                            axios.post("store-action.php?action=storeImmunization", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New immunization form has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData();
-                                            setTimeout(() => {
-                                                this.openAppointmentDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.newUser = response.data;
-                                        this.loadButton = true;
-                                    }
-                                })
-                            this.loadButton = true
-                            localStorage.setItem("active", this.active)
-                        } else {
-                            this.$message.error("Cannot submit the form. Please check the error(s).")
-                            return false;
-                        }
-                    })
-                    console.log(this.addPatient, "immunization")
+                    this.loadButton = true;
+                    var newData = new FormData()
+                    newData.append("patient_id", this.immunize.id)
+                    newData.append("section", this.immunize.section)
+                    axios.post("store-action.php?action=storeImmunization", newData)
+                        .then(response => {
+                            if (response.data) {
+                                this.tableLoad = true;
+                                setTimeout(() => {
+                                    this.$message({
+                                        message: 'New immunization request has been added successfully!',
+                                        type: 'success'
+                                    });
+                                    this.tableLoad = false;
+                                    this.fetchContact();
+                                    this.fetchGender();
+                                    this.fetchName();
+                                    setTimeout(() => {
+                                        this.openAppointmentDialog = false
+                                    }, 500)
+                                }, 1500);
+                                this.loadButton = true;
+                                this.isImmunization
+                            }
+                        })
+                    localStorage.setItem("active", this.active)
+                    localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
+                },
+                resetFormData() {
+                    this.immunize = []
                 },
                 submitPrenatal(prenatal) {
-                    if (this.active++ > 1) this.active = 0;
-                    this.$refs[prenatal].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            const newData = new FormData()
-                            newData.append("fsn", this.prenatal.fsn)
-                            newData.append("spouse_lastname", this.prenatal.spouseLname)
-                            newData.append("spouse_firstname", this.prenatal.spouseFname)
-                            newData.append("purok", this.prenatal.purok)
-                            newData.append("barangay", this.prenatal.barangay)
-                            axios.post("store-action.php?action=storePrenatal", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New maternity form has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData();
-                                            setTimeout(() => {
-                                                this.openAppointmentDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.newUser = response.data;
-                                        this.loadButton = false
-                                    }
-                                })
-                            this.loadButton = true
-                            localStorage.setItem("active", this.active)
-                        } else {
-                            this.$message.error("Cannot submit the form. Please check the error(s).")
-                            return false;
-                        }
-                    })
+                    this.loadButton = true;
+                    var newData = new FormData()
+                    newData.append("patient_id", this.maternal.id)
+                    newData.append("section", this.maternal.section)
+                    axios.post("store-action.php?action=storePrenatal", newData)
+                        .then(response => {
+                            if (response.data) {
+                                this.tableLoad = true;
+                                setTimeout(() => {
+                                    this.$message({
+                                        message: 'New maternity request has been added successfully!',
+                                        type: 'success'
+                                    });
+                                    this.tableLoad = false;
+                                    this.fetchContact();
+                                    this.fetchGender();
+                                    this.fetchName();
+                                    setTimeout(() => {
+                                        this.openAppointmentDialog = false
+                                    }, 500)
+                                }, 1500);
+                                this.loadButton = false
+                                this.isPregnancy
+                            }
+                        })
+                    localStorage.setItem("active", this.active)
+                    localStorage.isPregnancy ? localStorage.removeItem("isPregnancy") : ""
+                },
+                resetFormData() {
+                    this.prenatal = []
+                },
+                submitFamily(family) {
+                    this.loadButton = true;
+                    var newData = new FormData()
+                    newData.append("patient_id", this.family.id)
+                    newData.append("section", this.family.section)
+                    axios.post("store-action.php?action=storeFamily", newData)
+                        .then(response => {
+                            if (response.data) {
+                                this.tableLoad = true;
+                                setTimeout(() => {
+                                    this.$message({
+                                        message: 'New family planning request has been added successfully!',
+                                        type: 'success'
+                                    });
+                                    this.tableLoad = false;
+                                    this.fetchContact();
+                                    this.fetchGender();
+                                    this.fetchName();
+                                    setTimeout(() => {
+                                        this.openAppointmentDialog = false
+                                    }, 500)
+                                }, 1500);
+                                this.loadButton = false
+                                this.isFamily
+                            }
+                        })
+                    localStorage.setItem("active", this.active)
+                    localStorage.isFamily ? localStorage.removeItem("isFamily") : ""
+                },
+                resetFormData() {
+                    this.family = []
                 },
                 // ******************************************************************
                 fetchAvatar() {
@@ -567,15 +426,33 @@
                             }
                         })
                 },
-                getData() {
-                    axios.post("action.php?action=fetch")
+                fetchName() {
+                    const fetchName = new FormData();
+                    fetchName.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_name", fetchName)
                         .then(response => {
-                            if (response.data.error) {
-                                this.tableData = []
-                            } else {
-                                this.tableData = response.data
+                            if (response) {
+                                this.name = response.data
+                            }
+                        })
+                },
+                fetchGender() {
+                    const fetchName = new FormData();
+                    fetchName.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_gender", fetchName)
+                        .then(response => {
+                            if (response) {
                                 this.gender = response.data
-                                this.checkIdentification = response.data.map(res => res.fsn)
+                            }
+                        })
+                },
+                fetchContact() {
+                    const fetchName = new FormData();
+                    fetchName.append("id", <?php echo $id; ?>)
+                    axios.post("action.php?action=fetch_contact", fetchName)
+                        .then(response => {
+                            if (response) {
+                                this.phone_number = response.data
                             }
                         })
                 },

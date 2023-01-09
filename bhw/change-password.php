@@ -6,9 +6,9 @@
     <?php
     include("./import/head.php");
 
-    if (isset($_SESSION["users_id"])) {
+    if (isset($_SESSION["user_id"])) {
 
-        $id = $_SESSION["users_id"];
+        $id = $_SESSION["user_id"];
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id=$id");
         $user_row = mysqli_fetch_assoc($user_record);
@@ -153,7 +153,7 @@
                                         type: 'success'
                                     });
                                     setTimeout(() => {
-                                        window.location.href = "../../capstone-new"
+                                        window.location.href = "../../capstone-new/bhw/login"
                                     }, 1000)
                                 }
                             })

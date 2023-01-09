@@ -7,9 +7,9 @@
 
     include("./import/head.php");
 
-    if (isset($_SESSION["id"])) {
+    if (isset($_SESSION["user_id"])) {
 
-        $id = $_SESSION["id"];
+        $id = $_SESSION["user_id"];
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 
@@ -74,11 +74,13 @@
                             <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
                                 <el-table-column label="No." type="index" width="50">
                                 </el-table-column>
-                                <el-table-column sortable label="FSN" prop="fsn">
+                                <el-table-column sortable label="Date Requested" width="200" prop="date">
                                 </el-table-column>
-                                <el-table-column sortable label="Date Requested" prop="date">
+                                <el-table-column sortable label="Appointment Date" width="200" prop="appointment">
                                 </el-table-column>
-                                <el-table-column sortable label="Name" width="220" prop="name">
+                                <el-table-column sortable label="Name" width="200" prop="name">
+                                </el-table-column>
+                                <el-table-column sortable label="Phone No." width="200" prop="phone_number">
                                 </el-table-column>
                                 <el-table-column sortable label="Gender" prop="gender" width="110" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
                                     <template slot-scope="scope">
@@ -86,11 +88,12 @@
                                         <el-tag size="small" v-else type="danger">{{ scope.row.gender }}</el-tag>
                                     </template>
                                 </el-table-column>
-                                <el-table-column sortable label="Section" prop="section" width="200" column-key="section" :filters="[{text: 'Maternity', value: 'Maternity'}, {text: 'Individual Treatment', value: 'Individual Treatment'}, {text: 'Immunization', value: 'Immunization'}]" :filter-method="filterHandler">
+                                <el-table-column sortable label="Section" prop="section" width="190" column-key="section" :filters="[{text: 'Maternity', value: 'Maternity'}, {text: 'Individual Treatment', value: 'Individual Treatment'}, {text: 'Immunization', value: 'Immunization'}]" :filter-method="filterHandler">
                                     <template slot-scope="scope">
                                         <el-tag size="small" v-if="scope.row.section == 'Maternity'">{{ scope.row.section }}</el-tag>
                                         <el-tag size="small" v-else-if="scope.row.section == 'Individual Treatment'" type="success">{{ scope.row.section }}</el-tag>
-                                        <el-tag size="small" v-else type="danger">{{ scope.row.section }}</el-tag>
+                                        <el-tag size="small" v-else-if="scope.row.section == 'Immunization'" type="danger">{{ scope.row.section }}</el-tag>
+                                        <el-tag size="small" v-else type="warning">{{ scope.row.section }}</el-tag>
                                     </template>
                                 </el-table-column>
                                 <el-table-column sortable label="Status" width="110" prop="status">
@@ -104,7 +107,8 @@
                                         <el-tooltip class="item" effect="dark" content="View Details" placement="top-start">
                                             <el-button icon="el-icon-view" v-if="scope.row.section == 'Maternity'" size="mini" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
                                             <el-button icon="el-icon-view" v-else-if="scope.row.section == 'Individual Treatment'" size="mini" type="success" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
-                                            <el-button icon="el-icon-view" v-else size="mini" type="danger" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
+                                            <el-button icon="el-icon-view" v-else-if="scope.row.section == 'Immunization'" size="mini" type="danger" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
+                                            <el-button icon="el-icon-view" v-else size="mini" type="warning" @click="handleView(scope.$index, scope.row)" plain>View Details</el-button>
                                         </el-tooltip>
                                     </template>
                                 </el-table-column>
@@ -137,64 +141,43 @@
                         </div>
                         <span slot="footer" class="dialog-footer">
                             <div v-if="viewPatient.section == 'Maternity'">
-                                <el-button size="medium" @click="closeViewDialog('addDetails')">Cancel</el-button>
-                                <el-button size="medium" type="warning" @click="smsDialog=true">Set Appointment</el-button>
-                                <el-button size="medium" :loading="loadButton" @click="submitPrenatal('prenatal')">Save</el-button>
+                                <el-button size="medium" type="primary" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Pending'" type="danger" @click="smsDialog=true">Approve</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Approved'" :loading="loadButton" @click="submitPrenatal('prenatal')">Submit</el-button>
                             </div>
                             <div v-else-if="viewPatient.section == 'Individual Treatment'">
-                                <el-button size="medium" @click="closeViewDialog('addDetails')">Cancel</el-button>
-                                <el-button size="medium" type="warning" @click="smsDialog=true">Set Appointment</el-button>
-                                <el-button size="medium" :loading="loadButton" type="success" @click="submitHealth('health')">Save</el-button>
+                                <el-button size="medium" type="primary" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Pending'" type="danger" @click="smsDialog=true">Approve</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Approved'" :loading="loadButton" type="success" @click="submitHealth('health')">Submit</el-button>
+                            </div>
+                            <div v-else-if="viewPatient.section == 'Immunization'">
+                                <el-button size="medium" type="primary" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Pending'" type="danger" @click="smsDialog=true">Approve</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Approved'" :loading="loadButton" @click="submitImmunization('immunize')">Submit</el-button>
                             </div>
                             <div v-else>
-                                <el-button size="medium" @click="closeViewDialog('addDetails')">Cancel</el-button>
-                                <el-button size="medium" type="warning" @click="smsDialog=true">Send Appointment</el-button>
-                                <el-button size="medium" :loading="loadButton" type="danger" @click="submitImmunization('immunize')">Save</el-button>
+                                <el-button size="medium" type="primary" @click="closeViewDialog('addDetails')">Cancel</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Pending'" type="warning" @click="smsDialog=true">Approve</el-button>
+                                <el-button size="medium" v-if="viewPatient.status == 'Approved'" :loading="loadButton" @click="submitImmunization('immunize')">Submit</el-button>
                             </div>
                         </span>
                     </el-dialog>
-                    <el-dialog :visible.sync="smsDialog" width="50%" :before-close="closeSmsDialog">
-                        <template #title>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="fs-5">User {{ viewPatient.first_name }}</div>
-                                <div class="pe-4">
-                                    <el-avatar :size="70" :src="viewPatient.avatar"></el-avatar>
-                                </div>
-                            </div>
-                        </template>
-                        <div class="container">
-                            <el-form :model="addSms" :rules="smsRules" ref="addSms">
-                                <div class="row underline-input">
-                                    <div class="col-auto">
-                                        <el-header>
-                                            <h4>Send Appointments</h4>
-                                        </el-header>
-                                    </div>
-                                    <div class="col-auto">
-                                        <el-form-item class="" label="Send To :" prop="phone_number">
-                                            <el-input v-model="viewPatient.phone_number" clearable disabled></el-input>
-                                        </el-form-item>
-                                    </div>
-                                </div>
-                                <div>
-                                    <el-divider></el-divider>
-                                </div>
-                                <div class="row d-flex justify-content-center">
-                                    <div class="col-9">
-                                        <el-form-item prop="appointment">
-                                            <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
-                                            </el-date-picker>
-                                        </el-form-item>
-                                    </div>
-                                </div>
-                                <div>
-                                    <el-divider></el-divider>
-                                </div>
-                            </el-form>
+                    <el-dialog :visible.sync="smsDialog" width="40%" :before-close="closeResetDialog">
+                        <el-header>
+                            <h4>Health Center (Set Appointment)</h4>
+                        </el-header>
+                        <div>
+                            <el-divider></el-divider>
                         </div>
+                        <el-form :model="approvedSms" :rules="smsRules" ref="approvedSms">
+                            <el-form-item label="Set Appointment" prop="newAppointment">
+                                <el-date-picker size="medium" v-model="approvedSms.newAppointment" type="date" placeholder="Select Date" :picker-options="datePickerOptions">
+                                </el-date-picker>
+                            </el-form-item>
+                        </el-form>
                         <span slot="footer" class="dialog-footer">
-                            <el-button :loading="loadButton" type="primary" @click="sendSMS('addSms')" size="small" icon="el-icon-position">Send</el-button>
-                            <el-button @click="closeSmsDialog('addSms')" size="small">Cancel</el-button>
+                            <el-button :loading="loadButton" type="primary" @click="smsApproved('approvedSms')" size="small" icon="el-icon-position">Send</el-button>
+                            <el-button @click="closeResetDialog('approvedSms')" size="small">Cancel</el-button>
                         </span>
                     </el-dialog>
                 </div>
@@ -214,6 +197,12 @@
             el: "#app",
             data() {
                 return {
+
+                    datePickerOptions: {
+                        disabledDate(date) {
+                            return date < new Date()
+                        }
+                    },
                     page: 1,
                     pageSize: 10,
                     showAllData: false,
@@ -224,14 +213,10 @@
                     fullscreenLoading: true,
                     openAddDialog: false,
                     backToHome: false,
-                    isHealthCheckup: false,
-                    isImmunization: false,
-                    isPregnancy: false,
-                    avatar: "",
                     smsDialog: false,
+                    avatar: "",
                     viewPatient: [],
-                    viewImmunization: [],
-                    checkIdentification: [],
+                    checkFsn: [],
                     searchValue: "",
                     searchNull: "",
                     searchName: "",
@@ -248,11 +233,14 @@
                         label: 'Phone No.'
                     }],
                     newUser: [],
-                    addSms: {
-                        message: "",
-                        appointment: "",
+                    approvedSms: {
+                        newAppointment: "",
                     },
                     prenatal: {
+                        spouseFname: "",
+                        spouseLname: "",
+                        purok: "",
+                        barangay: "",
                         gp: "",
                         lmp: "",
                         edc: "",
@@ -271,6 +259,31 @@
                     },
                     health: {
                         clinisysFSN: "",
+                        civil: "",
+                        spouse: "",
+                        education: "",
+                        employment: "",
+                        occupation: "",
+                        religion: "",
+                        street: "",
+                        purok: "",
+                        barangay: "",
+                        blood: "",
+                        member: "",
+                        otherMember: "",
+                        phlType: "",
+                        philhealth: "",
+                        mLastName: "",
+                        mFirstName: "",
+                        mMidName: "",
+                        age: "",
+                        nhts: "",
+                        pantawid: "",
+                        hhNo: "",
+                        alert: "",
+                        otherAlert: "",
+                        medicalHistory: "",
+                        otherHistory: "",
                         encounter: "",
                         consultationType: "",
                         otherConsultation: "",
@@ -290,28 +303,47 @@
                     },
                     immunize: {
                         childNo: "",
+                        mLastName: "",
+                        mFirstName: "",
+                        mMidName: "",
+                        fLastName: "",
+                        fFirstName: "",
+                        fMidName: "",
+                        purok: "",
+                        barangay: "",
                         appointment: "",
                         age: "",
                         temp: "",
                         immunizationGiven: "",
                     },
                     smsRules: {
-                        message: [{
+                        newAppointment: [{
                             required: true,
-                            message: 'Message is required!',
-                            trigger: 'blur'
-                        }, {
-                            min: 2,
-                            message: 'Message should atleast two(2) characters!',
-                            trigger: 'blur'
-                        }],
-                        appointment: [{
-                            required: true,
-                            message: 'Appointment is required!',
+                            message: 'Please Set new Appointment!',
                             trigger: 'blur'
                         }],
                     },
                     prenatalRules: {
+                        spouseFname: [{
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        spouseLname: [{
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid last name format!',
+                            trigger: 'blur'
+                        }],
+                        purok: [{
+                            required: true,
+                            message: 'Purok is required!',
+                            trigger: 'blur'
+                        }],
+                        barangay: [{
+                            required: true,
+                            message: 'Barangay is required!',
+                            trigger: 'blur'
+                        }],
                         dateVisit: [{
                             required: true,
                             message: 'Date is required!',
@@ -354,6 +386,79 @@
                         }],
                     },
                     healthRules: {
+                        civil: [{
+                            required: true,
+                            message: 'Civil Status is required!',
+                            trigger: 'blur'
+                        }],
+                        education: [{
+                            required: true,
+                            message: 'Education Attainment is required!',
+                            trigger: 'blur'
+                        }],
+                        employment: [{
+                            required: true,
+                            message: 'Employment Status is required!',
+                            trigger: 'blur'
+                        }],
+                        religion: [{
+                            required: true,
+                            message: 'Religion is required!',
+                            trigger: 'blur'
+                        }],
+                        street: [{
+                            required: true,
+                            message: 'Street is required!',
+                            trigger: 'blur'
+                        }],
+                        purok: [{
+                            required: true,
+                            message: 'Purok is required!',
+                            trigger: 'blur'
+                        }],
+                        barangay: [{
+                            required: true,
+                            message: 'Barangay is required!',
+                            trigger: 'blur'
+                        }],
+                        member: [{
+                            required: true,
+                            message: 'Family member is required!',
+                            trigger: 'blur'
+                        }],
+                        mLastName: [{
+                            required: true,
+                            message: 'Mother last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid last name format!',
+                            trigger: 'blur'
+                        }],
+                        mFirstName: [{
+                            required: true,
+                            message: 'Mother first name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        mMidName: [{
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid middle name format!',
+                            trigger: 'blur'
+                        }],
+                        alert: [{
+                            required: true,
+                            message: 'Alert type is required!',
+                            trigger: 'blur'
+                        }],
+                        medicalHistory: [{
+                            required: true,
+                            message: 'Past medical family history  is required!',
+                            trigger: 'blur'
+                        }],
                         encounter: [{
                             required: true,
                             message: 'Encounter type is required!',
@@ -411,6 +516,62 @@
                         }],
                     },
                     immunizationRules: {
+                        mLastName: [{
+                            required: true,
+                            message: 'Mother last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        mFirstName: [{
+                            required: true,
+                            message: 'Mother first name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        mMidName: [{
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        fLastName: [{
+                            required: true,
+                            message: 'Father last name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        fFirstName: [{
+                            required: true,
+                            message: 'Father first name is required!',
+                            trigger: 'blur'
+                        }, {
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        fMidName: [{
+                            pattern: /^[a-zA-Z- ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        purok: [{
+                            required: true,
+                            message: 'Purok is required!',
+                            trigger: 'blur'
+                        }],
+                        barangay: [{
+                            required: true,
+                            message: 'Barangay is required!',
+                            trigger: 'blur'
+                        }],
                         temp: [{
                             pattern: /^[\.0-9]*$/,
                             message: 'Invalid temperature format!',
@@ -427,7 +588,6 @@
             created() {
                 this.fetchAvatar()
                 this.getData()
-                this.getImmunization()
             },
             mounted() {
                 setTimeout(() => {
@@ -513,6 +673,18 @@
                             }
                         })
                 },
+                closeResetDialog(addSms) {
+                    this.$confirm('Are you sure you want to cancel setting new Appointment?', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                        })
+                        .then(() => {
+                            this.smsDialog = false
+                            this.$refs[addSms].resetFields();
+                            localStorage.removeItem("fsn")
+                        })
+                        .catch(() => {});
+                },
                 closeViewDialog(addDetails) {
                     this.$confirm('Are you sure you want to cancel?', {
                             confirmButtonText: 'Yes',
@@ -525,20 +697,7 @@
                         })
                         .catch(() => {});
                 },
-                closeSmsDialog(addSms) {
-                    this.$confirm('Are you sure you want to cancel send message?', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                        })
-                        .then(() => {
-                            this.smsDialog = false
-                            this.$refs[addSms].resetFields();
-                            localStorage.removeItem("fsn")
-                        })
-                        .catch(() => {});
-                },
                 handleView(index, row) {
-                    this.viewImmunization = row;
                     this.viewPatient = row;
                     this.viewDialog = true;
 
@@ -561,20 +720,6 @@
                 handleClose(key, keyPath) {
                     console.log(key, keyPath);
                 },
-                closeAddDialog() {
-                    this.$confirm('Done copying username & password?', 'Warning', {
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            type: "warning"
-                        })
-                        .then(() => {
-                            this.openAddDialog = false
-                            setTimeout(() => {
-                                this.fullscreenLoading = true
-                            }, 1000)
-                        })
-                        .catch(() => {});
-                },
                 // ******************************************************************
                 fetchAvatar() {
                     const fetchAvatar = new FormData();
@@ -587,22 +732,13 @@
                         })
                 },
                 getData() {
-                    axios.post("action.php?action=fetch")
+                    axios.post("action.php?action=fetch_request")
                         .then(response => {
+                            console.log(response)
                             if (response.data.error) {
                                 this.tableData = []
                             } else {
                                 this.tableData = response.data
-                                this.checkIdentification = response.data.map(res => res.fsn)
-                            }
-                        })
-                },
-                getImmunization() {
-                    axios.post("action.php?action=fetchImmunization")
-                        .then(response => {
-                            console.log(response)
-                            if (response.data.error) {
-                                this.viewImmunization.m_lastname = response.data
                             }
                         })
                 },
@@ -622,40 +758,64 @@
                     const property = column['property'];
                     return row[property] === value;
                 },
-                sendSMS(addSms) {
-                    this.$refs[addSms].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            var newData = new FormData()
-                            newData.append("first_name", this.viewPatient.first_name)
-                            newData.append("last_name", this.viewPatient.last_name)
-                            newData.append("contact", this.viewPatient.phone_number)
-                            newData.append("appointment", this.addSms.appointment)
-                            axios.post("action.php?action=sent_message", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.loadButton = false;
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'Message sent successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                        }, 1500);
-                                        this.resetFormData();
-                                        this.loadButton = false;
-                                        this.smsDialog = false;
-                                    }
-                                })
-                        } else {
-                            this.$message.error("Cannot submit the message. Please check the error(s).")
-                            return false;
-                        }
-                    });
-                },
-                resetFormData() {
-                    this.addSms = []
+                smsApproved(approvedSms) {
+                    this.loadButton = true;
+                    const date = this.approvedSms.newAppointment;
+                    let weekDay = date.getDay();
+                    const newAppointment = date.getFullYear() + "-" + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + "-" + (date.getDate() > 9 ? '' : '0') + date.getDate();
+                    switch (weekDay) {
+                        case 0:
+                            weekDay = "Sunday"
+                            break;
+                        case 1:
+                            weekDay = "Monday"
+                            break;
+                        case 2:
+                            weekDay = "Tuesday"
+                            break;
+                        case 3:
+                            weekDay = "Wednesday"
+                            break;
+                        case 4:
+                            weekDay = "Thursday"
+                            break;
+                        case 5:
+                            weekDay = "Friday"
+                            break;
+                        case 6:
+                            weekDay = "Saturday"
+                            break;
+                        default:
+                            break;
+                    }
+                    var newData = new FormData()
+                    newData.append("patient_id", this.viewPatient.id)
+                    console.log(this.viewPatient.id)
+                    newData.append("first_name", this.viewPatient.first_name)
+                    newData.append("last_name", this.viewPatient.last_name)
+                    newData.append("contact", this.viewPatient.phone_number)
+                    newData.append("new_appointment", newAppointment)
+                    newData.append("week_day", weekDay)
+                    axios.post("action.php?action=sms_approve", newData)
+                        .then(response => {
+                            console.log(response)
+                            if (response.data) {
+                                this.loadButton = false;
+                                this.tableLoad = true;
+                                setTimeout(() => {
+                                    this.$message({
+                                        message: 'Message sent successfully for new Appointment!',
+                                        type: 'success'
+                                    });
+                                    this.tableLoad = false;
+                                    this.smsDialog = false;
+                                    this.viewDialog = false;
+                                    this.getData();
+                                }, 500);
+                                this.resetFormData();
+                                this.loadButton = false;
+                            }
+                        })
                 },
                 submitHealth(health) {
                     this.$refs[health].validate((valid) => {
@@ -720,6 +880,7 @@
                                                 type: 'success'
                                             });
                                             this.tableLoad = false;
+                                            this.viewDialog = false;
                                             this.getData();
                                         }, 1500);
                                         this.newUser = response.data;
@@ -747,14 +908,14 @@
                             newData.append("suffix", this.viewPatient.suffix)
                             newData.append("birthdate", this.viewPatient.birthDate)
                             newData.append("gender", this.viewPatient.gender)
-                            newData.append("m_lastname", <?php echo $m_lastname ?>)
-                            newData.append("m_firstname", <?php echo $m_firstname ?>)
-                            newData.append("m_middlename", <?php echo $m_middlename ?>)
-                            newData.append("f_lastname", <?php echo $f_lastname ?>)
-                            newData.append("f_firstname", <?php echo $f_firstname ?>)
-                            newData.append("f_middlename", <?php echo $f_middlename ?>)
-                            newData.append("purok", <?php echo $purok ?>)
-                            newData.append("barangay", <?php echo $barangay ?>)
+                            newData.append("m_lastname", this.immunize.mLastName)
+                            newData.append("m_firstname", this.immunize.mFirstName)
+                            newData.append("m_middlename", this.immunize.mMidName)
+                            newData.append("f_lastname", this.immunize.fLastName)
+                            newData.append("f_firstname", this.immunize.fFirstName)
+                            newData.append("f_middlename", this.immunize.fMidName)
+                            newData.append("purok", this.immunize.purok)
+                            newData.append("barangay", this.immunize.barangay)
                             newData.append("appointment", this.immunize.appointment)
                             newData.append("age", this.immunize.age)
                             newData.append("weight", this.immunize.weight)
@@ -770,6 +931,7 @@
                                                 type: 'success'
                                             });
                                             this.tableLoad = false;
+                                            this.viewDialog = false;
                                             this.getData();
                                         }, 1500);
                                         this.newUser = response.data;
@@ -825,6 +987,7 @@
                                                 type: 'success'
                                             });
                                             this.tableLoad = false;
+                                            this.viewDialog = false;
                                             this.getData();
                                         }, 1500);
                                         this.newUser = response.data;
@@ -847,17 +1010,6 @@
                 },
             }
         })
-    </script>
-    <script>
-        function add_hyphen() {
-            var input = document.getElementById("hhno");
-            var str = input.value;
-            str = str.replace("-", "");
-            if (str.length > 10) {
-                str = str.substring(0, 4) + "-" + str.substring(4, 11) + "-" + str.substring(10);
-            }
-            input.value = str
-        }
     </script>
 </body>
 

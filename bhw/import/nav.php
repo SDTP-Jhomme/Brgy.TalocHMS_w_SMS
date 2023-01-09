@@ -29,6 +29,14 @@
                 <a class="dropdown-item" href="./patient-request">
                     <i class="fas fa-table fa-sm fa-fw mr-2 text-gray-400"></i>
                     Patient(s) Request
+                    <span class="badge bg-secondary">
+                        <?php
+                        $count_request = $db->query("SELECT COUNT(*) as total FROM `pending_request` WHERE status='Pending'");
+                        $request = $count_request->fetch_array();
+
+                        echo $request['total'];
+                        ?>
+                    </span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="./profile">

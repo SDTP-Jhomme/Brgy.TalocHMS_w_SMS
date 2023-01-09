@@ -17,7 +17,7 @@ if ($action == 'fetch_patient') {
     if (mysqli_num_rows($data) > 0) {
         while ($data_row = mysqli_fetch_assoc($data)) {
 
-            $fullname = ucfirst($data_row["first_name"]) . " " . substr(ucfirst($data_row["middle_name"]), 0, 1) . " " . ucfirst($data_row["last_name"]) . " " . $data_row["suffix"];
+            $fullname = ucfirst($data_row["first_name"]) . " " . trim(substr(ucfirst($data_row["middle_name"]), 0, 1),"undefined") . " " . ucfirst($data_row["last_name"]) . " " . trim($data_row["suffix"],"undefined");
             $db_birthdate = $data_row["birthdate"];
             $birthday = substr($db_birthdate, 4, 11);
             $birthdate = date("F d, Y", strtotime($birthday));
@@ -50,19 +50,18 @@ if ($action == 'fetch_patient') {
 }
 if ($action == 'sent_message') {
 
+    $week_day = $_POST['week_day'];
     $contact = $_POST['phone_number'];
-    $appointment = $_POST['appointments'];
-    $n_appointment = substr($appointment, 4, 11);
-    $new_appointment = date("F d, Y", strtotime($n_appointment));
+    $appointment = date("F d, Y", strtotime($_POST['appointment']));
     $message = $_POST['message'];
 
-    $data = $appointment . $message;
-    $sms_url = "http://sms.pagenet.info/admin/index.php";
+    $data = "Appointment Date: $week_day, $appointment\n\n$message";
+    $sms_url = "https://sms.pagenet.info/admin/index.php";
     $auth_key = "p6rV1tCjldQ05HCiuO8Zh5ZXtMSv44tIOG7bvHgC";
 
-    $device_id = "13";
+    $device_id = "18";
 
-    $sim_id = "99";
+    $sim_id = "3";
 
     $msg = $sms_url . "?route=api/sms/send&auth_key=" . $auth_key . "&device_id=" . $device_id . "&sim_id=" . $sim_id . "&mobile_no=" . $contact . "&data_type=Plain&message=" . urlencode("$data");
 
@@ -72,39 +71,34 @@ if ($action == 'sent_message') {
     curl_setopt($cURL, CURLOPT_POSTFIELDS, $message);
     $response = curl_exec($cURL);
     curl_close($cURL);
-
-    $result = json_decode($response, true);
 }
+
 if ($action == 'bulk_message') {
 
-    if (isset($_POST['number_blast'])) {
+    $week_day = $_POST['week_day'];
+    $numbers = $_POST['number_blast'];
+    $array_number = explode(',', $numbers);
+    $appointment = date("F d, Y", strtotime($_POST['appointment']));
+    $message = $_POST['message'];
 
-        $array_number = $_POST['number_blast'];
-        echo $array_number;
-        $appointment = $_POST['appointment'];
-        $n_appointment = substr($appointment, 4, 11);
-        $new_appointment = date("F d, Y", strtotime($n_appointment));
-        $message = $_POST['message'];
+    $data = "Appointment Date: $week_day, $appointment\n\n$message";
+    $sms_url = "https://sms.pagenet.info/admin/index.php";
+    $auth_key = "p6rV1tCjldQ05HCiuO8Zh5ZXtMSv44tIOG7bvHgC";
 
-        $phone_number = $array_number;
-        $data = $appointment . $message;
-        $sms_url = "http://sms.pagenet.info/admin/index.php";
-        $auth_key = "p6rV1tCjldQ05HCiuO8Zh5ZXtMSv44tIOG7bvHgC";
+    $device_id = "18";
 
-        $device_id = "13";
+    $sim_id = "3";
 
-        $sim_id = "99";
-
-        $msg = $sms_url . "?route=api/sms/send&auth_key=" . $auth_key . "&device_id=" . $device_id . "&sim_id=" . $sim_id . "&mobile_no=" . $phone_number . "&data_type=Plain&message=" . urlencode("$data");
-
+    foreach ($array_number as $value) {
+        $msg = $sms_url . "?route=api/sms/send&auth_key=" . $auth_key . "&device_id=" . $device_id . "&sim_id=" . $sim_id . "&mobile_no=" . $value . "&data_type=Plain&message=" . urlencode("$data");
         $cURL = curl_init($msg);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cURL, CURLOPT_POSTFIELDS, $phone_number);
+        curl_setopt($cURL, CURLOPT_POSTFIELDS, $value);
         curl_setopt($cURL, CURLOPT_POSTFIELDS, $message);
         $response = curl_exec($cURL);
         curl_close($cURL);
 
-        $result = json_decode($response, true);
+        if ($response) sleep(2);
     }
 }
 

@@ -76,7 +76,7 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="Identification No." prop="identification">
+                                    <el-table-column sortable label="Registration No." prop="identification">
                                     </el-table-column>
                                     <el-table-column sortable label="Username" prop="username">
                                     </el-table-column>
@@ -120,8 +120,8 @@
                         <el-drawer title="Add New BHW" :visible.sync="openAddDrawer" size="35%" :before-close="closeAddDrawer">
                             <div class="container p-4 d-flex flex-column pe-5">
                                 <el-form :label-position="topLabel" :model="addBhw" :rules="rules" ref="addBhw">
-                                    <el-form-item label="Identification Number" prop="identification">
-                                        <el-input v-model="addBhw.identification" maxlength="12" id="bhwID" onKeyup="addDashes(this)" clearable></el-input>
+                                    <el-form-item label="Registration Number" prop="identification">
+                                        <el-input v-model="addBhw.identification" maxlength="7" onKeyup="addDashes(this)" clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="First Name" prop="firstName">
                                         <el-input v-model="addBhw.firstName" clearable></el-input>
@@ -203,8 +203,8 @@
                                 Edit User {{ updateBhw.username }}
                             </template>
                             <el-form :label-position="leftLabel" label-width="160px" :model="updateBhw" :rules="editRules" ref="updateBhw">
-                                <el-form-item label="Identification Number" prop="identification">
-                                    <el-input v-model="updateBhw.identification" clearable></el-input>
+                                <el-form-item label="Registration Number" prop="identification">
+                                    <el-input v-model="updateBhw.identification" maxlength="7" onKeyup="addDashes(this)" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item label="First Name" prop="firstName">
                                     <el-input v-model="updateBhw.firstName" clearable></el-input>
@@ -278,15 +278,15 @@
                     rules: {
                         identification: [{
                             required: true,
-                            message: 'Identification no. is required!',
+                            message: 'Registration no. is required!',
                             trigger: 'blur'
                         }, {
                             pattern: /^[0-9]+(-[0-9]+)+$/,
-                            message: 'Invalid identification number format!',
+                            message: 'Invalid registration number format!',
                             trigger: 'blur'
                         }, {
-                            min: 12,
-                            message: 'Identification number should ten(10) digits!',
+                            min: 7,
+                            message: 'Identification number should six(6) digits!',
                             trigger: 'blur'
                         }, {
                             validator: validateAddID,
@@ -335,18 +335,18 @@
                     editRules: {
                         identification: [{
                             required: true,
-                            message: 'Identification no. is required!',
+                            message: 'Registration no. is required!',
                             trigger: 'blur'
                         }, {
                             pattern: /^[0-9]+(-[0-9]+)+$/,
-                            message: 'Invalid identification number format!',
+                            message: 'Invalid registration number format!',
                             trigger: 'blur'
                         }, {
                             validator: validateUpdateID,
                             trigger: 'blur'
                         }, {
-                            min: 12,
-                            message: 'Identification number should ten(10) digits!',
+                            min: 7,
+                            message: 'Identification number should six(6) digits!',
                             trigger: 'blur'
                         }],
                         firstName: [{
@@ -581,6 +581,7 @@
                 getData() {
                     axios.post("action.php?action=fetch")
                         .then(response => {
+                            console.log(response)
                             if (response.data.error) {
                                 this.tableData = []
                             } else {
@@ -600,10 +601,11 @@
                             newData.append("identification", this.addBhw.identification)
                             newData.append("first_name", this.addBhw.firstName)
                             newData.append("last_name", this.addBhw.lastName)
-                            newData.append("birthdate", birthdayFormat)
+                            newData.append("birthday", birthdayFormat)
                             newData.append("gender", this.addBhw.gender)
                             axios.post("action.php?action=store", newData)
                                 .then(response => {
+                                    console.log(response)
                                     if (response.data) {
                                         this.tableLoad = true;
                                         setTimeout(() => {
@@ -794,10 +796,9 @@
                 nxx = '',
                 last4 = '';
             f.value = f.value.replace(r, '');
-            npa = f.value.substr(0, 3);
-            nxx = f.value.substr(3, 3);
-            last4 = f.value.substr(6, 4);
-            f.value = npa + '-' + nxx + '-' + last4;
+            npa = f.value.substr(0, 2);
+            nxx = f.value.substr(2, 5);
+            f.value = npa + '-' + nxx;
         }
     </script>
 </body>

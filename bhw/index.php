@@ -7,9 +7,9 @@
 
     include("./import/head.php");
 
-    if (isset($_SESSION["id"])) {
+    if (isset($_SESSION["user_id"])) {
 
-        $id = $_SESSION["id"];
+        $id = $_SESSION["user_id"];
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 
@@ -47,11 +47,11 @@
                 </div>
                 <!-- /.container-fluid -->
                 <!-- After Add Show Patient Username & Password -->
-                <el-dialog title="New Patient Username and Password" :visible.sync="openAddDialog" width="30%" :before-close="closeAddDialog">
+                <el-dialog v-if="addPatient.lastName && addPatient.firstName == this.last_name && this.first_name" title="New Patient Username and Password" :visible.sync="newPatientDialog" width="30%" :before-close="closeAddDialog">
                     <label class="text-primary">Username</label>
                     <el-input class="mb-2 text-dark" v-model="newUser.username" disabled></el-input>
                     <label class="text-primary">Password</label>
-                    <el-input class="mb-2 text-dark" v-model="newUser.password" disabled></el-input>
+                    <el-input class="mb-2 text-dark" v-model="newUser.birthdate" disabled></el-input>
                     <span slot="footer" class="dialog-footer">
                         <el-button type="primary" @click="closeAddDialog">Close</el-button>
                     </span>
@@ -72,29 +72,43 @@
             el: "#app",
             data() {
                 return {
+                    datePickerOptions: {
+                        disabledDate(date) {
+                            return date < new Date()
+                        }
+                    },
+                    birthdayOptions: {
+                        disabledDate(date) {
+                            return date > new Date()
+                        }
+                    },
+
                     page: 1,
                     pageSize: 10,
                     showAllData: false,
                     tableLoad: false,
                     tableData: [],
                     active: 0,
+                    currentRow: [],
                     fullscreenLoading: true,
-                    openAddDialog: false,
+                    addDialog: false,
+                    newPatientDialog: false,
                     backToHome: false,
                     isHealthCheckup: false,
                     isImmunization: false,
                     isPregnancy: false,
+                    isFamily: false,
                     avatar: "",
-                    checkIdentification: [],
+                    date: "",
+                    viewPatient: "",
+                    age: "",
+                    checkFirstname: [],
+                    checkLastname: [],
                     searchValue: "",
                     searchNull: "",
                     searchName: "",
-                    searchID: "",
                     searchContact: "",
                     options: [{
-                        value: 'fsn',
-                        label: 'FSN No.'
-                    }, {
                         value: 'name',
                         label: 'Name'
                     }, {
@@ -121,7 +135,7 @@
                         spouseFname: "",
                         spouseLname: "",
                         purok: "",
-                        barangay: "",
+                        barangay: "Taloc",
                         gp: "",
                         lmp: "",
                         edc: "",
@@ -148,7 +162,7 @@
                         religion: "",
                         street: "",
                         purok: "",
-                        barangay: "",
+                        barangay: "Taloc",
                         blood: "",
                         member: "",
                         otherMember: "",
@@ -191,11 +205,31 @@
                         fFirstName: "",
                         fMidName: "",
                         purok: "",
-                        barangay: "",
+                        barangay: "Taloc",
                         appointment: "",
                         age: "",
                         temp: "",
                         immunizationGiven: "",
+                    },
+                    family: {
+                        purok: "",
+                        barangay: "Taloc",
+                        appointment: "",
+                        spouseFname: "",
+                        spouseLname: "",
+                        spousePurok: "",
+                        spouseBarangay: "",
+                        heent: [],
+                        weigth: "",
+                        bp: "",
+                        pr: "",
+                        chLB: [],
+                        conjunctive: [],
+                        neck: [],
+                        abdomen: [],
+                        thorax: [],
+                        femGenital: [],
+                        maleGenital: [],
                     },
                     smsRules: {
                         appointment: [{
@@ -205,11 +239,6 @@
                         }],
                     },
                     addRules: {
-                        fsn: [{
-                            required: true,
-                            message: 'FSN is required!',
-                            trigger: 'blur'
-                        }],
                         firstName: [{
                             required: true,
                             message: 'First name is required!',
@@ -225,7 +254,7 @@
                             trigger: 'blur'
                         }, {
                             pattern: /^[a-zA-Z- ]*$/,
-                            message: 'Invalid first name format!',
+                            message: 'Invalid last name format!',
                             trigger: 'blur'
                         }],
                         birthDate: [{
@@ -394,11 +423,6 @@
                             message: 'Consultation type is required!',
                             trigger: 'blur'
                         }],
-                        appointment: [{
-                            required: true,
-                            message: 'Consultation date is required!',
-                            trigger: 'blur'
-                        }],
                         age: [{
                             required: true,
                             message: 'Age is required!',
@@ -410,32 +434,32 @@
                             trigger: 'blur'
                         }],
                         pr: [{
-                            pattern: /^[\.0-9]*$/,
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
                             message: 'Invalid pulse rate (PR) format!',
                             trigger: 'blur'
                         }],
                         rr: [{
-                            pattern: /^[\.0-9]*$/,
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
                             message: 'Invalid respiratory rate (RR) format!',
                             trigger: 'blur'
                         }],
                         bp: [{
-                            pattern: /^[\.0-9]*$/,
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
                             message: 'Invalid blood pressure (BP) format!',
                             trigger: 'blur'
                         }],
                         weight: [{
-                            pattern: /^[\.0-9]*$/,
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
                             message: 'Invalid weight format!',
                             trigger: 'blur'
                         }],
                         height: [{
-                            pattern: /^[\.0-9]*$/,
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
                             message: 'Invalid height format!',
                             trigger: 'blur'
                         }],
                         temp: [{
-                            pattern: /^[\.0-9]*$/,
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
                             message: 'Invalid temperature format!',
                             trigger: 'blur'
                         }],
@@ -508,6 +532,43 @@
                             trigger: 'blur'
                         }],
                     },
+                    familyRules: {
+                        purok: [{
+                            required: true,
+                            message: 'Purok is required!',
+                            trigger: 'blur'
+                        }],
+                        barangay: [{
+                            required: true,
+                            message: 'Barangay is required!',
+                            trigger: 'blur'
+                        }],
+                        spouseFname: [{
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid first name format!',
+                            trigger: 'blur'
+                        }],
+                        spouseLname: [{
+                            pattern: /^[a-zA-Z ]*$/,
+                            message: 'Invalid last name format!',
+                            trigger: 'blur'
+                        }],
+                        bp: [{
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
+                            message: 'Invalid blood pressure (BP) format!',
+                            trigger: 'blur'
+                        }],
+                        weight: [{
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
+                            message: 'Invalid weight format!',
+                            trigger: 'blur'
+                        }],
+                        pr: [{
+                            pattern: /^[0-9]+(\/[0-9]+)*$/,
+                            message: 'Invalid pulse rate (PR) format!',
+                            trigger: 'blur'
+                        }],
+                    }
                 }
             },
             created() {
@@ -526,6 +587,7 @@
 
                 this.health.age = localStorage.age ? localStorage.age : 0
                 this.immunize.age = localStorage.age ? localStorage.age : 0
+                this.age = localStorage.age ? localStorage.age : 0
 
 
                 const today = new Date();
@@ -541,12 +603,12 @@
                 this.prenatal.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
                 this.health.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
                 this.immunize.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
+                this.family.appointment = localStorage.date ? localStorage.date : "January 01, 1970"
             },
             watch: {
                 searchValue(value) {
-                    if (value == "" || value == "fsn" || value == "name" || value == "phone_number") {
+                    if (value == "" || value == "name" || value == "phone_number") {
                         this.searchNull = '';
-                        this.searchID = '';
                         this.searchName = '';
                         this.searchContact = '';
                     }
@@ -564,13 +626,7 @@
                 usersTable() {
                     return this.tableData
                         .filter((data) => {
-                            return data.name.toLowerCase().includes(this.searchName.toLowerCase());
-                        })
-                        .filter((data) => {
                             return data.first_name.toLowerCase().includes(this.searchName.toLowerCase());
-                        })
-                        .filter((data) => {
-                            return data.fsn.toLowerCase().includes(this.searchID.toLowerCase());
                         })
                         .filter((data) => {
                             return data.phone_number.toLowerCase().includes(this.searchContact.toLowerCase());
@@ -597,6 +653,9 @@
                             }
                         })
                 },
+                handleCurrentChange(val) {
+                    this.currentRow = val;
+                },
                 handleOpen(key, keyPath) {
                     console.log(key, keyPath);
                 },
@@ -604,15 +663,24 @@
                     console.log(key, keyPath);
                 },
                 closeAddDialog() {
-                    this.$confirm('Done copying username & password?', 'Warning', {
+                    this.$confirm('Are you sure you want to cancel?', 'Warning', {
                             confirmButtonText: 'Yes',
                             cancelButtonText: 'No',
                             type: "warning"
                         })
                         .then(() => {
-                            this.openAddDialog = false
+                            this.addDialog = false
+                            this.$refs[addPatient].resetFields();
+                            localStorage.removeItem("first_name")
+                            localStorage.removeItem("last_name")
                         })
                         .catch(() => {});
+                },
+                resetForm(addPatient) {
+                    this.$refs[addPatient].resetFields();
+                },
+                resetFormData() {
+                    this.addPatient = []
                 },
                 // ******************************************************************
                 fetchAvatar() {
@@ -626,56 +694,248 @@
                         })
                 },
                 getData() {
-                    axios.post("action.php?action=fetch")
+                    axios.post("action.php?action=fetch_patient")
                         .then(response => {
+                            console.log(response)
                             if (response.data.error) {
                                 this.tableData = []
                             } else {
                                 this.tableData = response.data
-                                this.checkIdentification = response.data.map(res => res.fsn)
                             }
                         })
                 },
                 changeColumn(selected) {
                     this.searchNull = ""
                     this.searchName = ""
-                    this.searchID = ""
                     this.searchContact = ""
                 },
                 setPage(value) {
                     this.page = value
                 },
-                handleSelectionChange(val) {
-                    this.multiID = Object.values(val).map(i => i.id)
-                },
                 filterHandler(value, row, column) {
                     const property = column['property'];
                     return row[property] === value;
+                },
+                calculateAge(birthDay) {
+                    let dob = new Date(birthDay);
+                    let now = new Date();
+                    let lastDayOfMonth = new Date(dob.getFullYear(), dob.getMonth() + 1, 0).getDate();
+
+                    let birthYear = dob.getYear();
+                    let birthMonth = dob.getMonth();
+                    let birthDate = dob.getDate();
+
+                    let currentYear = now.getYear();
+                    let currentMonth = now.getMonth();
+                    let currentDate = now.getDate();
+
+                    let monthDiff = currentMonth - birthMonth;
+                    let dateDiff = currentDate - birthDate;
+                    let age = currentYear - birthYear;
+
+                    if (age > 1 && (monthDiff < 0 || (monthDiff == 0 && currentDate < birthDate))) {
+                        let ageCount = age - 1
+                        return ageCount + ` year${ageCount > 1 ? "s" : ""} old`
+                    } else if (age == 1 && (monthDiff < 0 || (monthDiff == 0 && currentDate < birthDate))) {
+                        let ageCount = 11 - birthMonth + currentMonth
+                        return ageCount + ` month${ageCount > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff > 0 && currentDate >= birthDate) {
+                        let ageCount = monthDiff
+                        return ageCount + ` month${ageCount > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff > 1 && currentDate < birthDate) {
+                        let ageCount = monthDiff - 1
+                        return ageCount + ` month${ageCount > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff <= 1 && currentDate >= birthDate) {
+                        let ageCount = dateDiff
+                        return ageCount + ` day${ageCount > 1 ? "s" : ""} old`
+                    } else if (age == 0 && monthDiff <= 1 && currentDate < birthDate) {
+                        let ageCount = lastDayOfMonth - birthDate + currentDate
+                        return ageCount + ` day${ageCount > 1 ? "s" : ""} old`
+                    }
+
+
+                    return age + ` year${age > 1 ? "s" : ""} old`;
+                },
+                // setCurrent(index, row) {
+                //     this.active++;
+                //     this.$refs.tableData.setCurrentRow(row);
+                //     this.age = this.calculateAge(this.currentRow.birthdate);
+
+                //     localStorage.setItem("active", this.active)
+                //     localStorage.setItem("currentRow", JSON.stringify(this.currentRow))
+                //     this.isHealthCheckup = false;
+                //     this.isImmunization = false;
+                //     this.isPregnancy = false;
+
+                //     localStorage.setItem("age", this.age);
+                //     this.health.age = this.age;
+                //     this.immunize.age = this.age;
+                // },
+                proceed(addPatient) {
+                    this.$refs[addPatient].validate((valid) => {
+                        if (valid) {
+                            this.active++;
+                            this.age = this.calculateAge(this.addPatient.birthDate);
+
+                            localStorage.setItem("active", this.active)
+                            localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
+                            this.isHealthCheckup = false;
+                            this.isImmunization = false;
+                            this.isPregnancy = false;
+                            this.isFamily = false;
+
+                            localStorage.setItem("age", this.age);
+                            this.health.age = this.age;
+                            this.immunize.age = this.age;
+                        } else {
+                            this.$message.error("Unable to proceed. Please check the errors!");
+                            return false;
+                        }
+                    })
+                },
+                back() {
+                    if (this.active == 1) {
+                        delete this.addPatient.gender
+                        if (Object.values(this.addPatient).every((i) => i == "")) {
+                            this.addPatient = {}
+                        }
+                        if (Object.values(this.addPatient).length != 0) {
+                            this.$confirm('There are unsaved changes. Continue?', {
+                                    confirmButtonText: 'Yes',
+                                    cancelButtonText: 'No',
+                                })
+                                .then(() => {
+                                    this.active--
+                                    this.addPatient = {}
+                                    localStorage.removeItem("active")
+                                })
+                                .catch(() => {});
+                        } else {
+                            this.active--
+                            localStorage.removeItem("active")
+                        }
+                    } else if (this.active == 2) {
+                        if (Object.values(this.prenatal).every((i) => i == "") || Object.values(this.prenatal).every((i) => i == "")) {
+                            this.prenatal = {}
+                            this.health = {}
+                        }
+                        if (Object.values(this.prenatal).length != 0 || Object.values(this.health).length != 0) {
+                            this.$confirm('There are unsaved changes. Continue?', {
+                                    confirmButtonText: 'Yes',
+                                    cancelButtonText: 'No',
+                                })
+                                .then(() => {
+                                    this.active--
+                                    this.prenatal = {}
+                                    this.health = {}
+                                    localStorage.removeItem("addPatient")
+                                    localStorage.removeItem("age")
+                                    localStorage.setItem("active", this.active)
+                                })
+                                .catch(() => {});
+                        } else {
+                            this.active--
+                            localStorage.removeItem("age")
+                            localStorage.setItem("active", this.active)
+                        }
+                    } else {
+                        this.active--
+                    }
+                },
+                next() {
+                    if (this.isHealthCheckup) {
+                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
+                    } else if (this.isImmunization) {
+                        localStorage.setItem("isImmunization", this.isImmunization)
+                    } else if (this.isPregnancy) {
+                        localStorage.setItem("isPregnancy", this.isPregnancy)
+                    } else if (this.isFamily) {
+                        localStorage.setItem("isFamily", this.isFamily)
+                    }
+
+                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy || this.isFamily) {
+                        this.active++;
+                        localStorage.setItem("active", this.active)
+                    } else {
+                        this.$message.error("Please select an appointment!");
+                    }
+                },
+                healthCheckup() {
+                    this.isFamily = false
+                    this.isPregnancy = false;
+                    this.isImmunization = false;
+                    this.isHealthCheckup = !this.isHealthCheckup;
+                },
+                immunization() {
+                    this.isFamily = false
+                    this.isPregnancy = false;
+                    this.isImmunization = !this.isImmunization;
+                    this.isHealthCheckup = false;
+                },
+                pregnancy() {
+                    this.isFamily = false
+                    this.isPregnancy = !this.isPregnancy;
+                    this.isImmunization = false;
+                    this.isHealthCheckup = false;
+                },
+                familyPlaninng() {
+                    this.isFamily = !this.isFamily;
+                    this.isPregnancy = false;
+                    this.isImmunization = false;
+                    this.isHealthCheckup = false;
                 },
                 sendSms(addSms) {
                     this.$refs[addSms].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
+                            const date = this.addSms.appointment;
+                            let weekDay = date.getDay();
+                            const newDate = date.getFullYear() + "-" + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + "-" + (date.getDate() > 9 ? '' : '0') + date.getDate();
+                            switch (weekDay) {
+                                case 0:
+                                    weekDay = "Sunday"
+                                    break;
+                                case 1:
+                                    weekDay = "Monday"
+                                    break;
+                                case 2:
+                                    weekDay = "Tuesday"
+                                    break;
+                                case 3:
+                                    weekDay = "Wednesday"
+                                    break;
+                                case 4:
+                                    weekDay = "Thursday"
+                                    break;
+                                case 5:
+                                    weekDay = "Friday"
+                                    break;
+                                case 6:
+                                    weekDay = "Saturday"
+                                    break;
+                                default:
+                                    break;
+                            }
                             this.openAddDrawer = false;
                             var newData = new FormData()
                             newData.append("last_name", this.addPatient.lastName)
                             newData.append("first_name", this.addPatient.firstName)
                             newData.append("contact", this.addPatient.phoneNo)
                             newData.append("message", this.addSms.message)
-                            newData.append("appointment", this.addSms.appointment)
+                            newData.append("appointment", newDate)
+                            newData.append("weekDay", weekDay)
                             axios.post("action.php?action=sent_message", newData)
                                 .then(response => {
                                     if (response.data) {
                                         this.tableLoad = true;
                                         setTimeout(() => {
                                             this.$message({
-                                                message: 'Message sent successfully!',
+                                                message: 'Appointment Date sent successfully!',
                                                 type: 'success'
                                             });
                                             this.tableLoad = false;
                                         }, 1500);
                                         this.resetFormData();
-                                        this.newUser = response.data;
                                         this.loadButton = false;
                                     }
                                 })
@@ -690,110 +950,12 @@
                 resetFormData() {
                     this.addSms = []
                 },
-                proceed(addPatient) {
-                    this.$refs[addPatient].validate((valid) => {
-                        if (valid) {
-                            this.loadButton = true;
-                            this.tableLoad = true;
-                            var newData = new FormData()
-                            newData.append("fsn", this.addPatient.fsn)
-                            newData.append("first_name", this.addPatient.firstName)
-                            newData.append("middle_name", this.addPatient.middleName)
-                            newData.append("last_name", this.addPatient.lastName)
-                            newData.append("suffix", this.addPatient.suffix)
-                            newData.append("gender", this.addPatient.gender)
-                            newData.append("birthdate", this.addPatient.birthDate)
-                            newData.append("phone_number", this.addPatient.phoneNo)
-                            axios.post("action.php?action=store", newData)
-                                .then(response => {
-                                    if (response.data) {
-                                        this.tableLoad = true;
-                                        setTimeout(() => {
-                                            this.$message({
-                                                message: 'New Patient has been added successfully!',
-                                                type: 'success'
-                                            });
-                                            this.tableLoad = false;
-                                            this.getData()
-                                            setTimeout(() => {
-                                                this.openAddDialog = true;
-                                            }, 1500)
-                                        }, 1500);
-                                        this.newUser = response.data;
-                                        this.loadButton = false;
-                                    }
-                                })
-                            this.active++;
-                            localStorage.setItem("active", this.active)
-                            localStorage.setItem("addPatient", JSON.stringify(this.addPatient))
-                            this.isHealthCheckup = false;
-                            this.isImmunization = false;
-                            this.isImmunization = false;
-
-                            var today = new Date();
-                            var birthDate = new Date(this.addPatient.birthDate);
-                            var age = today.getFullYear() - birthDate.getFullYear();
-                            var m = today.getMonth() - birthDate.getMonth();
-                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                                age--;
-                            }
-                            localStorage.setItem("age", age);
-                            this.health.age = age;
-                            this.immunize.age = age;
-                        } else {
-                            this.$message.error("Please fill in the required informations!");
-                            return false;
-                        }
-                    })
-                },
-                back() {
-                    this.active--
-                    localStorage.setItem("active", this.active)
-                    if (this.active == 0) {
-                        localStorage.removeItem("addPatient")
-                        localStorage.removeItem("age")
-                    }
-                    localStorage.isHealthCheckup ? localStorage.removeItem("isHealthCheckup") : ""
-                    localStorage.isImmunization ? localStorage.removeItem("isImmunization") : ""
-                    localStorage.isPregnancy ? localStorage.removeItem("isPregnancy") : ""
-                },
-                next() {
-                    if (this.isHealthCheckup) {
-                        localStorage.setItem("isHealthCheckup", this.isHealthCheckup)
-                    } else if (this.isImmunization) {
-                        localStorage.setItem("isImmunization", this.isImmunization)
-                    } else if (this.isPregnancy) {
-                        localStorage.setItem("isPregnancy", this.isPregnancy)
-                        this.addPatient.gender = "Female"
-                    }
-
-                    if (this.isHealthCheckup || this.isImmunization || this.isPregnancy) {
-                        this.active++;
-                        localStorage.setItem("active", this.active)
-                    } else {
-                        this.$message.error("Please select an appointment!");
-                    }
-                },
-                healthCheckup() {
-                    this.isPregnancy = false;
-                    this.isImmunization = false;
-                    this.isHealthCheckup = !this.isHealthCheckup;
-                },
-                immunization() {
-                    this.isPregnancy = false;
-                    this.isImmunization = !this.isImmunization;
-                    this.isHealthCheckup = false;
-                },
-                pregnancy() {
-                    this.isPregnancy = !this.isPregnancy;
-                    this.isImmunization = false;
-                    this.isHealthCheckup = false;
-                },
                 submitHealth(health) {
                     this.$refs[health].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
+                            newData.append("phone_number", this.addPatient.phoneNo)
                             newData.append("fsn", this.addPatient.fsn)
                             newData.append("clinisys", this.health.clinisysFSN)
                             newData.append("last_name", this.addPatient.lastName)
@@ -802,13 +964,13 @@
                             newData.append("suffix", this.addPatient.suffix)
                             newData.append("birthdate", this.addPatient.birthDate)
                             newData.append("gender", this.addPatient.gender)
-                            newData.append("civil", this.health.civil)
+                            newData.append("civil_status", this.health.civil)
                             newData.append("spouse", this.health.spouse)
                             newData.append("educ_attainment", this.health.education)
                             newData.append("employment_status", this.health.employment)
                             newData.append("occupation", this.health.occupation)
                             newData.append("religion", this.health.religion)
-                            newData.append("telephone", this.addPatient.phoneNo)
+                            newData.append("phone_number", this.addPatient.phoneNo)
                             newData.append("street", this.health.street)
                             newData.append("purok", this.health.purok)
                             newData.append("barangay", this.health.barangay)
@@ -852,15 +1014,18 @@
                                                 type: 'success'
                                             });
                                             this.tableLoad = false;
-                                            this.getData();
+                                            this.getData()
+                                            setTimeout(() => {
+                                                this.newPatientDialog = true;
+                                            }, 1000)
                                         }, 1500);
                                         this.newUser = response.data;
-                                        this.loadButton = false
+                                        this.loadButton = false;
                                     }
                                 })
                             this.active++;
                             localStorage.setItem("active", this.active)
-                            console.log(this.addPatient, "healthcheck")
+                            console.log(this.healthCheckup, "healthcheck")
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
                             return false;
@@ -872,6 +1037,7 @@
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
+                            newData.append("phone_number", this.addPatient.phoneNo)
                             newData.append("fsn", this.addPatient.fsn)
                             newData.append("child_no", this.immunize.childNo)
                             newData.append("first_name", this.addPatient.firstName)
@@ -906,7 +1072,7 @@
                                             this.getData();
                                         }, 1500);
                                         this.newUser = response.data;
-                                        this.loadButton = true;
+                                        this.loadButton = false;
                                     }
                                 })
                             this.active++;
@@ -916,13 +1082,13 @@
                             return false;
                         }
                     })
-                    console.log(this.addPatient, "immunization")
                 },
                 submitPrenatal(prenatal) {
                     this.$refs[prenatal].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
                             var newData = new FormData()
+                            newData.append("phone_number", this.addPatient.phoneNo)
                             newData.append("fsn", this.addPatient.fsn)
                             newData.append("first_name", this.addPatient.firstName)
                             newData.append("middle_name", this.addPatient.middleName)
@@ -959,14 +1125,16 @@
                                             });
                                             this.tableLoad = false;
                                             this.getData();
+                                            setTimeout(() => {
+                                                this.newPatientDialog = true;
+                                            }, 1000)
                                         }, 1500);
                                         this.newUser = response.data;
-                                        this.loadButton = false
+                                        this.loadButton = false;
                                     }
                                 })
                             this.active++;
                             localStorage.setItem("active", this.active)
-                            console.log(this.addPatient, "pregnancy")
 
                         } else {
                             this.$message.error("Cannot submit the form. Please check the error(s).")
@@ -974,25 +1142,67 @@
                         }
                     })
                 },
-                resetForm(addPatient) {
-                    this.$refs[addPatient].resetFields();
-                },
-                resetFormData() {
-                    this.addPatient = []
+                submitFamily(family) {
+                    this.$refs[family].validate((valid) => {
+                        if (valid) {
+                            this.loadButton = true;
+                            var newData = new FormData()
+                            newData.append("phone_number", this.addPatient.phoneNo)
+                            newData.append("fsn", this.addPatient.fsn)
+                            newData.append("first_name", this.addPatient.firstName)
+                            newData.append("middle_name", this.addPatient.middleName)
+                            newData.append("last_name", this.addPatient.lastName)
+                            newData.append("birthdate", this.addPatient.birthDate)
+                            newData.append("gender", this.addPatient.gender)
+                            newData.append("spouse_lastname", this.family.spouseLname)
+                            newData.append("spouse_firstname", this.family.spouseFname)
+                            newData.append("spouse_purok", this.family.spousePurok)
+                            newData.append("spouse_barangay", this.family.spouseBarangay)
+                            newData.append("purok", this.family.purok)
+                            newData.append("barangay", this.family.barangay)
+                            newData.append("appointment", this.family.appointment)
+                            newData.append("weight", this.family.weight)
+                            newData.append("bp", this.family.bp)
+                            newData.append("pr", this.family.pr)
+                            newData.append("heent", this.family.heent)
+                            newData.append("chLB", this.family.chLB)
+                            newData.append("conjunctive", this.family.conjunctive)
+                            newData.append("neck", this.family.neck)
+                            newData.append("abdomen", this.family.abdomen)
+                            newData.append("thorax", this.family.thorax)
+                            newData.append("femGenital", this.family.femGenital)
+                            newData.append("maleGenital", this.family.maleGenital)
+                            axios.post("store-action.php?action=storeFamily", newData)
+                                .then(response => {
+                                    console.log(response)
+                                    if (response.data) {
+                                        this.tableLoad = true;
+                                        setTimeout(() => {
+                                            this.$message({
+                                                message: 'New family planning form has been added successfully!',
+                                                type: 'success'
+                                            });
+                                            this.tableLoad = false;
+                                            this.getData();
+                                            setTimeout(() => {
+                                                this.newPatientDialog = true;
+                                            }, 1000)
+                                        }, 1500);
+                                        this.newUser = response.data;
+                                        this.loadButton = false;
+                                    }
+                                })
+                            this.active++;
+                            localStorage.setItem("active", this.active)
+
+                        } else {
+                            this.$message.error("Cannot submit the form. Please check the error(s).")
+                            return false;
+                        }
+                    })
                 },
             }
         })
-    </script>
-    <script>
-        function add_hyphen() {
-            var input = document.getElementById("hhno");
-            var str = input.value;
-            str = str.replace("-", "");
-            if (str.length > 10) {
-                str = str.substring(0, 4) + "-" + str.substring(4, 11) + "-" + str.substring(10);
-            }
-            input.value = str
-        }
     </script>
 </body>
 

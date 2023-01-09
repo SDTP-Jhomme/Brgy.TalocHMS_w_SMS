@@ -44,6 +44,7 @@
                         <el-main>
                             <div class="container border rounded p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <el-button icon="el-icon-printer" size="mini" type="primary" @click="printDialog = true">Print</el-button>
                                     <div class="d-flex">
                                         <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
                                             <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
@@ -70,15 +71,11 @@
                                     </el-table-column>
                                     <el-table-column label="No." type="index" width="50">
                                     </el-table-column>
-                                    <el-table-column sortable label="FSN" prop="fsn">
-                                    </el-table-column>
                                     <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>
                                     <el-table-column sortable label="Name" width="200" prop="name">
                                     </el-table-column>
                                     <el-table-column sortable label="Birthday" width="200" prop="birthdate">
-                                    </el-table-column>
-                                    <el-table-column sortable label="Purok" prop="address">
                                     </el-table-column>
                                     <el-table-column sortable label="Phone No." prop="phone_number">
                                     </el-table-column>
@@ -118,9 +115,20 @@
                                 <el-button type="primary" @click="closeResetDialog">Close</el-button>
                             </span>
                         </el-dialog>
-
+                        <!-- print-table -->
+                        <el-dialog :visible.sync="printDialog" width="80%" :before-close="closePrintDialog">
+                            <div class="container">
+                                <div class="mt-5" id="printTable">
+                                    <?php include("./print-tables/maternal-print.php") ?>
+                                </div>
+                            </div>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button type="primary" size="small" icon="el-icon-printer" id="tablePrint">Print</el-button>
+                            </span>
+                        </el-dialog>
+                        <!-- end-print-table -->
                         <!-- View Dialog -->
-                        <el-dialog :visible.sync="viewDialog" width="70%" :before-close="closeViewDialog">
+                        <el-dialog :visible.sync="viewDialog" width="100%" :before-close="closeViewDialog">
                             <template #title>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="pe-4">
@@ -167,10 +175,10 @@
                                                 </div>
                                                 <div class="row d-flex justify-content-md-between">
                                                     <div class="col-auto">
-                                                        <label>Address (Purok): <span class="border-bottom-1 border-dark">{{viewPrenatal.address}}</span></label>
+                                                        <label>Address (Purok): <span class="border-bottom-1 border-dark">{{viewPrenatal.purok}}</span></label>
                                                     </div>
                                                     <div class="col-auto">
-                                                        <label>Barangay: <span class="border-bottom-1 border-dark">{{viewPrenatal.birthdate}}</span></label>
+                                                        <label>Barangay: <span class="border-bottom-1 border-dark">{{viewPrenatal.barangay}}</span></label>
                                                     </div>
                                                 </div>
                                                 <div class="row d-flex justify-content-md-between">
@@ -190,48 +198,50 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>Date of Pre-natal Visit: <span class="border-bottom-1 border-dark">{{viewPrenatal.date_visit}}</span></label>
+                                            <div class="my-3" style="border-bottom:3px solid black ;">
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-6">
+                                                        <label>Date of Pre-natal Visit: <span class="border-bottom-1 border-dark">{{viewPrenatal.date_visit}}</span></label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>Weight: <span class="border-bottom-1 border-dark">{{viewPrenatal.weight}}</span></label>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-5">
+                                                        <label>Weight: <span class="border-bottom-1 border-dark">{{viewPrenatal.weight}}</span></label>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <label>BP: <span class="border-bottom-1 border-dark">{{viewPrenatal.bp}}</span></label>
+                                                    </div>
                                                 </div>
-                                                <div class="col-auto">
-                                                    <label>BP: <span class="border-bottom-1 border-dark">{{viewPrenatal.bp}}</span></label>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-4">
+                                                        <label>CR: <span class="border-bottom-1 border-dark">{{viewPrenatal.cr}}</span></label>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <label>RR: <span class="border-bottom-1 border-dark">{{viewPrenatal.rr}}</span></label>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <label>Temp: <span class="border-bottom-1 border-dark">{{viewPrenatal.temp}}</span></label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>CR: <span class="border-bottom-1 border-dark">{{viewPrenatal.cr}}</span></label>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-5">
+                                                        <label>AOG: <span class="border-bottom-1 border-dark">{{viewPrenatal.aog}}</span></label>
+                                                    </div>
                                                 </div>
-                                                <div class="col-auto">
-                                                    <label>RR: <span class="border-bottom-1 border-dark">{{viewPrenatal.rr}}</span></label>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-5">
+                                                        <label>Fundic Height: <span class="border-bottom-1 border-dark">{{viewPrenatal.fundic_height}}</span></label>
+                                                    </div>
                                                 </div>
-                                                <div class="col-auto">
-                                                    <label>Temp: <span class="border-bottom-1 border-dark">{{viewPrenatal.temp}}</span></label>
+                                                <div class="row d-flex justify-content-md-between">
+                                                    <div class="col-5">
+                                                        <label>FHB: <span class="border-bottom-1 border-dark">{{viewPrenatal.fhb}}</span></label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>AOG: <span class="border-bottom-1 border-dark">{{viewPrenatal.aog}}</span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>Fundic Height: <span class="border-bottom-1 border-dark">{{viewPrenatal.fundic_height}}</span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>FHB: <span class="border-bottom-1 border-dark">{{viewPrenatal.fhb}}</span></label>
-                                                </div>
-                                            </div>
-                                            <div class="row d-flex justify-content-md-between">
-                                                <div class="col-auto">
-                                                    <label>Presentation: <span class="border-bottom-1 border-dark">{{viewPrenatal.presentation}}</span></label>
+                                                <div class="row d-flex justify-content-md-between mb-3">
+                                                    <div class="col-5">
+                                                        <label>Presentation: <span class="border-bottom-1 border-dark">{{viewPrenatal.presentation}}</span></label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -307,6 +317,7 @@
                     loadButton: false,
                     editDialog: false,
                     viewDialog: false,
+                    printDialog: false,
                     multipleSelection: [],
                     fullscreenLoading: true,
                     tableData: [],
@@ -405,6 +416,9 @@
                 },
                 closeViewDialog() {
                     this.viewDialog = false;
+                },
+                closePrintDialog() {
+                    this.printDialog = false;
                 },
                 closeEditDialog(editContact) {
                     this.$confirm('Are you sure you want to cancel updating BHW?', {
@@ -559,6 +573,27 @@
     <script>
         document.getElementById("Print").onclick = function() {
             printElement(document.getElementById("printThis"));
+        };
+
+        function printElement(elem) {
+            var domClone = elem.cloneNode(true);
+
+            var $printSection = document.getElementById("printSection");
+
+            if (!$printSection) {
+                var $printSection = document.createElement("div");
+                $printSection.id = "printSection";
+                document.body.appendChild($printSection);
+            }
+
+            $printSection.innerHTML = "";
+            $printSection.appendChild(domClone);
+            window.print();
+        }
+    </script>
+    <script>
+        document.getElementById("tablePrint").onclick = function() {
+            printElement(document.getElementById("printTable"));
         };
 
         function printElement(elem) {

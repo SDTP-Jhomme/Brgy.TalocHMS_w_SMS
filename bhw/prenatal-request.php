@@ -1,8 +1,8 @@
+<el-header height="0px"></el-header>
 <h3 class="text-center mb-4">Prenatal Checkup Form</h3>
 <el-main>
     <el-form :model="prenatal" :rules="prenatalRules" ref="prenatal">
 
-        <!-- Patient Information -->
         <div class="label-format d-flex flex-wrap justify-content-around">
             <div class="w-25 mb-4">
                 <label class="m-0">First Name</label>
@@ -46,13 +46,17 @@
                     <label for="">Spouse First Name :</label>
                 </div>
                 <div class="col-auto">
-                    <el-input size="medium" v-model="viewPatient.spouse_firstname" size="small" clearable disabled></el-input>
+                    <el-form-item prop="spouseFname">
+                        <el-input size="medium" v-model="prenatal.spouseFname" clearable></el-input>
+                    </el-form-item>
                 </div>
                 <div class="col-auto">
                     <label for="">Spouse Last Name :</label>
                 </div>
                 <div class="col-auto">
-                    <el-input size="medium" v-model="viewPatient.spouse_lastname" size="small" clearable disabled></el-input>
+                    <el-form-item prop="spouseLname">
+                        <el-input size="medium" v-model="prenatal.spouseLname" clearable></el-input>
+                    </el-form-item>
                 </div>
             </div>
             <div class="row g-3 align-items-center mt-5">
@@ -60,13 +64,17 @@
                     <label for=""><span class="text-danger">*</span>Address : Purok</label>
                 </div>
                 <div class="col-auto">
-                    <el-input size="medium" v-model="viewPatient.purok" size="small" clearable disabled></el-input>
+                    <el-form-item prop="purok">
+                        <el-input size="medium" v-model="prenatal.purok" clearable></el-input>
+                    </el-form-item>
                 </div>
                 <div class="col-auto">
                     <label for=""><span class="text-danger">*</span>Barangay :</label>
                 </div>
                 <div class="col-auto">
-                    <el-input size="medium" v-model="viewPatient.barangay" size="small" clearable disabled></el-input>
+                    <el-form-item prop="barangay">
+                        <el-input size="medium" v-model="prenatal.barangay" clearable></el-input>
+                    </el-form-item>
                 </div>
             </div>
             <div class="row g-3 align-items-center mt-5">
@@ -140,7 +148,7 @@
                 </div>
                 <div class="col-auto">
                     <el-form-item prop="weight">
-                        <el-input size="medium" v-model="prenatal.weight" clearable>
+                        <el-input size="medium" v-model="prenatal.weight" type="number">
                             <template slot="suffix">kg / lbs</template>
                         </el-input>
                     </el-form-item>
@@ -150,7 +158,7 @@
                 </div>
                 <div class="col-auto">
                     <el-form-item prop="bp">
-                        <el-input size="medium" v-model="prenatal.bp" clearable>
+                        <el-input size="medium" v-model="prenatal.bp" type="number">
                             <template slot="suffix">mmHg</template>
                         </el-input>
                     </el-form-item>
@@ -162,7 +170,7 @@
                 </div>
                 <div class="col-2">
                     <el-form-item prop="cr">
-                        <el-input size="medium" v-model="prenatal.cr" clearable>
+                        <el-input size="medium" v-model="prenatal.cr" type="number">
                             <template slot="suffix">b / min</template>
                         </el-input>
                     </el-form-item>
@@ -172,7 +180,7 @@
                 </div>
                 <div class="col-2">
                     <el-form-item prop="rr">
-                        <el-input size="medium" v-model="prenatal.rr" clearable>
+                        <el-input size="medium" v-model="prenatal.rr" type="number">
                             <template slot="suffix">c / min</template>
                         </el-input>
                     </el-form-item>
@@ -182,7 +190,7 @@
                 </div>
                 <div class="col-2">
                     <el-form-item prop="temp">
-                        <el-input size="medium" v-model="prenatal.temp" clearable>
+                        <el-input size="medium" v-model="prenatal.temp" type="number">
                             <template slot="suffix">℃</template>
                         </el-input>
                     </el-form-item>
@@ -194,7 +202,7 @@
                 </div>
                 <div class="col-auto">
                     <el-form-item prop="aog">
-                        <el-input size="medium" v-model="prenatal.aog" clearable>
+                        <el-input size="medium" v-model="prenatal.aog" type="number">
                             <template slot="suffix">weeks</template>
                         </el-input>
                     </el-form-item>
@@ -206,7 +214,7 @@
                 </div>
                 <div class="col-auto">
                     <el-form-item prop="height">
-                        <el-input size="medium" v-model="prenatal.height" clearable>
+                        <el-input size="medium" v-model="prenatal.height" type="number">
                             <template slot="suffix">cm / inch</template>
                         </el-input>
                     </el-form-item>

@@ -13,7 +13,6 @@
 <script src="../assets/js/element-en.js"></script>
 <!-- import Axios.js -->
 <script src="../assets/js/axios.min.js"></script>
-<script src="./assets/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#userDropdown').click(function(event) {

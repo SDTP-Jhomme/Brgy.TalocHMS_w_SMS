@@ -7,9 +7,9 @@
 
     include("./import/head.php");
 
-    if (isset($_SESSION["id"])) {
+    if (isset($_SESSION["user_id"])) {
 
-        $id = $_SESSION["id"];
+        $id = $_SESSION["user_id"];
 
         $user_record = mysqli_query($db, "SELECT * FROM users where id='$id'");
 

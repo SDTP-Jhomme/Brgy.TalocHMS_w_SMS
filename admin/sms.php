@@ -51,6 +51,7 @@
                         <el-main>
                             <div class="container border rounded p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <p class="mb-0"></p>
                                     <div class="d-flex">
                                         <el-select v-model="searchValue" size="mini" placeholder="Select Column" @changed="changeColumn" clearable>
                                             <el-option v-for="search in options" :key="search.value" :label="search.label" :value="search.value">
@@ -72,18 +73,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading">
+                                <el-table v-if="this.tableData" :data="usersTable" style="width: 100%" border @selection-change="handleSelectionChange" height="400" v-loading="tableLoad" element-loading-text="Loading. Please wait..." element-loading-spinner="el-icon-loading" ref="myTable">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
-                                    <el-table-column label="No." type="index" width="50">
-                                    </el-table-column>
-                                    <el-table-column sortable label="FSN." prop="fsn">
+                                    <el-table-column label="FSN" width="50" prop="fsn">
                                     </el-table-column>
                                     <el-table-column sortable label="Date Visited" prop="date">
                                     </el-table-column>
                                     <el-table-column sortable label="Name" width="220" prop="name">
                                     </el-table-column>
-                                    <el-table-column sortable label="Phone No." prop="phone_number">
+                                    <el-table-column sortable label="Phone No." width="220" prop="phone_number">
                                     </el-table-column>
                                     <el-table-column sortable label="Gender" prop="gender" width="110" column-key="gender" :filters="[{text: 'Female', value: 'Female'}, {text: 'Male', value: 'Male'}]" :filter-method="filterHandler">
                                         <template slot-scope="scope">
@@ -138,7 +137,7 @@
                                     <div class="row underline-input">
                                         <div class="col-7">
                                             <el-form-item label="Event Date(s) / Appointment(s)" prop="appointment">
-                                                <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date">
+                                                <el-date-picker size="medium" v-model="addSms.appointment" type="date" placeholder="Select Date" :picker-options="datePickerOptions">
                                                 </el-date-picker>
                                             </el-form-item>
                                         </div>
@@ -209,7 +208,13 @@
         new Vue({
             el: "#app",
             data() {
+                const today = new Date();
                 return {
+                    datePickerOptions: {
+                        disabledDate(date) {
+                            return date < new Date()
+                        }
+                    },
                     addSms: {
                         multiNumber: [],
                         message: "",
@@ -324,6 +329,7 @@
                 // ******************************************************
                 handleSelectionChange(val) {
                     this.addSms.multiNumber = Object.values(val).map(i => i.phone_number)
+                    console.log(this.addSms.multiNumber)
                 },
                 filterHandler(value, row, column) {
                     const property = column['property'];
@@ -369,7 +375,7 @@
                                 this.tableData = []
                             } else {
                                 this.tableData = response.data
-                                this.checkIdentification = response.data.map(res => res.fsn)
+                                this.checkIdentification = response.data.map(res => res.id)
                             }
                         })
                 },
@@ -381,10 +387,39 @@
                     this.$refs[addSms].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
+                            const date = this.addSms.appointment;
+                            let weekDay = date.getDay();
+                            const newDate = date.getFullYear() + "-" + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + "-" + (date.getDate() > 9 ? '' : '0') + date.getDate();
+                            switch (weekDay) {
+                                case 0:
+                                    weekDay = "Sunday"
+                                    break;
+                                case 1:
+                                    weekDay = "Monday"
+                                    break;
+                                case 2:
+                                    weekDay = "Tuesday"
+                                    break;
+                                case 3:
+                                    weekDay = "Wednesday"
+                                    break;
+                                case 4:
+                                    weekDay = "Thursday"
+                                    break;
+                                case 5:
+                                    weekDay = "Friday"
+                                    break;
+                                case 6:
+                                    weekDay = "Saturday"
+                                    break;
+                                default:
+                                    break;
+                            }
                             var newData = new FormData()
                             newData.append("phone_number", this.viewPatient.phone_number)
                             newData.append("message", this.addSms.message)
-                            newData.append("appointment", this.addSms.appointment)
+                            newData.append("appointment", newDate)
+                            newData.append("week_day", weekDay)
                             axios.post("sms-action.php?action=sent_message", newData)
                                 .then(response => {
                                     if (response.data) {
@@ -412,26 +447,55 @@
                     this.addSms = []
                 },
                 bulkSms() {
-                    console.log(this.addSms.multiNumber)
                     if (Object.keys(this.addSms.multiNumber).length === 0) {
                         this.$message.error("Please select aleast one(1) user to send message!")
+                        console.log(this.addSms.multiNumber)
                     } else {
                         this.smsDialog = true
-                        
+
                     }
                 },
                 sendSms(addSms) {
                     this.$refs[addSms].validate((valid) => {
                         if (valid) {
                             this.loadButton = true;
+                            const date = this.addSms.appointment;
+                            let weekDay = date.getDay();
+                            const newDate = date.getFullYear() + "-" + ((date.getMonth() + 1) > 9 ? '' : '0') + (date.getMonth() + 1) + "-" + (date.getDate() > 9 ? '' : '0') + date.getDate();
+                            switch (weekDay) {
+                                case 0:
+                                    weekDay = "Sunday"
+                                    break;
+                                case 1:
+                                    weekDay = "Monday"
+                                    break;
+                                case 2:
+                                    weekDay = "Tuesday"
+                                    break;
+                                case 3:
+                                    weekDay = "Wednesday"
+                                    break;
+                                case 4:
+                                    weekDay = "Thursday"
+                                    break;
+                                case 5:
+                                    weekDay = "Friday"
+                                    break;
+                                case 6:
+                                    weekDay = "Saturday"
+                                    break;
+                                default:
+                                    break;
+                            }
                             var newData = new FormData()
                             newData.append("number_blast", this.addSms.multiNumber)
                             newData.append("message", this.addSms.message)
-                            newData.append("appointment", this.addSms.appointment)
+                            newData.append("appointment", newDate)
+                            newData.append("week_day", weekDay)
                             axios.post("sms-action.php?action=bulk_message", newData)
                                 .then(response => {
-                                    console.log(response)
                                     if (response.data) {
+                                        console.log(response)
                                         this.loadButton = false;
                                         this.tableLoad = true;
                                         setTimeout(() => {
@@ -442,8 +506,10 @@
                                             this.tableLoad = false;
                                         }, 1500);
                                         this.resetFormData();
-                                        this.loadButton = true;
+                                        this.loadButton = false;
                                         this.smsDialog = false;
+                                        this.addSms.multiNumber = []
+                                        this.$refs.myTable.clearSelection();
                                     }
                                 })
                         } else {

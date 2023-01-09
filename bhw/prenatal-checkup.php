@@ -98,7 +98,8 @@
                             </div>
                             <div class="col-auto">
                                 <el-form-item prop="lmp">
-                                    <el-input size="medium" v-model="prenatal.lmp" clearable></el-input>
+                                    <el-date-picker size="medium" v-model="prenatal.lmp" type="date" placeholder="Select Date">
+                                    </el-date-picker>
                                 </el-form-item>
                             </div>
                         </div>

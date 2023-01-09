@@ -23,6 +23,36 @@
         header("Location: ./login");
         die();
     } ?>
+    <style id="table_style" type="text/css">
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: #F7F7F7;
+            color: #333;
+            font-weight: bold;
+        }
+
+        table th,
+        table td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .ps-5 {
+            padding-left: 3rem !important;
+        }
+
+        .float-end {
+            float: right !important;
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -40,43 +70,48 @@
                                     Barangay Taloc Online Health Record Management System <?php echo date("Y"); ?>
                                 </div>
                             </div>
-                            <div class="card" id="printThis">
+                            <div class="card">
                                 <div class="card-header">
-                                    <form method="post" action="export-file">
-                                        <input type="submit" name="export" class="btn btn-sm btn-outline-success float-end" value="Export to Excel">
-                                    </form>
+                                    <div class="row">
+                                        <div class="col">
+                                            <el-button type="primary" icon="el-icon-printer" onclick="PrintTable();">Print</el-button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-title mt-3 text-center">
-                                    <p class="fw-bold">Bago City</p>
-                                    <p class="fw-bold">Barangay Health Worker</p>
-                                    <p>MONTHLY ACCOMPLISHMENT</p>
-                                </div>
-                                <div class="card-body mx-5" id="table">
-                                    <table class="table table-bordered" id="dataTable" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th class="col-5 text-center">ACTIVITY</th>
-                                                <th class="col-2 text-center">NO. ACCOMPLISHED</th>
-                                                <th class="col-auto"></th>
-                                                <th class="col-auto"></th>
-                                                <th class="col-auto">REMARKS</th>
-                                            </tr>
-                                            <tr>
-                                                <th class="col-5">RMCHN</th>
-                                                <th class="col-auto">10-14 y.o.</th>
-                                                <th class="col-auto">15-19 y.o.</th>
-                                                <th class="col-auto">20-49 y.o.</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $count_prenatal = $db->query("SELECT COUNT(*) as total FROM `prenatal` INNER JOIN patient ON patient.fsn=prenatal.fsn");
-                                            $prenatal = $count_prenatal->fetch_array();
-                                            $count_aog = $db->query("SELECT COUNT(aog) as aog FROM `prenatal` INNER JOIN patient ON patient.fsn=prenatal.fsn");
-                                            $aog = $count_aog->fetch_array();
-                                            $query = $db->query("SELECT * FROM patient INNER JOIN prenatal ON prenatal.fsn=patient.fsn");
-                                            while ($fetch = $query->fetch_array()) {
-                                            ?>
+                                <div class="card" id="dvContents" style="border: 1px dotted black; padding: 5px; width:100%">
+                                    <div class="card-title mt-3 text-center">
+                                        <p class="fw-bold">Bago City</p>
+                                        <p class="fw-bold">Barangay Health Worker</p>
+                                        <p>MONTHLY ACCOMPLISHMENT</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <table cellspacing="0" rules="all" border="1">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-5 text-center">ACTIVITY</th>
+                                                    <th class="col-2 text-center">NO. ACCOMPLISHED</th>
+                                                    <th class="col-auto"></th>
+                                                    <th class="col-auto"></th>
+                                                    <th class="col-auto">REMARKS</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-5">RMCHN</th>
+                                                    <th class="col-auto text-center">10-14 y.o.</th>
+                                                    <th class="col-auto text-center">15-19 y.o.</th>
+                                                    <th class="col-auto text-center">20-49 y.o.</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $count_prenatal = $db->query("SELECT COUNT(*) as total FROM `prenatal` INNER JOIN patient ON patient.id=prenatal.patient_id");
+                                                $prenatal = $count_prenatal->fetch_array();
+                                                $count_planning = $db->query("SELECT COUNT(*) as total FROM `family_planning` INNER JOIN patient ON patient.id=family_planning.patient_id");
+                                                $family_planning = $count_planning->fetch_array();
+                                                $count_aog = $db->query("SELECT COUNT(aog) as aog FROM `prenatal` INNER JOIN patient ON patient.id=prenatal.patient_id");
+                                                $aog = $count_aog->fetch_array();
+                                                $count_presentation = mysqli_query($db, "SELECT * FROM `prenatal` INNER JOIN patient ON patient.id=prenatal.patient_id");
+                                                $presentation = $count_presentation->fetch_array();;
+                                                ?>
                                                 <tr>
                                                     <th class="col-5">I. MATERNAL CARE</th>
                                                     <th class="col-auto"></th>
@@ -98,14 +133,14 @@
                                                 <tr>
                                                     <td class="col-8 float-end"> - 2nd trimester</td>
                                                     <td class="col-auto"></td>
-                                                    <td class="col-auto"><?php echo $prenatal['total'] ?></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] <= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end"> - 3rd trimester</td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
-                                                    <td class="col-auto"><?php echo $prenatal['total'] ?></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 ps-4">b. Number of antenatal care check - ups monitored</td>
@@ -116,78 +151,78 @@
                                                 <tr>
                                                     <td class="col-8 ps-5"> - 1st trimester (up to 12 weeks and 6 days AOG)</td>
                                                     <td class="col-auto"><?php if ($aog['aog'] >= '0' || $aog['aog'] <= '12') echo $aog['aog'] ?></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($aog['aog'] >= '13' || $aog['aog'] <= '27') echo $aog['aog'] ?></td>
+                                                    <td class="col-auto"><?php if ($aog['aog'] >= '28') echo $aog['aog'] ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 ps-5"> - 2nd trimester (13-27 weeks and 6 days AOG)</td>
-                                                    <td class="col-auto"><?php if ($aog['aog'] >= '13' || $aog['aog']<= '27') echo $aog['aog'] ?></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($aog['aog'] >= '0' || $aog['aog'] <= '12') echo $aog['aog'] ?></td>
+                                                    <td class="col-auto"><?php if ($aog['aog'] >= '13' || $aog['aog'] <= '27') echo $aog['aog'] ?></td>
+                                                    <td class="col-auto"><?php if ($aog['aog'] >= '28') echo $aog['aog'] ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 ps-5"> - 3rd trimester (28 weeks AOG and more )</td>
-                                                    <td class="col-auto"><?php if ($aog['aog'] >= '28') echo $aog['aog'] ?></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php echo $aog['aog'] >= '0' && $aog['aog'] <= '12' ?></td>
+                                                    <td class="col-auto"><?php echo $aog['aog'] >= '13' && $aog['aog'] <= '27'?></td>
+                                                    <td class="col-auto"><?php echo $aog['aog'] >= '28'?></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8">2. No. of pregnant women delivered this month</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 ps-5">Pregnancy Outcome</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end">-Live birth</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end">-Preterm</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end">-Still Birth</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end">-Abortion</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 ps-5">Gender of the Baby</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if ($prenatal['total'] >= 'Apr') echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end">-Boy</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if($presentation['presentation'] == 'Boy') ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8 float-end">-Girl</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php if($presentation['presentation'] == 'Girl'){echo $presentation;} ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-8">No. of home delivered mother/newborn/transferred in referred to midwife</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php echo $prenatal['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
@@ -241,7 +276,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="col-5 float-end">a. IUD (Interval)</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php echo $family_planning['total'] ?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
@@ -259,67 +294,13 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="col-5 float-end">c. PILLS (COC - Combined Oral Contraceptive)</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php echo $family_planning['total'] == 'COC'?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="col-5 ps-4 float-end"> PILLS (POP) - (Progestin Only Pill)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">d. IMPLANTS(PSI)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">e. CONDOM</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">f. Vasectomy</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">g. BTL(Bilateral Tubal Ligation)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">h. Fertility Awareness Bases Method</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">- SDM (Standard Days Method)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">- STM (Syptho-thermal Method</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end"> - BBT(Basal Body Temperature</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">- CCM (Cervical-Mucus Method</td>
-                                                    <td class="col-auto"></td>
+                                                    <td class="col-auto"><?php echo $family_planning['total'] == 'POP'?></td>
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
@@ -359,77 +340,9 @@
                                                     <td class="col-auto"></td>
                                                     <td class="col-auto"></td>
                                                 </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">d. IMPLANTS(PSI)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">e. CONDOM</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">f. Vasectomy</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">g. BTL(Bilateral Tubal Ligation)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">h. Fertility Awareness Bases Method</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">- SDM (Standard Days Method)</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">- STM (Syptho-thermal Method</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end"> - BBT(Basal Body Temperature</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-5 float-end">- CCM (Cervical-Mucus Method</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-8">2. A Number of WRA profiled and masterlisted</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-8">3. A Number of WRA who do not practice any Family Planning Method</td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                    <td class="col-auto"></td>
-                                                </tr>
-                                            <?php
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </el-main>
@@ -485,27 +398,27 @@
         })
     </script>
     <script type="text/javascript">
-        function exportReportToExcel() {
-            let table = document.getElementById("table");
-            TableToExcel.convert(table[0], {
-                name: `monthly-accomplishment.xlsx`,
-                sheet: {
-                    name: 'Sheet 1'
-                }
-            });
+        function PrintTable() {
+            var printWindow = window.open('', '', 'height=800,width=1000');
+            printWindow.document.write('<html><head><title>Table Contents</title>');
+
+            //Print the Table CSS.
+            var table_style = document.getElementById("table_style").innerHTML;
+            printWindow.document.write('<style type = "text/css">');
+            printWindow.document.write(table_style);
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head>');
+
+            //Print the DIV contents i.e. the HTML Table.
+            printWindow.document.write('<body>');
+            var divContents = document.getElementById("dvContents").innerHTML;
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body>');
+
+            printWindow.document.write('</html>');
+            printWindow.document.close();
+            printWindow.print();
         }
-    </script>
-    <script>
-        $(document).ready(function() {
-            $(".dataExport").click(function() {
-                var exportType = $(this).data('type');
-                $('#dataTable').tableExport({
-                    type: exportType,
-                    escape: 'false',
-                    ignoreColumn: []
-                });
-            });
-        });
     </script>
 </body>
 

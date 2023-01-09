@@ -21,12 +21,6 @@
     </el-row>
     <el-row :gutter="20" class="mt-3">
         <el-col>
-            <label class="form-label mb-0" for="">FSN</label>
-            <input type="text" class="form-control" value="<?php echo $db_identification; ?>" disabled />
-        </el-col>
-    </el-row>
-    <el-row :gutter="20" class="mt-3">
-        <el-col>
             <label class="form-label mb-0" for="">Name</label>
             <input type="text" class="form-control" value="<?php echo $name; ?>" disabled />
         </el-col>

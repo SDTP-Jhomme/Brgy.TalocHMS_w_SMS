@@ -1,20 +1,4 @@
-<?php
-
-$immunization_request = mysqli_query($db, "SELECT * FROM immunization_request WHERE fsn");
-
-while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
-
-    $m_firstname = $immu_row['m_firstname'];
-    $m_middlename = $immu_row['m_middlename'];
-    $m_lastname = $immu_row['m_lastname'];
-    $f_firstname = $immu_row['f_firstname'];
-    $f_middlename = $immu_row['f_middlename'];
-    $f_lastname = $immu_row['f_lastname'];
-    $purok = $immu_row['purok'];
-    $barangay = $immu_row['barangay'];
-
-}
-?>
+<el-header height="0px"></el-header>
 <h3 class="text-center mb-4">Immunization Checkup Form</h3>
 <el-main>
     <el-form :model="immunize" :rules="immunizationRules" ref="immunize">
@@ -42,11 +26,11 @@ while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
                 <label class="m-0">Last Name</label>
                 <el-input v-model="viewPatient.last_name" size="small" clearable disabled></el-input>
             </div>
-            <div v-if="viewPatient.middle_name != 'undefined'" class="mb-4" :class="viewPatient.middle_name && !viewPatient.suffix ? 'w-30' : viewPatient.middle_name && viewPatient.suffix ? 'w-20' : 'w-25'">
+            <div v-if="viewPatient.middle_name !='undefined'" class="mb-4" :class="viewPatient.middle_name && !viewPatient.suffix ? 'w-30' : viewPatient.middle_name && viewPatient.suffix ? 'w-20' : 'w-25'">
                 <label class="m-0">Middle Name</label>
                 <el-input v-model="viewPatient.middle_name" size="small" clearable disabled></el-input>
             </div>
-            <div v-if="viewPatient.middle_name != 'undefined'" class="mb-4" :class="!viewPatient.middle_name && viewPatient.suffix ? 'w-10' : viewPatient.middle_name && viewPatient.suffix ? 'w-10' : 'w-25'">
+            <div v-if="viewPatient.suffix !='undefined'" class="mb-4" :class="!viewPatient.middle_name && viewPatient.suffix ? 'w-10' : viewPatient.middle_name && viewPatient.suffix ? 'w-10' : 'w-25'">
                 <label class="m-0">Suffix</label>
                 <el-input v-model="viewPatient.suffix" size="small" clearable disabled></el-input>
             </div>
@@ -75,19 +59,25 @@ while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
                 <label for=""><span class="text-danger">*</span>Mother Last Name :</label>
             </div>
             <div class="col-2 mb-4">
-                <el-input v-model="viewPatient.m_lastname" size="small" clearable disabled></el-input>
+                <el-form-item prop="mLastName">
+                    <el-input v-model="immunize.mLastName" clearable></el-input>
+                </el-form-item>
             </div>
             <div class="col-auto mb-4">
                 <label for=""><span class="text-danger">*</span>Mother First Name :</label>
             </div>
             <div class="col-2 mb-4">
-                <el-input value="<?php echo $m_firstname ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="mFirstName">
+                    <el-input v-model="immunize.mFirstName" clearable></el-input>
+                </el-form-item>
             </div>
             <div class="col-auto mb-4">
                 <label for="">Mother Middle Name :</label>
             </div>
             <div class="col-2 mb-4">
-                <el-input value="<?php echo $m_middlename ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="mMidName">
+                    <el-input v-model="immunize.mMidName" clearable></el-input>
+                </el-form-item>
             </div>
         </div>
         <div class="row g-3 align-items-center mt-5">
@@ -95,19 +85,25 @@ while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
                 <label for=""><span class="text-danger">*</span>Father Last Name :</label>
             </div>
             <div class="col-2 mb-4">
-                <el-input value="<?php echo $f_lastname ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="fLastName">
+                    <el-input v-model="immunize.fLastName" clearable></el-input>
+                </el-form-item>
             </div>
             <div class="col-auto mb-4">
                 <label for=""><span class="text-danger">*</span>Father First Name :</label>
             </div>
             <div class="col-2 mb-4">
-                <el-input value="<?php echo $f_firstname ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="fFirstName">
+                    <el-input v-model="immunize.fFirstName" clearable></el-input>
+                </el-form-item>
             </div>
             <div class="col-auto mb-4">
                 <label for=""><span class="text-danger">*</span>Father Middle Name :</label>
             </div>
             <div class="col-2 mb-4">
-                <el-input value="<?php echo $f_middlename ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="fMidName">
+                    <el-input v-model="immunize.fMidName" clearable></el-input>
+                </el-form-item>
             </div>
         </div>
         <div class="row g-3 align-items-center mt-5">
@@ -115,13 +111,17 @@ while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
                 <label for=""><span class="text-danger">*</span>Address :(Purok)</label>
             </div>
             <div class="col-4 mb-4">
-                <el-input value="<?php echo $purok ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="purok">
+                    <el-input v-model="immunize.purok" clearable></el-input>
+                </el-form-item>
             </div>
             <div class="col-auto mb-4">
                 <label for=""><span class="text-danger">*</span>Barangay :</label>
             </div>
             <div class="col-4 mb-4">
-                <el-input value="<?php echo $barangay ?>" size="small" clearable disabled></el-input>
+                <el-form-item prop="barangay">
+                    <el-input v-model="immunize.barangay" clearable></el-input>
+                </el-form-item>
             </div>
         </div>
 
@@ -151,7 +151,7 @@ while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
             </div>
             <div class="col-auto mb-4">
                 <el-form-item prop="weight">
-                    <el-input v-model="immunize.weight" clearable>
+                    <el-input v-model="immunize.weight" type="number">
                         <template slot="suffix">kg / lbs</template>
                     </el-input>
                 </el-form-item>
@@ -161,7 +161,7 @@ while ($immu_row = mysqli_fetch_assoc($immunization_request)) {
             </div>
             <div class="col-auto mb-4">
                 <el-form-item prop="temp">
-                    <el-input v-model="immunize.temp" clearable>
+                    <el-input v-model="immunize.temp" type="number">
                         <template slot="suffix">℃</template>
                     </el-input>
                 </el-form-item>

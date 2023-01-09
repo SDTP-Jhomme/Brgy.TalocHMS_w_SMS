@@ -64,7 +64,7 @@
     <!-- ======= Hero Section ======= -->
     <section id="hero">
         <div class="hero-container">
-            <h3>Welcome to <strong>Barangay Taloc Online Health Management System</strong></h3>
+            <h3>Welcome to <strong>Barangay Taloc Online Health Record Management System with Sms Notification</strong></h3>
             <h1>Bago City College - BSIS</h1>
             <h2>Capstone Project AY <?php echo date("Y"); ?></h2>
         </div>
@@ -79,28 +79,19 @@
                 <div class="section-title">
                     <h2>About</h2>
                     <h3>Learn More <span>About Us</span></h3>
-                    <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p>
+                    <p>Barangay Taloc Online Health Record Management System with Sms Notification</p>
                 </div>
 
                 <div class="row content">
-                    <div class="col-lg-6">
+                    <div class="col-lg-8 ps-5">
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                            magna aliqua.
+                            The system is intended to the persons who have direct involvement in the processing of health programs and other services of Barangay Taloc Health Center.
                         </p>
                         <ul>
-                            <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat</li>
-                            <li><i class="ri-check-double-line"></i> Duis aute irure dolor in reprehenderit in voluptate velit</li>
-                            <li><i class="ri-check-double-line"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat</li>
+                            <li><i class="ri-check-double-line"></i> This study is focused on helping the Barangay Taloc Health Workers to manage and record patient’s information, update events and generate reports.</li>
+                            <li><i class="ri-check-double-line"></i> The system can be used by the personnel of the Barangay Taloc Health Center.</li>
+                            <li><i class="ri-check-double-line"></i> The SMS function will notify patients about certain agenda.</li>
                         </ul>
-                    </div>
-                    <div class="col-lg-6 pt-4 pt-lg-0">
-                        <p>
-                            Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                            culpa qui officia deserunt mollit anim id est laborum.
-                        </p>
-                        <a href="#" class="btn-learn-more">Learn More</a>
                     </div>
                 </div>
 
@@ -122,7 +113,7 @@
                         <div class="icon-box">
                             <div class="icon"><i class="bi bi-shield-lock-fill"></i></div>
                             <h4 class="title"><a href="">Secured Accounts</a></h4>
-                            <p class="description">Secured information for every patient</p>
+                            <p class="description">Secured information for every users</p>
                         </div>
                     </div>
 
@@ -138,7 +129,7 @@
                         <div class="icon-box">
                             <div class="icon"><i class="bi bi-clock"></i></div>
                             <h4 class="title"><a href="">Time Consume</a></h4>
-                            <p class="description">Less time consuming than ma</p>
+                            <p class="description">Less time consuming than manual</p>
                         </div>
                     </div>
 
@@ -161,7 +152,6 @@
                 <div class="section-title">
                     <h2>Team</h2>
                     <h3>Our Hardworking <span>Team</span></h3>
-                    <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p>
                 </div>
 
                 <div class="row">
@@ -169,7 +159,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/img/avatar/jhomme.jpg" class="img-fluid" alt="jhomme" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/Jhomme.jpg" class="img-fluid" alt="jhomme" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/jhomme.dimasuay" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
@@ -184,7 +174,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/img/avatar/ryan.jpg" class="img-fluid" alt="" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/Ryan.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/ryan.seguirogwapo" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
@@ -199,7 +189,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/img/avatar/kaloi.jpg" class="img-fluid" alt="" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/Jan_carlo.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/carlo.panoncillo.3" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>
@@ -214,7 +204,7 @@
                     <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
                         <div class="member">
                             <div class="member-img">
-                                <img src="./assets/img/avatar/andrew.jpg" class="img-fluid" alt="" style="max-width: 300px;">
+                                <img src="./assets/img/avatar/Andrew.jpg" class="img-fluid" alt="" style="max-width: 300px;">
                                 <div class="social">
                                     <a href="https://web.facebook.com/andrew.g.alba" target="_blank"><i class="bi bi-facebook"></i></a>
                                 </div>

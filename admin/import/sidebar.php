@@ -26,6 +26,9 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="./checkup">Individual Checkup</a>
                     </nav>
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="./planning">Family Planning</a>
+                    </nav>
                 </div>
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages1" aria-expanded="false" aria-controls="collapsePages">
                     <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
@@ -41,6 +44,9 @@
                     </nav>
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="./health-chart">Individual Section</a>
+                    </nav>
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="./planning-chart">Family Planning Section</a>
                     </nav>
                 </div>
                 <a class="nav-link" href="./sms">
