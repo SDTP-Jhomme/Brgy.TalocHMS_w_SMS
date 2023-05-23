@@ -39,6 +39,7 @@
                                     <el-col :span="12">
                                         <el-button type="primary" @click="openAddDrawer = true" size="small" icon="el-icon-user-solid">Add New BHW</el-button>
                                         <el-button icon="el-icon-turn-off" size="small" type="info" @click="handleInactive()">Deactivate BHW</el-button>
+                                        <el-button icon="el-icon-delete" size="small" type="danger" @click="handleDelete()">Delete BHW</el-button>
                                     </el-col>
                                 </el-row>
                             </div>
@@ -747,6 +748,37 @@
                         .catch(() => {
                             this.loadButton = false;
                         });
+                },
+                handleDelete() {
+                    if (Object.keys(this.multiID).length === 0) {
+                        this.$message.error("Please select aleast one(1) user to delete!")
+                    } else {
+                        this.$confirm('This will delete all selected users status . Continue?', 'Warning', {
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+                                type: "warning"
+                            })
+                            .then(() => {
+                                var ids = new FormData();
+                                ids.append("user_ids", this.multiID)
+                                axios.post("action.php?action=delete", ids)
+                                    .then(response => {
+                                        if (response.data) {
+                                            this.tableLoad = true
+                                            setTimeout(() => {
+                                                this.getData();
+                                                this.tableLoad = false
+                                                this.$message({
+                                                    message: 'Delete users successfully!',
+                                                    type: 'success'
+                                                })
+                                                this.page = 1;
+                                            }, 1500)
+                                        }
+                                    })
+                            })
+                            .catch(() => {});
+                    }
                 },
                 handleInactive() {
                     if (Object.keys(this.multiID).length === 0) {

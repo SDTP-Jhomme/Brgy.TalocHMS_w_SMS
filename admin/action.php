@@ -463,7 +463,12 @@ if ($action == 'inactive') {
 
     $deactive_array_query = mysqli_query($db, "UPDATE users SET status='Inactive' WHERE id IN($array_id)");
 }
+if ($action == 'delete') {
 
+    $array_id = $_POST["user_ids"];
+
+    $deactive_array_query = mysqli_query($db, "DELETE FROM users WHERE id IN($array_id)");
+}
 if ($action == 'reset') {
 
     $user_id = $_POST["id"];
